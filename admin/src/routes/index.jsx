@@ -1,53 +1,57 @@
+
 import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
-//* Configuraciones
-import { Moneda, Monedas } from '../views/configuraciones/monedas'
+import { UsuarioContext } from '../context/UsuarioContext'
+import { useContext } from 'react'
 
 // * Auth
 import { Login } from '../views/auth'
-//* Error
 import { _404 } from '../views/Error'
-//* Components
 import { ProtectedRoute } from '../components/ProtectedRoute'
-//* Layouts
 import { AuthLayout } from '../layouts'
 
-//* Recovery password
+// * Recovery password
 import { RecoveryPassword } from '../views/recovery_pass'
 
-//* Perfil
+// * Perfil
 import { EditarPerfil } from '../views/perfil'
 
-//* Expedientes
+// * Expedientes
 import { Expedientes } from '../views/expedientes'
 
+// * Configuraciones
 const Router = () => {
+  const [usuario] = useContext(UsuarioContext)
+
+  // Verifica si el usuario está autenticado y tiene un ID único
+  const clave = usuario && usuario.clave ? usuario.clave : null
+  console.log('clave', clave)
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Navigate to='/login' />} />
         <Route path='/login' element={<Login />} />
         <Route path='/recovery' element={<RecoveryPassword />} />
-        <Route element={<ProtectedRoute />}>
-          <Route element={<AuthLayout />}>
-            <Route path='/dashboard' element={<h1>Dashboard</h1>} />
-            <Route path='/dashboard' element={<h1>Dashboard</h1>} />
-            <Route path='/perfil'>
-              <Route path='editar' element={<EditarPerfil />} />
-            </Route>
-            <Route path='/expedientes'>
-              <Route path='' element={<Expedientes />} />
-              {/* <Route path='editar' element={<EditarPerfil />} /> */}
-            </Route>
-            <Route path='/configuraciones'>
-              <Route path='monedas'>
-                <Route path='' element={<Monedas />} />
-                <Route path=':id/edit' element={<Moneda />} />
-                <Route path=':id/watch' element={<Moneda watch />} />
-              </Route>
-              <Route path='*' element={<_404 to={-1} />} />
+        {clave !== null && (
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AuthLayout />}>
+              <Route path={`/${clave}/dashboard`} element={
+                <div>
+                  <h1>Dashboard</h1>
+                </div>
+              } />
+              <Route path={`/${clave}/perfil/editar`} element={<EditarPerfil />} />
+              <Route path={`/${clave}/expedientes`} element={<Expedientes />} />
+              <Route path={`/${clave}/expedientes/:_id`} element={<h1>hol</h1>} />
+              <Route path='*' element={<_404 />} />
+
+              {/* <Route path={`/${clave}/configuraciones/monedas`} element={<Monedas />} />
+              <Route path={`/${clave}/configuraciones/monedas/:id/edit`} element={<Moneda />} />
+              <Route path={`/${clave}/configuraciones/monedas/:id/watch`} element={<Moneda watch />} /> */}
+
             </Route>
           </Route>
-        </Route>
+        )}
         <Route path='*' element={<_404 />} />
       </Routes>
     </BrowserRouter>

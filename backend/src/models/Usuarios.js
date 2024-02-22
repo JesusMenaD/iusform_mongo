@@ -6,6 +6,12 @@ const UsuariosSchema = new Schema({
     required: true,
     trim: true
   },
+  clave: { // Clave de usuario para el despacho o administrador del sistema
+    type: String,
+    required: true,
+    trim: true,
+    index: true
+  },
   apellidoPaterno: {
     type: String,
     required: false,

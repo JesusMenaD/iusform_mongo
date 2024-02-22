@@ -10,23 +10,12 @@ import { NotificationContext } from './context/NotificationConext'
 const App = () => {
   const data = getUsuarioLS()
   const [usuario, setUsuario] = useState(data)
-  const [notification, setNotification] = useState([{
-    id: 0,
-    type: 'green',
-    message: 'Bienvenido a 4CAP.',
-    createdAt: new Date()
-  },
-  {
-    id: 1,
-    type: 'green',
-    message: 'Datos cargados correctamente.',
-    createdAt: new Date()
-  }])
+  const [notification, setNotification] = useState([])
   return (
     <UsuarioContext.Provider value={[usuario, setUsuario]}>
       <NotificationContext.Provider value={[notification, setNotification]}>
         <ThemeProvider theme={theme}>
-          <Router />
+          <Router key={usuario?.id} />
         </ThemeProvider>
       </NotificationContext.Provider>
     </UsuarioContext.Provider>

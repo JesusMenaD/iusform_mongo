@@ -1,73 +1,18 @@
 /* eslint-disable react/prop-types */
-import { memo, useState } from 'react'
-import { Alert, Button, Divider, IconButton, Modal, Tooltip, Typography } from '@mui/material'
+import { memo } from 'react'
+import { Alert, Grid, Paper, Typography } from '@mui/material'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { Box } from '@mui/system'
-import { Columns, Plus, RefreshCcw, Table, X } from 'react-feather'
 import DataTable from './DataTable'
-import { Kanban } from './Kanban'
 import Swal from 'sweetalert2'
 import ButtonAction from './ButtonAction'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
-
-const styles = {
-  between: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: 1,
-    marginBottom: 2
-  },
-  End: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: 1,
-    marginBottom: 2,
-    marginTop: 2
-  },
-  start: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    gap: 1
-  },
-  TextField: {
-    mb: 2
-  },
-  modal: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    minWidth: '350px',
-    width: '100%',
-    maxWidth: '500px',
-    bgcolor: 'white',
-    p: 4,
-    boxShadow: 24,
-    '&:focus': {
-      outline: 'none'
-    }
-  },
-  title: {
-    color: 'primary.main',
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    mb: 2
-  },
-  titleAdd: {
-    color: 'primary.main',
-    textTransform: 'uppercase',
-    fontWeight: 'bold'
-  }
-}
 
 const Listar = ({
-  title = '', altasLink = '', GetDataFunction, DeleteFunction, heads, FilterSearch = () => null
+  title = '', altasLink = '', GetDataFunction, DeleteFunction, heads
 }) => {
-  // const [openCreate, setOpenCreate] = useState(false)
-
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: [title.toLowerCase()],
-    queryFn: () => GetDataFunction
+    queryFn: () => GetDataFunction({ search: '', status: '' })
   })
 
   const deleteMutation = useMutation({
@@ -81,8 +26,6 @@ const Listar = ({
       Swal.fire({ title: 'Error al eliminar', text: message, icon: 'error' })
     }
   })
-
-  // const [tableOrKanban, setTableOrKanban] = useState(true)
 
   const handleDelete = async (obj) => {
     const id = Object.values(obj)[0]
@@ -98,12 +41,8 @@ const Listar = ({
     }
   }
 
-  // const handleOpen = () => setOpenCreate(true)
-  // const handleClose = () => setOpenCreate(false)
-
   const Render = () => (
     <>
-
       {isError && <Alert severity='error'>Error al cargar los datos</Alert>}
       <DataTable
         heads={heads}
@@ -111,32 +50,37 @@ const Listar = ({
         title={title}
         loading={isLoading}
         handleDelete={handleDelete}
+        // paginate={paginate}
+        onReload={refetch}
       />
     </>
   )
 
   return (
-    <>
-      <ButtonAction actual={title} create={altasLink} />
-      <Box
-        sx={{
-          p: 4,
-          m: 2,
-          mt: 5,
-          borderRadius: 2,
-          boxShadow: 5,
-          bgcolor: 'white'
-          // minHeight: '80vh'
-        }}
-      >
-        {isError
-          ? <Alert severity='error'>Error al cargar los datos</Alert>
-          : <>
-            <FilterSearch />
-            <Render />
-          </>}
-      </Box>
-    </>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <ButtonAction actual={title} create={altasLink} />
+      </Grid>
+      <Grid item xs={12} >
+        <Box px={2}>
+          <Paper elevation={0} sx={{ p: 2, py: 5 }}>
+            <Typography variant='subtitle1' mb={2} component={'h2'} >
+              Selecciona un criterio de busqueda
+            </Typography>
+            {/* <FilterSearch /> */}
+          </Paper>
+        </Box>
+      </Grid>
+      <Grid item xs={12} >
+        <Box p={2}>
+          {isError
+            ? <Alert severity='error'>Error al cargar los datos</Alert>
+            : <Render />
+          }
+        </Box>
+      </Grid>
+    </Grid >
   )
 }
+
 export default memo(Listar)

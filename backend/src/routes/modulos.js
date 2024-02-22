@@ -3,6 +3,6 @@ import { getModulos } from '../controllers/Modulos.Controller.js';
 
 const router = Router();
 
-router.get('/', getModulos);
+router.get('/:usuario', getModulos);
 
 export default router;

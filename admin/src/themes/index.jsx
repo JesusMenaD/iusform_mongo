@@ -44,8 +44,27 @@ export const theme = createTheme({
     },
     MuiButton: {
       styleOverrides: {
-        root: {
-          color: 'white'
+        // root: {
+        //   color: '#c89211'
+        // },
+        contained: {
+          backgroundColor: '#c89211',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: '#c89211'
+          }
+        },
+        outlined: {
+          color: '#c89211',
+          borderColor: '#c89211',
+          '&:hover': {
+            backgroundColor: '#c89211',
+            color: '#fff'
+          },
+          '&:active': {
+            backgroundColor: '#c89211',
+            color: '#fff'
+          }
         }
       }
     },
@@ -59,8 +78,36 @@ export const theme = createTheme({
           border: 'none'
         }
       }
-
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+        },
+        colorPrimary: {
+          backgroundColor: '#c89211',
+          color: '#fff'
+        },
+        colorError: {
+          backgroundColor: '#FF5100',
+          color: '#fff'
+        },
+        colorSecondary: {
+          backgroundColor: '#6571ff',
+          color: '#fff'
+        },
+        colorInfo: {
+          backgroundColor: '#6571ff',
+          color: '#fff'
+        },
+        colorSuccess: {
+          backgroundColor: '#6571ff',
+          color: '#fff'
+        },
+        colorWarning: {
+          backgroundColor: '#6571ff',
+          color: '#fff'
+        }
+      }
     }
-
   }
 })

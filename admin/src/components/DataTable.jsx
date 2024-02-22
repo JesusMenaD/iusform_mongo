@@ -1,111 +1,101 @@
-/* eslint-disable array-callback-return */
+/* eslint-disable react/no-children-prop */
 /* eslint-disable react/prop-types */
-import { memo, useCallback } from 'react'
+import { memo } from 'react'
 import { Delete, Edit } from '@mui/icons-material'
-import CreateExcel from './CreateExcel'
-import { Box, IconButton, LinearProgress, Tooltip } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import ReactTable from 'material-react-table'
 import { MRT_Localization_ES as localization } from 'material-react-table/locales/es'
 import { Eye } from 'react-feather'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import Pagination from '@mui/material/Pagination'
+import Stack from '@mui/material/Stack'
+import Paper from '@mui/material/Paper'
 
-const DataTable = ({ heads, response, title, handleDelete, loading }) => {
+const DataTableContainer = ({ children }) => (
+  <Paper style={{ overflowX: 'auto' }}>
+    {children}
+  </Paper>
+)
+const DataTable = ({
+  title,
+  heads,
+  response,
+  handleDelete,
+  loading,
+  isUpdate = false,
+  isDelete = false,
+  paginate = {
+    totalDocs: 32,
+    limit: 10,
+    totalPages: 10,
+    page: 1,
+    pagingCounter: 0,
+    hasPrevPage: false,
+    hasNextPage: true,
+    prevPage: null,
+    nextPage: 2
+  },
+  onReload
+}) => {
   const navigate = useNavigate()
-  // const [data, setData] = useState([])
-
-  // useEffect(() => {
-  //   setData(response)
-  // }, [loading])
-
-  const handleBusqueda = useCallback((tabla) => {
-    return tabla.getPrePaginationRowModel().rows.map((row) => row.original)
-  }, [])
-
-  const handleSelected = useCallback(({ getSelectedRowModel }) => {
-    return getSelectedRowModel().rows.map((row) => row.original)
-  }, [])
-
-  const handleExportAll = () => response
-
-  const columns = () => heads.map(({ header, accessorKey }) => ({
-    label: header,
-    value: accessorKey
-  }))
-
-  const handleWatch = (obj) => {
-    const firtvalue = Object.values(obj)[0]
-    navigate(`${firtvalue}/watch`)
-  }
-
-  const handleEdit = (obj) => {
-    const firtvalue = Object.values(obj)[0]
-    navigate(`${firtvalue}/edit`)
-  }
   const renderRowActions = ({ row }) => (
-    <Box>
+    <>
       <Tooltip arrow placement='left' title='ver'>
-        <IconButton color='info' onClick={() => handleWatch(row.original)}>
-          <Eye />
-        </IconButton>
-      </Tooltip>
-      <Tooltip arrow placement='top' title='Actualizar'>
-        <IconButton color='success' onClick={() => handleEdit(row.original)}>
-          <Edit />
-        </IconButton>
-      </Tooltip>
-      <Tooltip arrow placement='right' title='Bajas'>
-        <IconButton color='error' onClick={() => handleDelete(row.original)}>
-          <Delete />
-        </IconButton>
-      </Tooltip>
-    </Box>
-  )
+        <Link children={<Eye />} to={`./${row.original._id}`} />
 
-  const renderTopToolbarCustomActions = ({ table }) => (
-    <Box>
-      <CreateExcel loading={loading} sheet={title} dataFn={handleExportAll} columns={columns} placeHolder='Todo' />
-      <CreateExcel loading={loading} sheet={title} dataFn={() => handleBusqueda(table)} columns={columns} placeHolder='Búsqueda' />
-      <CreateExcel loading={loading} sheet={title} dataFn={() => handleSelected(table)} columns={columns} placeHolder='Seleccionados' />
-    </Box>
-  )
+      </Tooltip>
 
-  const columnVisibility = heads.reduce((acc, { accessorKey, enableHiding }) => {
-    acc[accessorKey] = enableHiding
-    return acc
-  }, {})
-
-  return (
-    <div>
       {
-        loading
-          ? <LinearProgress />
-          : (
-            <ReactTable
-              enableEditing
-              columns={heads}
-              enableHiding={true}
-              data={response}
-              initialState={{ columnVisibility }}
-              positionActionsColumn='last'
-              enableRowSelection
-              renderTopToolbarCustomActions={renderTopToolbarCustomActions}
-              renderRowActions={renderRowActions}
-              localization={localization}
-              defaultColumn={{
-
-                maxSize: 400,
-
-                minSize: 80,
-
-                size: 150
-
-              }}
-
-              enableColumnResizing
-            />
-          )
+        isUpdate && (
+          <Tooltip arrow placement='top' title='Actualizar'>
+            <Link children={<Edit />} to={`./${row.original._id}/edit`} />
+          </Tooltip>
+        )
       }
-    </div>
+
+      {
+        isDelete && (
+          <Tooltip arrow placement='right' title='Bajas'>
+            <IconButton color='error' onClick={() => handleDelete(row.original)}>
+              <Delete />
+            </IconButton>
+          </Tooltip>
+        )
+      }
+    </>
+  )
+  return (
+    <DataTableContainer>
+      <ReactTable
+        enableEditing={true}
+        columns={heads}
+        enableHiding={true}
+        data={response ?? []}
+        positionActionsColumn='last'
+        enableRowSelection={false}
+        filterFromLeafRows={false}
+        localization={localization}
+        autoResetAll={true}
+        renderRowActions={renderRowActions}
+
+        enablePagination={false}
+        state={{
+          isLoading: loading
+        }}
+
+      />
+      <Stack spacing={2} direction='row' justifyContent='center' alignItems='center'>
+        <Pagination
+          count={paginate.totalPages}
+          page={paginate.page}
+          onChange={(event, page) => {
+            navigate(`?page=${page}`)
+            onReload()
+          }}
+        />
+      </Stack>
+
+    </DataTableContainer>
   )
 }
 

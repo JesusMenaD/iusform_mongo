@@ -144,18 +144,22 @@ export const getExpedientesByUsuario = async (req, res) => {
 
     const options = {
       page,
-      limit: 10,
-      sort: { fechaInicio: -1, numeroExpediente: 1 },
+      limit: 15,
+      sort: {
+        estatus: 1,
+        fechaMovimiento: -1,
+        ultimoCambio: -1
+      },
       populate: [
-        { path: 'cliente', select: 'nombre' }
+        { path: 'cliente', select: 'nombre' },
+        { path: 'asunto', select: 'nombre' }
       ]
     };
 
     const query = { despacho, usuario };
 
-    if (estatus) query.estatus = estatus;
-
     let searchQuery = {};
+
     if (search) {
       searchQuery = {
         $or: [
@@ -164,6 +168,10 @@ export const getExpedientesByUsuario = async (req, res) => {
           { numeroExpedienteInterno: { $regex: search, $options: 'i' } }
         ]
       };
+    }
+
+    if (estatus) {
+      searchQuery.estatus = estatus;
     }
 
     const expedientesUsuarios = await ExpedientesUsuarioModel.find(query).select('expediente');

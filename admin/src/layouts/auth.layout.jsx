@@ -1,21 +1,20 @@
 import Image from 'mui-image'
-import { useContext, useState, useMemo } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import { useQuery } from '@tanstack/react-query'
+// import { useQuery } from '@tanstack/react-query'
+import Badge from '@mui/material/Badge'
+import Avatar from '@mui/material/Avatar'
 import logoIus from '../assets/images/logo/logo_iusform_300x74_original.png'
-import { Outlet, NavLink, useNavigate } from 'react-router-dom'
+import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom'
 import {
-  LinearProgress,
   Box,
   Drawer,
-  CssBaseline,
   Toolbar,
   List,
   Divider,
   IconButton,
   ListItemButton,
   ListItemIcon,
-  Avatar, Badge,
   Collapse,
   Menu,
   Typography,
@@ -23,13 +22,10 @@ import {
   ListItem,
   ListItemText,
   Paper,
-  Tooltip,
-  Button,
-  Alert
+  Tooltip
 } from '@mui/material'
 import MuiAppBar from '@mui/material/AppBar'
 import {
-  Bell,
   ChevronDown,
   ChevronUp,
   Menu as MenuIcon,
@@ -38,7 +34,6 @@ import {
   LogOut
 } from 'react-feather'
 import { UsuarioContext } from '../context/UsuarioContext'
-import { NotificationContext } from '../context/NotificationConext'
 import { useToggle } from '../hooks/useToggle'
 import { apiAuth } from '../api'
 const drawerWidth = 250
@@ -87,7 +82,6 @@ const styles = {
     width: drawerWidth,
     flexShrink: 0,
     '& .MuiDrawer-paper': {
-      color: 'grey.100',
       width: drawerWidth,
       boxSizing: 'border-box',
       backgroundColor: 'primary.main'
@@ -102,11 +96,7 @@ const styles = {
     fontWeight: 'bold',
     mt: 2
   },
-  email: {
-    color: 'grey.500',
-    fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
-    fontSize: '12px'
-  },
+
   menuItem: {
     minWidth: 'auto',
     marginRight: '16px'
@@ -167,51 +157,47 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const NavbarContent = () => {
   const navigate = useNavigate()
-  const [notification, setNotification] = useContext(NotificationContext)
   const [userContext, setUsuarioContext] = useContext(UsuarioContext)
   const logout = () => {
     setUsuarioContext(null)
     localStorage.removeItem('usuario')
     navigate('/login')
   }
-  const handleNotificationDelete = () => setNotification([])
 
   const profileToggle = useToggle()
-  const notificationToggle = useToggle()
-  const calculaTiempo = (fecha) => {
-    const fechaActual = new Date()
-    const fechaNotificacion = new Date(fecha)
-    const diferencia = fechaActual.getTime() - fechaNotificacion.getTime()
-    const minutos = Math.floor(diferencia / (1000 * 60))
-    const horas = Math.floor(diferencia / (1000 * 60 * 60))
-    const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24))
-    const segundos = Math.floor(diferencia / 1000)
-    if (segundos < 60) return `${segundos} segundos`
-    if (minutos < 60) return `${minutos} minutos`
-    if (horas < 24) return `${horas} horas`
-    return `${dias} dias`
-  }
+  const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      backgroundColor: '#44b700',
+      color: '#44b700',
+      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+      '&::after': {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        animation: 'ripple 1.2s infinite ease-in-out',
+        border: '1px solid currentColor',
+        content: '""'
+      }
+    },
+    '@keyframes ripple': {
+      '0%': {
+        transform: 'scale(.8)',
+        opacity: 1
+      },
+      '100%': {
+        transform: 'scale(2.4)',
+        opacity: 0
+      }
+    }
+  }))
+
   return (
     <>
       <List sx={styles.list}>
-        {/* <ListItem disablePadding sx={styles.block}>
-          <ListItemButton>
-            <Grid size={21} />
-          </ListItemButton>
-        </ListItem> */}
-        <ListItem disablePadding sx={styles.block}>
-          <ListItemButton id="fade-notification"
-            aria-controls={notificationToggle.open ? 'fade-notification' : undefined}
-            aria-haspopup="true"
-            aria-expanded={notificationToggle.open ? 'true' : undefined}
-            onClick={notificationToggle.handleClick}>
-            <Tooltip title="Notificaciones">
-              <Badge badgeContent={notification.length} sx={styles.badge} color="primary">
-                <Bell size={21} />
-              </Badge>
-            </Tooltip>
-          </ListItemButton>
-        </ListItem>
+
         <ListItem disablePadding sx={styles.block}>
           <ListItemButton id="fade-profile"
             aria-controls={profileToggle.open ? 'fade-profile' : undefined}
@@ -219,7 +205,13 @@ const NavbarContent = () => {
             aria-expanded={profileToggle.open ? 'true' : undefined}
             onClick={profileToggle.handleClick}>
             <Tooltip title="Perfil">
-              <Avatar alt="Remy Sharp" src={userContext.foto} sx={{ width: 30, height: 30 }} />
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                variant="dot"
+              >
+                <Avatar alt="profile image" src={userContext.foto} />
+              </StyledBadge>
             </Tooltip>
           </ListItemButton>
         </ListItem>
@@ -244,16 +236,8 @@ const NavbarContent = () => {
           </Box>
           <Divider />
           <List dense>
-            {/* <ListItem disablePadding>
-              <ListItemButton>
-                <ListItemIcon sx={styles.menuItem}>
-                  <User size={16} />
-                </ListItemIcon>
-                <ListItemText primary='Perfil' />
-              </ListItemButton>
-            </ListItem> */}
             <ListItem disablePadding>
-              <ListItemButton onClick={() => navigate('/perfil/editar')}>
+              <ListItemButton onClick={() => navigate(`/${userContext.clave}/perfil/editar`)}>
                 <ListItemIcon sx={styles.menuItem}>
                   <Edit size={16} />
                 </ListItemIcon>
@@ -271,68 +255,7 @@ const NavbarContent = () => {
           </List>
         </Paper>
       </Menu>
-      <Menu
-        id="fade-notification"
-        MenuListProps={{ 'aria-labelledby': 'fade-notification' }}
-        anchorEl={notificationToggle.anchorEl}
-        open={notificationToggle.open}
-        onClose={notificationToggle.handleClose}
-        TransitionComponent={Fade}
-        elevation={1}
-      >
-        <Paper sx={{ width: 260 }} elevation={0}
-        >
-          <Typography
-            sx={{
-              fontSize: 14,
-              fontWeight: 500,
-              color: 'text.primary',
-              p: 1.3
-            }}>
-            {`${notification.length} Nuevas notificaciones `}
-            {
-              notification.length > 0 && <Button size="small" onClick={handleNotificationDelete} variant="text">
-                Limpiar
-              </Button>
-            }
 
-          </Typography>
-          <Divider />
-          <List dense>
-            {notification.map((item, index) => (
-              <div key={index}>
-                <ListItem disablePadding >
-                  <ListItemButton>
-                    <ListItemIcon sx={styles.menuItem} >
-                      <Bell size={16} color={item.type} />
-                    </ListItemIcon>
-                    <ListItemText primary={item.message} secondary={calculaTiempo(item.createdAt)} />
-                  </ListItemButton>
-                </ListItem>
-                <Divider />
-              </div>
-            ))}
-          </List>
-          {notification.length > 0 && (
-            <>
-              <Divider />
-              <Button fullWidth variant="text" color='info' size="small">Ver todo</Button>
-            </>
-          )}
-          {notification.length === 0 && (
-            <Box sx={{ p: 1.3 }}>
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: 'text.primary',
-                  textAlign: 'center'
-                }}>No hay notificaciones
-              </Typography>
-            </Box>)
-          }
-        </Paper>
-      </Menu>
     </>
   )
 }
@@ -347,19 +270,11 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }))
 
 // eslint-disable-next-line react/prop-types
-// const SubHeader = ({ title }) => (
-//   <ListSubheader sx={styles.listSubheader} component="div" id="nested-list-subheader">
-//     <Typography variant='h6'>{title}</Typography>
-//   </ListSubheader>
-// )
-
-// eslint-disable-next-line react/prop-types
 const ListItemLink = ({ name, to, Icon, chil = [] }) => (
   <ListItem disablePadding>
-    <ListItemButton component={NavLink} to={to} sx={styles.listItemButton}>
+    <ListItemButton component={NavLink} to={to} sx={styles.listItemButton} LinkComponent={Link}>
       <ListItemIcon>
         <Image src={Icon} alt={name} width={18} height={18} />
-        {/* <Icon size={18} color="#FFFFFF" /> */}
       </ListItemIcon>
       <ListItemText primary={name} sx={styles.listItemText} />
     </ListItemButton>
@@ -399,46 +314,37 @@ const ListItemCollapse = ({ name, Icon, tos = [], active = false }) => {
     </>
   )
 }
-
 const DrawerContent = () => {
   const [usuario] = useContext(UsuarioContext)
+  const { tipo } = usuario
+  const { _id } = usuario
+  const [modulos, setModulos] = useState([])
 
-  const getModulos = async () => {
-    const { tipo } = usuario
-    const { data } = await apiAuth().get('modulos?tipo=' + tipo)
+  const fetchModulos = async () => {
+    const { data } = await apiAuth().get(`modulos/${_id}?tipo=${tipo}`)
     return data.data
   }
 
-  // Memoizar la función getModulos para evitar múltiples llamadas
-  const memoizedGetModulos = useMemo(() => getModulos, [])
-
-  const { data, isError, isLoading, error } = useQuery({
-    queryKey: ['modulos'],
-    queryFn: memoizedGetModulos // Usar la función memoizada
-  })
+  useEffect(() => {
+    // Solo realizar la llamada a la API si modulos está vacío
+    if (modulos.length === 0) {
+      fetchModulos().then(data => setModulos(data))
+    }
+  }, []) // Solo se dispara una vez, al montar el componente
 
   return (
     <nav>
-      <Divider />
       <List>
-        {isError && (
-          <Alert severity='error'>
-            {error.message}
-          </Alert>
-        )}
-        {isLoading && <LinearProgress />}
-        {
-          data && data.map((modulo, index) => {
-            if (modulo.child.length > 0) {
-              return (
-                <ListItemCollapse key={index} name={modulo.nombre} Icon={modulo.imagen} tos={modulo.child} />
-              )
-            }
+        {modulos.map((modulo, index) => {
+          if (modulo.child.length > 0) {
             return (
-              <ListItemLink key={index} name={modulo.nombre} to={modulo.enlace} Icon={modulo.imagen} />
+              <ListItemCollapse key={index} name={modulo.nombre} Icon={modulo.imagen} tos={modulo.child} />
             )
-          })
-        }
+          }
+          return (
+            <ListItemLink key={index} name={modulo.nombre} to={modulo.enlace} Icon={modulo.imagen} />
+          )
+        })}
       </List>
     </nav>
   )
@@ -458,7 +364,6 @@ const AuthLayout = () => {
     <Box sx={{
       display: 'flex'
     }}>
-      <CssBaseline />
       <AppBar position="fixed" open={open} color='white' elevation={1}>
         <Toolbar>
           <IconButton
@@ -469,12 +374,7 @@ const AuthLayout = () => {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Input
-            fullWidth
-            disableUnderline
-            placeholder='Buscar...'
-            startAdornment={<InputAdornment position="start"><Search size={19} color="grey" /></InputAdornment>}
-          /> */}
+
           <div style={{ flexGrow: 1 }} />
           <NavbarContent />
         </Toolbar>
@@ -487,9 +387,10 @@ const AuthLayout = () => {
       >
         <DrawerHeader
         >
-          <NavLink to='/dashboard'>
-            <Image src={logoIus} alt='logo' height={40} duration={0} />
-          </NavLink>
+          <Image src={logoIus} alt='logo' style={{
+            width: 150,
+            height: 37
+          }} duration={0} />
           <IconButton
             sx={{ color: 'grey' }}
             onClick={handleDrawerClose}>
@@ -498,10 +399,12 @@ const AuthLayout = () => {
         </DrawerHeader>
         <DrawerContent />
       </Drawer>
-      <Main open={open}>
-        <Box sx={{ height: 50 }} />
-        {/* <DrawerHeader /> */}
-        <Outlet s />
+      <Main open={open} sx={{
+        width: '100%',
+        transition: 'margin-left 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms'
+      }}>
+        <Box sx={{ height: 70 }} />
+        <Outlet />
       </Main>
     </Box>
   )

@@ -19,19 +19,26 @@ const ButtonAction = (
 
   return (
     <Grid container sx={{
-      px: 3,
+      px: {
+        xs: 2,
+        sm: 5,
+        md: 5,
+        lg: 5,
+        xl: 5
+      },
       // mr: 5
       // pr: 5,
-      mt: 2
+      mt: 2,
+      mb: 2
     }} alignItems="center" spacing={2} justifyContent="space-between">
       <Grid item >
-        <Typography variant='h4'>
+        <Typography variant='h5'>
           {actual}
         </Typography>
         <p className="text-muted mb-0">
           <i className="fa-solid fa-house"></i> &nbsp;
           <Link to="/" title="Panel principal">
-            <img alt="Panel principal" width="16" />
+            {/* <img alt="Panel principal" width="16"  /> */}
           </Link>
           &nbsp;|&nbsp;
           {child.map((item, index) => (

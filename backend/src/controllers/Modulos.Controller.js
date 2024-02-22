@@ -1,8 +1,16 @@
-import ModulosSchema from '../models/Modulos.js';
+import UsuarioModel from '../models/Usuarios.js';
+
 const APP_URL = process.env.APP_URL;
+
 export const getModulos = async (req, res) => {
   try {
     const { tipo, estatus = 'Activo' } = req.query;
+
+    const { usuario } = req.params;
+
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
 
     // Establecer el valor por defecto para estatus
     const query = { estatus };
@@ -12,22 +20,51 @@ export const getModulos = async (req, res) => {
       query.tipo = tipo.trim();
     }
 
-    const findModulos = await ModulosSchema.find(query).sort({ orden: 1 });
+    const findUsuario = await UsuarioModel.findById(usuario).populate({
+      path: 'tipoUsuario',
+      populate: {
+        path: 'modulos.modulo',
+        model: 'modulos',
+        // ahora ordenar de forma ascendente campo orden
+        sort: { orden: 1 }
+      }
+    });
+
+    if (!findUsuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    const { clave, tipoUsuario: moduloUsuario } = findUsuario;
+
+    const findModulos = moduloUsuario.modulos;
 
     findModulos.forEach((modulo) => {
-      modulo.imagen = `${APP_URL}/uploads/modules/white/${modulo.imagen}`;
+      modulo.modulo.imagen = `${APP_URL}/uploads/modules/white/${modulo.modulo.imagen}`;
+      modulo.modulo.enlace = `/${clave}${modulo.modulo.enlace}`;
+      modulo.modulo.padre = modulo.modulo.padre !== '' ? `/${clave}${modulo.modulo.padre}` : '';
     });
 
     const modulos = findModulos.map((modulo) => {
-      if (modulo.padre === '') {
-        return modulo;
+      if (modulo.modulo.padre === '') {
+        return modulo.modulo;
       } else {
         return null;
       }
     }).filter(modulo => modulo !== null); // Eliminar los elementos nulos del array
 
     const modulosConHijos = modulos.map((modulo) => {
-      const child = findModulos.filter((hijo) => hijo.padre === modulo.enlace);
+      const child2 = findModulos.filter((hijo) => {
+        return hijo.modulo.padre === modulo.enlace;
+      });
+
+      const child = [];
+
+      if (child2.length > 0) {
+        child2.forEach((hijo) => {
+          child.push(hijo.modulo);
+        });
+      }
+
       return { ...modulo._doc, child };
     });
 

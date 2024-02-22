@@ -28,7 +28,7 @@ const CreateExcel = ({ sheet = 'Excel', columns, placeHolder = 'Descargar', data
     <Button
       disabled={loading}
       startIcon={<Download size={20} />}
-      variant='text'
+      variant='button'
       color='primary'
       sx={{ my: 1, mr: 1 }}
       onClick={handleDownload}

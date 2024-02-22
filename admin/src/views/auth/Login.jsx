@@ -15,7 +15,7 @@ const Login = () => {
   const password = useField({ type: 'password', state: '' })
   const [, setUsuarioLS] = useLocalStorage('usuario', null)
   const [usuarioContext, setUsuarioContext] = useContext(UsuarioContext)
-  if (usuarioContext) return <Navigate to='/dashboard' />
+  if (usuarioContext) return <Navigate to={`/${usuarioContext.clave}/dashboard`} />
 
   const login = useMutation({
     mutationFn: async (user) => {
@@ -25,9 +25,10 @@ const Login = () => {
       return data.data
     },
     onSuccess: (data) => {
+      const { clave } = data
       setUsuarioLS(data)
       setUsuarioContext(data)
-      navigate('/')
+      navigate('/' + clave + '/dashboard')
     },
     onError: (error) => {
       const { message } = error?.response?.data
