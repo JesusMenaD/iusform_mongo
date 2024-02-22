@@ -3,6 +3,7 @@
 import { Button, Grid, Typography } from '@mui/material'
 
 import BackImnage from '../assets/images/icons/gold/icon_abc_60x60_01.svg'
+import RealoadImage from '../assets/images/icons/gold/realod.svg'
 import Image from 'mui-image'
 import { Link, useNavigate } from 'react-router-dom'
 import { memo } from 'react'
@@ -12,7 +13,8 @@ const ButtonAction = (
     child = [],
     actual = '',
     create = '',
-    back = ''
+    back = '',
+    handleRefresh = null
   }
 ) => {
   const navigate = useNavigate()
@@ -31,14 +33,13 @@ const ButtonAction = (
       mt: 2,
       mb: 2
     }} alignItems="center" spacing={2} justifyContent="space-between">
-      <Grid item >
+      <Grid item>
         <Typography variant='h5'>
           {actual}
         </Typography>
         <p className="text-muted mb-0">
           <i className="fa-solid fa-house"></i> &nbsp;
           <Link to="/" title="Panel principal">
-            {/* <img alt="Panel principal" width="16"  /> */}
           </Link>
           &nbsp;|&nbsp;
           {child.map((item, index) => (
@@ -92,6 +93,22 @@ const ButtonAction = (
             }}
           >
             <Image src={BackImnage} alt='back' width={20} />
+          </Button>
+        )}
+        {handleRefresh && (
+          <Button
+            onClick={handleRefresh}
+            variant='contained'
+            title='Recargar'
+            sx={{
+              backgroundColor: '#c89211',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#c89211'
+              }
+            }}
+          >
+            <Image src={RealoadImage} alt='recargar' width={20} />
           </Button>
         )}
       </Grid>

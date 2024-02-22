@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import Image from 'mui-image'
 import { useContext, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
@@ -41,8 +42,7 @@ const drawerWidth = 250
 const styles = {
   listItemButton: {
     '&:hover': {
-      // color: '#FF5100',
-      transform: 'scale(1.01)',
+      transform: 'scale(1.04)',
       backgroundColor: 'grey.900'
     }
 
@@ -91,10 +91,11 @@ const styles = {
     backgroundColor: 'grey.600'
   },
   name: {
-    fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
-    fontSize: '16px',
+    // fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+    fontSize: '14px',
     fontWeight: 'bold',
-    mt: 2
+    mt: 2,
+    mb: 1
   },
 
   menuItem: {
@@ -197,7 +198,6 @@ const NavbarContent = () => {
   return (
     <>
       <List sx={styles.list}>
-
         <ListItem disablePadding sx={styles.block}>
           <ListItemButton id="fade-profile"
             aria-controls={profileToggle.open ? 'fade-profile' : undefined}
@@ -225,12 +225,14 @@ const NavbarContent = () => {
         TransitionComponent={Fade}
         elevation={1}
       >
-        <Paper sx={{ width: 232 }} elevation={0}
-        >
+        <Paper sx={{ width: 232 }} elevation={0}>
           <Box sx={styles.boxMenu}>
             <Avatar alt="profile image" src={userContext.foto} sx={{ width: 80, height: 80 }} />
             <Typography sx={styles.name}>{userContext.nombre} {userContext.apellidoPaterno} {userContext.apellidoMaterno} </Typography>
-            <Typography sx={styles.email}>
+            <Typography sx={{
+              fontSize: 13,
+              color: 'grey.500'
+            }}>
               {userContext.email}
             </Typography>
           </Box>
@@ -295,13 +297,13 @@ const ListItemCollapse = ({ name, Icon, tos = [], active = false }) => {
           <Image src={Icon} alt={name} width={18} height={18} />
         </ListItemIcon>
         <ListItemText sx={styles.listItemText} primary={name} />
-        {open ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
+        {open ? <ChevronDown color='white' size={20} /> : <ChevronUp color='white' size={20} />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {
             tos.map((to, index) => (
-              <ListItemButton key={index} sx={{ ...styles.listItemButton, pl: 3 }} component={NavLink} to={to.to}>
+              <ListItemButton key={index} sx={{ ...styles.listItemButton, pl: 4 }} component={NavLink} to={to.to}>
                 <ListItemIcon>
                   <Image src={to.imagen} alt={to.nombre} width={18} height={18} />
                 </ListItemIcon>
@@ -350,7 +352,7 @@ const DrawerContent = () => {
   )
 }
 
-const AuthLayout = () => {
+const AuthLayout = ({ titleDespacho = '', logo = '' }) => {
   const [open, setOpen] = useState(() => window.innerWidth > 960)
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -365,7 +367,7 @@ const AuthLayout = () => {
       display: 'flex'
     }}>
       <AppBar position="fixed" open={open} color='white' elevation={1}>
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
           <IconButton
             edge="start"
             aria-label="open drawer"
@@ -374,8 +376,17 @@ const AuthLayout = () => {
           >
             <MenuIcon />
           </IconButton>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'start'
+          }}>
+            {logo && <><Avatar alt="profile image" sx={{
+              bgcolor: 'primary.main'
 
-          <div style={{ flexGrow: 1 }} />
+            }} src={logo} >{titleDespacho[0]}</Avatar>&nbsp;&nbsp;</>}
+            <span>{titleDespacho}</span>
+          </div>
           <NavbarContent />
         </Toolbar>
       </AppBar>
@@ -406,7 +417,7 @@ const AuthLayout = () => {
         <Box sx={{ height: 70 }} />
         <Outlet />
       </Main>
-    </Box>
+    </Box >
   )
 }
 

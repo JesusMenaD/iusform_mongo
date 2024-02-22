@@ -1,7 +1,7 @@
 /* eslint-disable multiline-ternary */
 /* eslint-disable react/prop-types */
-import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, Typography } from '@mui/material'
-
+import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, Typography, IconButton, Tooltip } from '@mui/material'
+import { Delete } from '@mui/icons-material'
 // Modifica la función TableIUS para renderizar los componentes dinámicos
 const TableIUS = ({
   columns = [],
@@ -9,7 +9,11 @@ const TableIUS = ({
   limit = 10,
   currentPage = 1,
   onPageChange,
-  totalRows = 1
+  totalRows = 1,
+  handleDelete = (e) => { },
+  handleEdit = (e) => { },
+  isDeleting = true,
+  isEditing = true
 }) => {
   const handleChangePage = (event, newPage) => {
     onPageChange(newPage)
@@ -26,10 +30,10 @@ const TableIUS = ({
                   key={column.id}
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
+                >{column.label}
                 </TableCell>
               ))}
+              {isDeleting && <TableCell align="right">Acciones</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -40,7 +44,7 @@ const TableIUS = ({
                 </TableCell>
               </TableRow>
             ) : (
-              rows.map((row) => (
+              rows.map((row, index) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   {columns.map((column) => (
                     <TableCell key={column.id} align={column.align}>
@@ -48,8 +52,35 @@ const TableIUS = ({
                       {column.render ? column.render(row) : row[column.id]}
                     </TableCell>
                   ))}
+                  {/* si isDeleting o isEditing son verdaderos, renderiza los botones de eliminar y editar */}
+
+                  <TableCell key={index + 'eliminar'} sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignContent: 'center'
+
+                  }}>
+                    <Tooltip>
+                      <IconButton
+                        color='secondary'
+                        onClick={handleDelete}
+                      >
+                        <Delete size={20} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip>
+                      <IconButton
+                        color='secondary'
+                        onClick={handleDelete}
+                      >
+                        <Delete size={20} />
+                      </IconButton>
+                    </Tooltip>
+
+                  </TableCell>
                 </TableRow>
               ))
+
             )}
           </TableBody>
         </Table>

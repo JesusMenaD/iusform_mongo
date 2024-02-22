@@ -35,6 +35,10 @@ export const login = async (req, res) => {
       userFind.foto = `${APP_URL}/uploads/default/icono_usuario_100x100_04.jpg`;
     }
 
+    if (userFind.despacho && userFind.despacho.logo) {
+      userFind.despacho.logo = `${APP_URL}/uploads/despachos/${userFind.despacho.logo}`;
+    }
+
     res.status(200).json({ message: 'Usuario logeado', data: userFind });
   } catch (error) {
     res.status(404).json({ message: error.message });

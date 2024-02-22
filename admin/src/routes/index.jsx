@@ -21,6 +21,8 @@ import { Expedientes } from '../views/expedientes'
 // * Configuraciones
 const Router = () => {
   const [usuario] = useContext(UsuarioContext)
+  const despachoNombre = usuario?.despacho?.nombre ?? ''
+  const logo = usuario?.despacho?.logo ?? ''
 
   // Verifica si el usuario está autenticado y tiene un ID único
   const clave = usuario && usuario.clave ? usuario.clave : null
@@ -34,7 +36,7 @@ const Router = () => {
         <Route path='/recovery' element={<RecoveryPassword />} />
         {clave !== null && (
           <Route element={<ProtectedRoute />}>
-            <Route element={<AuthLayout />}>
+            <Route element={<AuthLayout titleDespacho={despachoNombre} logo={logo} />}>
               <Route path={`/${clave}/dashboard`} element={
                 <div>
                   <h1>Dashboard</h1>

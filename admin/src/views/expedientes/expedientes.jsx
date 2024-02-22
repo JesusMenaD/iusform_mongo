@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react'
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Grid, Box, Paper, Typography, Alert, Chip } from '@mui/material'
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Grid, Box, Paper, Typography, LinearProgress, Chip } from '@mui/material'
 import { Search, Download } from '@mui/icons-material'
 import ButtonAction from '../../components/ButtonAction'
 import TableIUS from '../../components/TableIUS'
@@ -9,18 +9,17 @@ import { Link } from 'react-router-dom'
 const title = 'Expedientes'
 const altasLink = '/expedientes/crear'
 const columns = [
-  { id: 'titulo', label: 'Titulo', minWidth: 100, render: (row) => (<Link to={`${row._id}`}>{row.titulo}</Link>) },
-  { id: 'cliente', label: 'Cliente', minWidth: 100, render: (row) => (row.cliente.nombre) },
-  { id: 'asunto', label: 'Juicio', minWidth: 100, render: (row) => (row.asunto.nombre) },
-  { id: 'materia', label: 'Materia', minWidth: 100, render: (row) => (row.materia.nombre) },
-  { id: 'etapaProcesal', label: 'Etapa procesal', minWidth: 100, render: (row) => (row.etapaProcesal.nombre) },
-  { id: 'juzgado', label: 'Juzgado', minWidth: 100, render: (row) => (row.juzgado.nombre) },
-  { id: 'fechaInicio', label: 'Fecha de inicio', minWidth: 100, render: (row) => new Date(row.fechaInicio).toLocaleDateString() },
-  { id: 'ultimoMovimiento', label: 'Último movimiento', minWidth: 100, render: (row) => new Date(row.ultimoMovimiento).toLocaleDateString() },
+  { id: 'titulo', label: 'Titulo', render: (row) => (<Link to={`${row._id}`}>{row.titulo}</Link>) },
+  { id: 'cliente', label: 'Cliente', render: (row) => (row.cliente.nombre) },
+  { id: 'asunto', label: 'Juicio', render: (row) => (row.asunto.nombre) },
+  { id: 'materia', label: 'Materia', render: (row) => (row.materia.nombre) },
+  { id: 'etapaProcesal', label: 'Etapa procesal', render: (row) => (row.etapaProcesal.nombre) },
+  { id: 'juzgado', label: 'Juzgado', render: (row) => (row.juzgado.nombre) },
+  { id: 'fechaInicio', label: 'Fecha de inicio', render: (row) => new Date(row.fechaInicio).toLocaleDateString() },
+  { id: 'ultimoMovimiento', label: 'Último movimiento', render: (row) => new Date(row.ultimoMovimiento).toLocaleDateString() },
   {
     id: 'estatus',
     label: 'Estatus',
-    minWidth: 100,
     render: (row) => {
       if (row.estatus === 'Activo') {
         return <Chip label={row.estatus} color='primary' />
@@ -90,17 +89,17 @@ const Expedientes = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <ButtonAction actual={title} create={altasLink} />
+        <ButtonAction actual={title} create={altasLink} handleRefresh={() => fetchData()} />
       </Grid>
       <Grid item xs={12}>
         <Box px={2}>
-          <Paper elevation={0} sx={{ p: 2, py: 5 }}>
+          <Paper elevation={0} sx={{ p: 3, py: 5 }}>
             <Typography variant='subtitle1' mb={2} component='h2'>
               Selecciona un criterio de búsqueda
             </Typography>
             <Box onSubmit={handleFilter} as='form' component='form'>
               <Grid container spacing={2} alignItems='center'>
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item xs={12} sm={6} md={6}>
                   <TextField fullWidth label='Buscar' id='Buscar' value={search} onChange={(e) => setSearch(e.target.value)} />
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
@@ -122,17 +121,17 @@ const Expedientes = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6} md={2}>
-                  <Button type='submit' variant='contained' color='primary' fullWidth startIcon={<Search />} >
+                  <Button sx={{ py: 1.8 }} type='submit' variant='contained' color='primary' fullWidth startIcon={<Search />} >
                     Buscar
                   </Button>
                 </Grid>
-                <Grid item xs={12} sm={6} md={1}>
-                  <Button variant='outlined' fullWidth startIcon={<Download />} onClick={handleExportPDF}>
+                <Grid item xs={12} sm={6} md={2}>
+                  <Button sx={{ py: 1.8 }} variant='outlined' fullWidth startIcon={<Download />} onClick={handleExportPDF}>
                     PDF
                   </Button>
                 </Grid>
-                <Grid item xs={12} sm={6} md={1}>
-                  <Button variant='outlined' color='secondary' fullWidth startIcon={<Download />} onClick={handleExportExcel}>
+                <Grid item xs={12} sm={6} md={2}>
+                  <Button sx={{ py: 1.8 }} variant='outlined' color='secondary' fullWidth startIcon={<Download />} onClick={handleExportExcel}>
                     Excel
                   </Button>
                 </Grid>
@@ -140,11 +139,11 @@ const Expedientes = () => {
             </Box>
           </Paper>
         </Box>
-      </Grid>
+      </Grid >
       <Grid item xs={12}>
         <Box p={2}>
           {isLoading
-            ? <Alert severity='info'>Cargando datos...</Alert>
+            ? <LinearProgress />
             : (
               <TableIUS
                 columns={columns}
@@ -157,7 +156,7 @@ const Expedientes = () => {
           }
         </Box>
       </Grid>
-    </Grid>
+    </Grid >
   )
 }
 
