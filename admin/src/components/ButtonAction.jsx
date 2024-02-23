@@ -14,7 +14,8 @@ const ButtonAction = (
     actual = '',
     create = '',
     back = '',
-    handleRefresh = null
+    handleRefresh = null,
+    permisos = null
   }
 ) => {
   const navigate = useNavigate()
@@ -55,7 +56,7 @@ const ButtonAction = (
       </Grid>
 
       <Grid item>
-        {create && (
+        {create && permisos?.create === true && (
           <>
             <Button
               onClick={() => navigate(create)}

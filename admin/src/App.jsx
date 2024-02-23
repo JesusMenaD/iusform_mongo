@@ -6,18 +6,23 @@ import { UsuarioContext } from './context/UsuarioContext'
 import { useState } from 'react'
 import { getUsuarioLS } from './api/auth'
 import { NotificationContext } from './context/NotificationConext'
+import { ModulosContext } from './context/ModulosContext'
 
 const App = () => {
   const data = getUsuarioLS()
   const [usuario, setUsuario] = useState(data)
   const [notification, setNotification] = useState([])
+  const [modulos, setModulos] = useState([])
+
   return (
     <UsuarioContext.Provider value={[usuario, setUsuario]}>
+      <ModulosContext.Provider value={[modulos, setModulos]}>
       <NotificationContext.Provider value={[notification, setNotification]}>
         <ThemeProvider theme={theme}>
           <Router key={usuario?.id} />
         </ThemeProvider>
-      </NotificationContext.Provider>
+        </NotificationContext.Provider>
+      </ModulosContext.Provider>
     </UsuarioContext.Provider>
   )
 }

@@ -84,7 +84,7 @@ export const theme = createTheme({
         root: {
         },
         colorPrimary: {
-          backgroundColor: '#c89211',
+          backgroundColor: '#4caf50',
           color: '#fff'
         },
         colorError: {
@@ -92,7 +92,7 @@ export const theme = createTheme({
           color: '#fff'
         },
         colorSecondary: {
-          backgroundColor: '#6571ff',
+          backgroundColor: '#c89211',
           color: '#fff'
         },
         colorInfo: {

@@ -1,7 +1,11 @@
 /* eslint-disable multiline-ternary */
 /* eslint-disable react/prop-types */
 import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, Typography, IconButton, Tooltip } from '@mui/material'
-import { Delete } from '@mui/icons-material'
+import { Delete, Edit } from '@mui/icons-material'
+import Swal from 'sweetalert2'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { ModulosContext } from '../context/ModulosContext'
 // Modifica la función TableIUS para renderizar los componentes dinámicos
 const TableIUS = ({
   columns = [],
@@ -12,11 +16,32 @@ const TableIUS = ({
   totalRows = 1,
   handleDelete = (e) => { },
   handleEdit = (e) => { },
-  isDeleting = true,
-  isEditing = true
+  permisos = null,
 }) => {
+  const navigate = useNavigate()
+
   const handleChangePage = (event, newPage) => {
     onPageChange(newPage)
+  }
+
+  const handleDeleteConfirmar = async (row, index) => {
+    const columValue = row[columns[0].id]
+    const { isConfirmed } = await Swal.fire({
+      title: '¿Estas seguro de eliminarlo?',
+      text: `Eliminarás el registro ${columValue}`,
+      icon: 'warning',
+      showDenyButton: true,
+      confirmButtonText: 'Si'
+    })
+
+    if (isConfirmed) {
+      handleDelete(row)
+    }
+  }
+
+  const handleEditRedirect = (row, index) => {
+    const _id = row._id
+    navigate(`${_id}/editar`)
   }
 
   return (
@@ -33,7 +58,7 @@ const TableIUS = ({
                 >{column.label}
                 </TableCell>
               ))}
-              {isDeleting && <TableCell align="right">Acciones</TableCell>}
+              {(permisos?.delete === true || permisos?.update === true) && <TableCell align="right">Acciones</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -53,31 +78,40 @@ const TableIUS = ({
                     </TableCell>
                   ))}
                   {/* si isDeleting o isEditing son verdaderos, renderiza los botones de eliminar y editar */}
+                  {(permisos?.delete === true || permisos?.update === true) &&
 
-                  <TableCell key={index + 'eliminar'} sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignContent: 'center'
+                    <TableCell key={index + 'eliminar'} sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignContent: 'center'
 
-                  }}>
-                    <Tooltip>
-                      <IconButton
-                        color='secondary'
-                        onClick={handleDelete}
-                      >
-                        <Delete size={20} />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip>
-                      <IconButton
-                        color='secondary'
-                        onClick={handleDelete}
-                      >
-                        <Delete size={20} />
-                      </IconButton>
-                    </Tooltip>
+                    }}>
 
-                  </TableCell>
+                      {
+                        permisos?.update === true &&
+                        <Tooltip title="editar">
+                          <IconButton
+                            color='info'
+                            onClick={() => handleEditRedirect(row, index)}
+                          >
+                            <Edit size={20} />
+                          </IconButton>
+                        </Tooltip>
+                      }
+                      {
+                        permisos?.delete === true &&
+                        <Tooltip title="Eliminar">
+                          <IconButton
+                            color='secondary'
+                            onClick={() => handleDeleteConfirmar(row, index)}
+                          >
+                            <Delete size={20} />
+                          </IconButton>
+                        </Tooltip>
+                      }
+                    </TableCell>
+                  }
+
                 </TableRow>
               ))
 

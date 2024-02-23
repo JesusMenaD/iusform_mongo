@@ -37,6 +37,8 @@ import {
 import { UsuarioContext } from '../context/UsuarioContext'
 import { useToggle } from '../hooks/useToggle'
 import { apiAuth } from '../api'
+import { ModulosContext } from '../context/ModulosContext'
+
 const drawerWidth = 250
 // import { apiAuth } from '../api'
 const styles = {
@@ -320,7 +322,7 @@ const DrawerContent = () => {
   const [usuario] = useContext(UsuarioContext)
   const { tipo } = usuario
   const { _id } = usuario
-  const [modulos, setModulos] = useState([])
+  const [modulosC, setCModulos] = useContext(ModulosContext)
 
   const fetchModulos = async () => {
     const { data } = await apiAuth().get(`modulos/${_id}?tipo=${tipo}`)
@@ -329,15 +331,15 @@ const DrawerContent = () => {
 
   useEffect(() => {
     // Solo realizar la llamada a la API si modulos está vacío
-    if (modulos.length === 0) {
-      fetchModulos().then(data => setModulos(data))
+    if (modulosC.length === 0) {
+      fetchModulos().then(data => setCModulos(data))
     }
-  }, []) // Solo se dispara una vez, al montar el componente
+  }, [])
 
   return (
     <nav>
       <List>
-        {modulos.map((modulo, index) => {
+        {modulosC.map((modulo, index) => {
           if (modulo.child.length > 0) {
             return (
               <ListItemCollapse key={index} name={modulo.nombre} Icon={modulo.imagen} tos={modulo.child} />

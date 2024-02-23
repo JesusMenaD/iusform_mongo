@@ -17,7 +17,7 @@ export const getEtapasProcesales = async (req, res) => {
     if (materia) query.materia = materia;
 
     const etapasProcesales = await etapasProcesalesModel.paginate(query, options);
-    res.status(200).json(etapasProcesales);
+    res.status(200).json({ etapasProcesales });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

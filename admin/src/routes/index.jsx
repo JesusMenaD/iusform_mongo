@@ -16,7 +16,7 @@ import { RecoveryPassword } from '../views/recovery_pass'
 import { EditarPerfil } from '../views/perfil'
 
 // * Expedientes
-import { Expedientes } from '../views/expedientes'
+import { Expedientes, CreateExpedientes, EditarExpediente } from '../views/expedientes'
 
 // * Configuraciones
 const Router = () => {
@@ -44,9 +44,9 @@ const Router = () => {
               } />
               <Route path={`/${clave}/perfil/editar`} element={<EditarPerfil />} />
               <Route path={`/${clave}/expedientes`} element={<Expedientes />} />
-              <Route path={`/${clave}/expedientes/:_id`} element={<h1>hol</h1>} />
+              <Route path={`/${clave}/expedientes/crear`} element={<CreateExpedientes usuarioC={usuario} />} />
+              <Route path={`/${clave}/expedientes/:_id/editar`} element={<EditarExpediente usuarioC={usuario} />} />
               <Route path='*' element={<_404 />} />
-
               {/* <Route path={`/${clave}/configuraciones/monedas`} element={<Monedas />} />
               <Route path={`/${clave}/configuraciones/monedas/:id/edit`} element={<Moneda />} />
               <Route path={`/${clave}/configuraciones/monedas/:id/watch`} element={<Moneda watch />} /> */}

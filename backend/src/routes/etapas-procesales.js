@@ -5,6 +5,7 @@ const router = Router();
 
 router.get('/', getEtapasProcesales);
 
+
 // router.post('/:despacho', createCliente);
 
 export default router;

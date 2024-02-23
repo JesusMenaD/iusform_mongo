@@ -6,8 +6,12 @@ export const getJuzgados = async (req, res) => {
 
     const options = {
       page,
-      limit: 10,
-      sort: { nombre: 1 }
+      limit: 40,
+      sort: { nombre: 1 },
+      populate: {
+        path: 'estado',
+        select: 'nombre'
+      }
     };
 
     const query = {};
@@ -18,6 +22,9 @@ export const getJuzgados = async (req, res) => {
 
     if (estado) {
       query.estado = estado;
+    } else {
+      // puebla
+      query.estado = '65d3c9132141bccfaefbd2c7';
     }
 
     const juzgados = await Juzgados.paginate(query, options);

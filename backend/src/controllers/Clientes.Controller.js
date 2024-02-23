@@ -6,7 +6,7 @@ export const getClientes = async (req, res) => {
   // El estatus es opcional, por lo que no es requerido.
   const options = {
     page,
-    limit: 10,
+    limit: 20,
     sort: { nombre: 1 }
   };
 
@@ -53,7 +53,7 @@ export const createCliente = async (req, res) => {
       ...req.body
     };
 
-    const newCliente = ClienteModel.create(objCliente);
+    const newCliente = await ClienteModel.create(objCliente);
 
     res.status(201).json({
       message: 'Cliente creado correctamente',

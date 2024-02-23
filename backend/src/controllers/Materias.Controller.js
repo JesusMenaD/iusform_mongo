@@ -17,7 +17,7 @@ export const getMaterias = async (req, res) => {
     }
 
     const materias = await MateriasModel.paginate(query, options);
-    res.status(200).json(materias);
+    res.status(200).json({ materias });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

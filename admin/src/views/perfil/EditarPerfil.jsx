@@ -82,7 +82,7 @@ const EditarPerfil = () => {
           m: 2,
           mt: 5,
           borderRadius: 2,
-          boxShadow: 5,
+          boxShadow: 2,
           bgcolor: 'white'
           // minHeight: '80vh'
         }}

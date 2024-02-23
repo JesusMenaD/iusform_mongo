@@ -1,15 +1,27 @@
-import { memo, useEffect, useState } from 'react'
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Grid, Box, Paper, Typography, LinearProgress, Chip } from '@mui/material'
+import { memo, useContext, useEffect, useState } from 'react'
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Grid, Box, Paper, Typography, LinearProgress, Chip, Alert } from '@mui/material'
 import { Search, Download } from '@mui/icons-material'
 import ButtonAction from '../../components/ButtonAction'
 import TableIUS from '../../components/TableIUS'
 import { apiAuth } from '../../api'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { ModulosContext } from '../../context/ModulosContext'
+import AlertExpedientes from '../../components/AlertExpedientes'
+import { UsuarioContext } from '../../context/UsuarioContext'
 
 const title = 'Expedientes'
-const altasLink = '/expedientes/crear'
+const altasLink = 'crear'
 const columns = [
-  { id: 'titulo', label: 'Titulo', render: (row) => (<Link to={`${row._id}`}>{row.titulo}</Link>) },
+  {
+    id: 'titulo',
+    label: 'Titulo',
+    render: (row) => (<Link
+      to={{
+        pathname: `${row._id}/editar`,
+        state: { expediente: row }
+      }}
+    >{row.titulo}</Link>)
+  },
   { id: 'cliente', label: 'Cliente', render: (row) => (row.cliente.nombre) },
   { id: 'asunto', label: 'Juicio', render: (row) => (row.asunto.nombre) },
   { id: 'materia', label: 'Materia', render: (row) => (row.materia.nombre) },
@@ -39,6 +51,7 @@ const handleExportPDF = () => { }
 const handleExportExcel = () => { }
 
 const Expedientes = () => {
+  const [usuarioC] = useContext(UsuarioContext)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
@@ -47,6 +60,18 @@ const Expedientes = () => {
   const [totalDocs, setTotalDocs] = useState(1)
   const [limit, setTotal] = useState(10)
   const [searchTimeout, setSearchTimeout] = useState(null)
+  const location = useLocation()
+  const [modulosC] = useContext(ModulosContext)
+  const [permisos, setPermisos] = useState(null)
+  const locationPath = location.pathname
+
+  useEffect(() => {
+    modulosC.forEach(modulo => {
+      if (modulo.enlace === locationPath) {
+        setPermisos(modulo.permisos)
+      }
+    })
+  }, [modulosC])
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage)
@@ -63,7 +88,7 @@ const Expedientes = () => {
 
   useEffect(() => {
     fetchData()
-  }, [currentPage]) // Realiza la búsqueda cada vez que cambia la página
+  }, [currentPage])
 
   useEffect(() => {
     // Limpia el timeout cuando el componente se desmonta o cuando search/status cambian
@@ -89,73 +114,87 @@ const Expedientes = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <ButtonAction actual={title} create={altasLink} handleRefresh={() => fetchData()} />
+        <ButtonAction actual={title} create={altasLink} handleRefresh={() => fetchData()} permisos={permisos} />
       </Grid>
-      <Grid item xs={12}>
-        <Box px={2}>
-          <Paper elevation={0} sx={{ p: 3, py: 5 }}>
-            <Typography variant='subtitle1' mb={2} component='h2'>
-              Selecciona un criterio de búsqueda
-            </Typography>
-            <Box onSubmit={handleFilter} as='form' component='form'>
-              <Grid container spacing={2} alignItems='center'>
-                <Grid item xs={12} sm={6} md={6}>
-                  <TextField fullWidth label='Buscar' id='Buscar' value={search} onChange={(e) => setSearch(e.target.value)} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                  <FormControl fullWidth>
-                    <InputLabel id='estatus_input'>Estatus</InputLabel>
-                    <Select
-                      labelId='estatus_input'
-                      id='estatus'
-                      value={status}
-                      label='Estatus'
-                      onChange={(e) => setStatus(e.target.value)}
-                    >
-                      <MenuItem value=''>Estatus</MenuItem>
-                      <MenuItem value='Activo'>Activo</MenuItem>
-                      <MenuItem value='Inactivo'>Inactivo</MenuItem>
-                      <MenuItem value='Concluido'>Concluido</MenuItem>
-                      <MenuItem value='Suspendido'>Suspendido</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6} md={2}>
-                  <Button sx={{ py: 1.8 }} type='submit' variant='contained' color='primary' fullWidth startIcon={<Search />} >
-                    Buscar
-                  </Button>
-                </Grid>
-                <Grid item xs={12} sm={6} md={2}>
-                  <Button sx={{ py: 1.8 }} variant='outlined' fullWidth startIcon={<Download />} onClick={handleExportPDF}>
-                    PDF
-                  </Button>
-                </Grid>
-                <Grid item xs={12} sm={6} md={2}>
-                  <Button sx={{ py: 1.8 }} variant='outlined' color='secondary' fullWidth startIcon={<Download />} onClick={handleExportExcel}>
-                    Excel
-                  </Button>
-                </Grid>
-              </Grid>
-            </Box>
-          </Paper>
-        </Box>
-      </Grid >
-      <Grid item xs={12}>
-        <Box p={2}>
-          {isLoading
-            ? <LinearProgress />
-            : (
-              <TableIUS
-                columns={columns}
-                rows={expedientes}
-                onPageChange={handlePageChange}
-                currentPage={currentPage}
-                totalRows={totalDocs}
-                limit={limit}
-              />)
-          }
-        </Box>
-      </Grid>
+      {
+        permisos?.read === false
+          ? <Grid item xs={12}>
+            <Alert severity='error'>No tienes permisos para ver esta sección</Alert>
+          </Grid>
+          : <>
+            <Grid item xs={12}>
+              <Box px={2}>
+                <Paper elevation={0} sx={{ p: 3, py: 5 }}>
+                  <Typography variant='subtitle1' mb={2} component='h2'>
+                    Selecciona un criterio de búsqueda
+                  </Typography>
+                  <Box onSubmit={handleFilter} as='form' component='form'>
+                    <Grid container spacing={2} alignItems='center'>
+                      <Grid item xs={12} sm={6} md={6}>
+                        <TextField fullWidth label='Buscar' id='Buscar' value={search} onChange={(e) => setSearch(e.target.value)} />
+                      </Grid>
+                      <Grid item xs={12} sm={6} md={4}>
+                        <FormControl fullWidth>
+                          <InputLabel id='estatus_input'>Estatus</InputLabel>
+                          <Select
+                            labelId='estatus_input'
+                            id='estatus'
+                            value={status}
+                            label='Estatus'
+                            onChange={(e) => setStatus(e.target.value)}
+                          >
+                            <MenuItem value=''>Estatus</MenuItem>
+                            <MenuItem value='Activo'>Activo</MenuItem>
+                            <MenuItem value='Inactivo'>Inactivo</MenuItem>
+                            <MenuItem value='Concluido'>Concluido</MenuItem>
+                            <MenuItem value='Suspendido'>Suspendido</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} sm={6} md={2}>
+                        <Button sx={{ py: 1.8 }} type='submit' variant='contained' color='primary' fullWidth startIcon={<Search />} >
+                          Buscar
+                        </Button>
+                      </Grid>
+                      <Grid item xs={12} sm={6} md={2}>
+                        <Button sx={{ py: 1.8 }} variant='outlined' fullWidth startIcon={<Download />} onClick={handleExportPDF}>
+                          PDF
+                        </Button>
+                      </Grid>
+                      <Grid item xs={12} sm={6} md={2}>
+                        <Button sx={{ py: 1.8 }} variant='outlined' color='secondary' fullWidth startIcon={<Download />} onClick={handleExportExcel}>
+                          Excel
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Paper>
+              </Box>
+            </Grid >
+            <Grid item xs={12}>
+              <Box p={2}>
+                <Paper elevation={0} sx={{
+                  mb: 3
+                }} >
+                  <AlertExpedientes despacho={usuarioC?.despacho} />
+                </Paper>
+                {isLoading
+                  ? <LinearProgress />
+                  : <TableIUS
+                    columns={columns}
+                    rows={expedientes}
+                    onPageChange={handlePageChange}
+                    currentPage={currentPage}
+                    totalRows={totalDocs}
+                    limit={limit}
+                    permisos={permisos}
+                  />
+                }
+              </Box>
+            </Grid>
+          </>
+      }
+
     </Grid >
   )
 }

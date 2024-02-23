@@ -276,6 +276,10 @@ export const actualizarUsuario = async (req, res) => {
       userUpdate.foto = `${APP_URL}/uploads/default/icono_usuario_100x100_04.jpg`;
     }
 
+    if (userUpdate.despacho && userUpdate.despacho.logo) {
+      userUpdate.despacho.logo = `${APP_URL}/uploads/despachos/${userUpdate.despacho.logo}`;
+    }
+
     userUpdate.password = desencriptar(userUpdate.password);
 
     res.status(200).json({ message: 'Usuario actualizado', data: userUpdate });
