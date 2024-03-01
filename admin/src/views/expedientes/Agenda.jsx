@@ -239,8 +239,8 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
             Cronología
           </Button>
         </ButtonGroup >
-        {permisos?.rol === 'Creador' || permisos?.rol === 'Editor' && (
-          <Button
+        {permisos?.rol === 'Creador' || permisos?.rol === 'Editor'
+          ? <Button
             variant="contained"
             title="Agregar usuario al expediente"
             onClick={() => setModalNuevoEvento(true)}
@@ -248,7 +248,8 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
           >
             <Plus />
           </Button>
-        )}
+
+          : null}
 
       </Box>
 
