@@ -11,10 +11,15 @@ export const useField = ({ type, state }) => {
     setValue(state || '')
   }
 
+  const onSetValue = (value) => {
+    setValue(value)
+  }
+
   return {
     type,
     value,
     onChange,
-    onReset
+    onReset,
+    onSetValue
   }
 }

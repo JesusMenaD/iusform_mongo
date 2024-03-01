@@ -1,23 +1,27 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const ExpedientesPartesInvolucradas = new Schema({
   despacho: {
     type: Schema.Types.ObjectId,
     ref: 'despachos',
-    required: true
+    required: true,
+    index: true
   },
   expediente: {
     type: Schema.Types.ObjectId,
     ref: 'expedientes',
-    required: true
+    required: true,
+    index: true
   },
   tipo: {
     type: String,
+    enum: ['Demandante', 'Demandado'],
     required: true
   },
   sujeto: {
     type: String,
-    required: true
+    default: ''
   },
   nombre: {
     type: String,
@@ -25,23 +29,24 @@ const ExpedientesPartesInvolucradas = new Schema({
   },
   correo: {
     type: String,
-    required: true
+    default: ''
   },
   fecha: {
     type: Date,
-    required: true
+    required: true,
+    default: Date.now
   },
   telefono: {
     type: String,
-    required: true
+    default: ''
   },
   comentario: {
     type: String,
-    required: true
+    default: ''
   }
-
 }, {
   versionKey: false
 });
 
+ExpedientesPartesInvolucradas.plugin(mongoosePaginate);
 export default model('expedientesPartesInvolucradas', ExpedientesPartesInvolucradas);

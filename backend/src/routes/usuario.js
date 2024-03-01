@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { actualizarUsuario } from '../controllers/Usuarios.Controller.js';
-import configureMulter from '../config/configureMulter.js';
+import { actualizarUsuario, obtenerUsuarios } from '../controllers/Usuarios.Controller.js';
+import { configureMulterSingle } from '../config/configureMulter.js';
 
 const router = Router();
-const upload = configureMulter('foto', '/usuarios');
+const upload = configureMulterSingle('foto', '/usuarios');
 
 router.put('/:id', upload, actualizarUsuario);
+router.get('/:despacho', obtenerUsuarios);
 
 export default router;

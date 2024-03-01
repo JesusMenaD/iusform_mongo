@@ -4,32 +4,58 @@ const ExpedientesAgendaSchema = new Schema({
   despacho: {
     type: Schema.Types.ObjectId,
     ref: 'despachos',
-    required: true
+    required: true,
+    index: true
   },
-  fecha: {
-    type: Date,
-    required: true
-  },
-  hora: {
-    type: String,
-    required: true
-  },
-  tipo: {
-    type: String,
-    enum: ['Evento', 'Tarea'],
-    required: true
-  },
-  creadoPor: {
+  expediente: {
     type: Schema.Types.ObjectId,
-    ref: 'usuarios',
-    required: true
+    ref: 'expedientes',
+    required: false,
+    default: null,
+    index: true
   },
-  asunto: {
+  title: {
     type: String,
     required: true
   },
   descripcion: {
     type: String,
+    required: false,
+    default: ''
+  },
+  fecha: {
+    type: Date,
+    required: true,
+    index: true
+  },
+  horaInicio: {
+    type: String,
+    required: true,
+    index: true,
+    validate: {
+      validator: (v) => {
+        const regex = /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/i;
+        return regex.test(v);
+      },
+      message: (props) => `${props.value} no es una hora válida. Formato esperado: "HH:MM AM/PM"`
+    }
+  },
+  horaFin: {
+    type: String,
+    required: false,
+    index: true,
+    default: null,
+    validate: {
+      validator: (v) => {
+        const regex = /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/i;
+        return regex.test(v);
+      },
+      message: (props) => `${props.value} no es una hora válida. Formato esperado: "HH:MM AM/PM"`
+    }
+  },
+  creadoPor: {
+    type: Schema.Types.ObjectId,
+    ref: 'usuarios',
     required: true
   },
   fechaCreacion: {
@@ -37,18 +63,11 @@ const ExpedientesAgendaSchema = new Schema({
     required: true,
     default: Date.now
   },
-  fechaModificacion: {
-    type: Date,
-    required: false
-  },
-  fechaFin: {
-    type: Date,
-    required: false
-  },
   estatus: {
     type: String,
-    enum: ['Pendiente', 'Terminada'],
-    required: true
+    enum: ['Aceptada', 'Rechazada', 'Pendiente', 'Cancelada', 'Realizada'],
+    required: true,
+    default: 'Pendiente'
   }
 }, {
   versionKey: false

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Button, TextField } from '@mui/material'
+import { Button, TextField, Paper } from '@mui/material'
 import { Box } from '@mui/system'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { memo, useContext, useState } from 'react'
@@ -76,7 +76,7 @@ const EditarPerfil = () => {
     <>
       <ButtonAction actual='Mis datos' back='/' />
 
-      <Box
+      <Paper
         sx={{
           p: 4,
           m: 2,
@@ -103,6 +103,7 @@ const EditarPerfil = () => {
             type='file'
             name='foto'
             onChange={(r) => {
+              console.log(r.target.files[0])
               setFoto(r.target.files[0])
             }}
           />
@@ -158,7 +159,7 @@ const EditarPerfil = () => {
             Actualizar perfil
           </Button>
         </Box>
-      </Box >
+      </Paper >
 
     </>
   )

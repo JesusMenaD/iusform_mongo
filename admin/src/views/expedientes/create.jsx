@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { memo, useContext, useEffect, useState } from 'react'
-import { TextField, Backdrop, CircularProgress, Button, FormControl, InputLabel, InputAdornment, Select, Tooltip, MenuItem, Grid, Box, LinearProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
+import { TextField, Paper, Backdrop, CircularProgress, Button, FormControl, InputLabel, InputAdornment, Select, Tooltip, MenuItem, Grid, Box, LinearProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 import { Add } from '@mui/icons-material' // Importa el icono de "Add"
 import ButtonAction from '../../components/ButtonAction'
 import { apiAuth } from '../../api'
@@ -9,6 +9,8 @@ import { ModulosContext } from '../../context/ModulosContext'
 import { useField } from '../../hooks/useField'
 import Swal from 'sweetalert2'
 import AlertExpedientes from '../../components/AlertExpedientes'
+import { UsuarioContext } from '../../context/UsuarioContext'
+
 const title = 'Crear expediente'
 const sx = { mb: 4 }
 
@@ -26,40 +28,57 @@ const handleCreateExpediente = async ({
   despacho,
   usuario
 }) => {
-  const url = `/expedientes/${despacho}`
+  try {
+    const url = `/expedientes/${despacho}`
 
-  const payload = {
-    titulo: titulo.value,
-    cliente: clienteP,
-    noExpediente: noExpediente.value,
-    fechaInicio: fechaInicio.value,
-    procedimiento: procedimientoP,
-    juzgado,
-    usuario,
-    asunto: juicio,
-    materia,
-    etapa,
-    estapaOpcional: estapaOpcional.value
-  }
-  const { data } = await apiAuth({ 'Content-Type': 'application/json' }).post(url, payload)
+    if (etapa === 'otro') {
+      etapa = ''
+    } else {
+      estapaOpcional = ''
+    }
 
-  const { expediente } = data
-  const { message } = data
+    const payload = {
+      titulo,
+      cliente: clienteP,
+      numeroExpediente: noExpediente,
+      fechaInicio,
+      procedimiento: procedimientoP,
+      juzgado,
+      usuario,
+      asunto: juicio,
+      materia,
+      etapaProcesal: etapa,
+      etapaOpcional: estapaOpcional
+    }
+    const { data } = await apiAuth({ 'Content-Type': 'application/json' }).post(url, payload)
+    const DespachoNuevo = data.despacho
+    const { expediente } = data
+    // const { message } = data
 
-  if (message) {
+    // if (message) {
+    //   Swal.fire({
+    //     icon: 'success',
+    //     title: message
+    //   })
+    // }
+    // await new Promise(resolve => setTimeout(resolve, 1000))
+    return { expediente, despacho: DespachoNuevo }
+  } catch (error) {
     Swal.fire({
-      icon: 'success',
-      title: message
+      icon: 'error',
+      title: 'Error al crear el expediente',
+      text: error.response.data.message || 'Error al crear el expediente'
     })
+    return null
   }
-  return expediente
 }
 
 const CreateExpedientes = ({ usuarioC = null }) => {
+  const [, setUsuario] = useContext(UsuarioContext)
   const fechaActual = new Date().toISOString().split('T')[0]
   const navigate = useNavigate()
 
-  const back = `../${usuarioC.clave}/expedientes` // Regresar a la lista de expedientes
+  const back = `../${usuarioC.clave}/expedientes`
   const noExpediente = useField({ type: 'text', state: '' })
   const titulo = useField({ type: 'text', state: '' })
   const fechaInicio = useField({ type: 'date', state: fechaActual })
@@ -158,34 +177,39 @@ const CreateExpedientes = ({ usuarioC = null }) => {
     e.preventDefault()
     try {
       setLoadingGlobal(true)
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      const expediente = handleCreateExpediente({
-        noExpediente,
-        titulo,
-        fechaInicio,
+      const expediente = await handleCreateExpediente({
+        noExpediente: noExpediente.value,
+        titulo: titulo.value,
+        fechaInicio: fechaInicio.value,
         clienteP: cliente,
         procedimientoP: procedimiento,
         juicio,
         juzgado,
         materia,
         etapa,
-        estapaOpcional,
+        estapaOpcional: estapaOpcional.value,
         despacho: usuarioC?.despacho?._id,
         usuario: usuarioC._id
       })
 
-      const { _id } = expediente
+      if (expediente === null) {
+        return
+      }
+
+      const { _id } = expediente.expediente
       const clave = usuarioC.clave
       const url = `/${clave}/expedientes/${_id}/editar`
-      navigate(url, {
-        state: { expediente }
-      })
+      const { despacho: despachoNuevo } = expediente
+      setUsuario({ ...usuarioC, despacho: despachoNuevo })
+      navigate(url)
     } catch (error) {
       console.error('Error fetching data:', error)
+      console.log({ error })
+      const { message } = error
       Swal.fire({
         icon: 'error',
         title: 'Error al crear el expediente',
-        text: error.message
+        text: message
       })
     } finally {
       setLoadingGlobal(false)
@@ -199,13 +223,13 @@ const CreateExpedientes = ({ usuarioC = null }) => {
     <>
       <ButtonAction child={[{ title: 'Expedientes', to: toExpedientes }]} actual={title} back={back} />
 
-      <Box
+      <Paper
         sx={{
-          p: 4,
-          m: 2,
+          p: { xs: 2, md: 3 },
+          m: { xs: -1.2, md: 2 },
           mt: 5,
           borderRadius: 2,
-          boxShadow: 2,
+          boxShadow: 1,
           bgcolor: 'white'
         }}
       >
@@ -261,6 +285,7 @@ const CreateExpedientes = ({ usuarioC = null }) => {
                     labelId='select-cliente'
                     value={cliente}
                     label='Cliente +'
+                    sx={sx}
                     onChange={e => setCliente(e.target.value)}
                     required
                     startAdornment={(
@@ -300,6 +325,7 @@ const CreateExpedientes = ({ usuarioC = null }) => {
                     labelId='select-procedimiento'
                     value={procedimiento}
                     label='Estatus'
+
                     onChange={e => setProcedimiento(e.target.value)}
                     required
                   >
@@ -445,7 +471,7 @@ const CreateExpedientes = ({ usuarioC = null }) => {
           </Box>
         }
 
-      </Box >
+      </Paper >
       <ModalCliente open={openModalCliente} handleClose={() => setOpenModalCliente(false)} handleCreateCliente={handleCreateCliente} usuarioC={usuarioC} />
       <ModalAsunto open={openModalAsunto} handleClose={() => setOpenModalAsunto(false)} handleCreateAsunto={handleCreateAsunto} usuarioC={usuarioC} />
       <Backdrop
@@ -544,7 +570,6 @@ const ModalCliente = ({ open, handleClose, handleCreateCliente, usuarioC }) => {
 
   const handleCreate = async (e) => {
     e.preventDefault()
-
     setLoading(true)
 
     try {

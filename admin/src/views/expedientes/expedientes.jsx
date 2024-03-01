@@ -1,6 +1,10 @@
+/* eslint-disable react/prop-types */
 import { memo, useContext, useEffect, useState } from 'react'
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Grid, Box, Paper, Typography, LinearProgress, Chip, Alert } from '@mui/material'
-import { Search, Download } from '@mui/icons-material'
+import {
+  TextField, Button,
+  FormControl, InputLabel, Select, MenuItem, Grid, Box, Paper, Typography, LinearProgress, Chip, Alert
+} from '@mui/material'
+import { Search } from '@mui/icons-material'
 import ButtonAction from '../../components/ButtonAction'
 import TableIUS from '../../components/TableIUS'
 import { apiAuth } from '../../api'
@@ -8,6 +12,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { ModulosContext } from '../../context/ModulosContext'
 import AlertExpedientes from '../../components/AlertExpedientes'
 import { UsuarioContext } from '../../context/UsuarioContext'
+import CreateExcel from '../../components/CreateExcel'
 
 const title = 'Expedientes'
 const altasLink = 'crear'
@@ -22,11 +27,11 @@ const columns = [
       }}
     >{row.titulo}</Link>)
   },
-  { id: 'cliente', label: 'Cliente', render: (row) => (row.cliente.nombre) },
-  { id: 'asunto', label: 'Juicio', render: (row) => (row.asunto.nombre) },
-  { id: 'materia', label: 'Materia', render: (row) => (row.materia.nombre) },
-  { id: 'etapaProcesal', label: 'Etapa procesal', render: (row) => (row.etapaProcesal.nombre) },
-  { id: 'juzgado', label: 'Juzgado', render: (row) => (row.juzgado.nombre) },
+  { id: 'cliente.nombre', label: 'Cliente', render: (row) => (row?.cliente?.nombre) },
+  { id: 'asunto.nombre', label: 'Juicio', render: (row) => (row?.asunto?.nombre) },
+  { id: 'materia.nombre', label: 'Materia', render: (row) => (row?.materia?.nombre) },
+  { id: 'etapaProcesal.nombre', label: 'Etapa procesal', render: (row) => (row?.etapaProcesal?.nombre) },
+  { id: 'juzgado.nombre', label: 'Juzgado', render: (row) => (row.juzgado.nombre) },
   { id: 'fechaInicio', label: 'Fecha de inicio', render: (row) => new Date(row.fechaInicio).toLocaleDateString() },
   { id: 'ultimoMovimiento', label: 'Último movimiento', render: (row) => new Date(row.ultimoMovimiento).toLocaleDateString() },
   {
@@ -47,11 +52,11 @@ const columns = [
   }
 
 ]
-const handleExportPDF = () => { }
-const handleExportExcel = () => { }
 
 const Expedientes = () => {
   const [usuarioC] = useContext(UsuarioContext)
+  const despacho = usuarioC?.despacho?._id
+  const usuario = usuarioC?._id
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
@@ -100,7 +105,7 @@ const Expedientes = () => {
   const fetchData = async () => {
     setIsLoading(true)
     try {
-      const result = await getDataFunction(search, status, currentPage)
+      const result = await getDataFunction(despacho, usuario, search, status, currentPage)
       setExpedientes(result.docs)
       setTotalDocs(result.totalDocs)
       setTotal(result.limit)
@@ -112,96 +117,119 @@ const Expedientes = () => {
   }
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <ButtonAction actual={title} create={altasLink} handleRefresh={() => fetchData()} permisos={permisos} />
-      </Grid>
-      {
-        permisos?.read === false
-          ? <Grid item xs={12}>
-            <Alert severity='error'>No tienes permisos para ver esta sección</Alert>
-          </Grid>
-          : <>
-            <Grid item xs={12}>
-              <Box px={2}>
-                <Paper elevation={0} sx={{ p: 3, py: 5 }}>
-                  <Typography variant='subtitle1' mb={2} component='h2'>
-                    Selecciona un criterio de búsqueda
-                  </Typography>
-                  <Box onSubmit={handleFilter} as='form' component='form'>
-                    <Grid container spacing={2} alignItems='center'>
-                      <Grid item xs={12} sm={6} md={6}>
-                        <TextField fullWidth label='Buscar' id='Buscar' value={search} onChange={(e) => setSearch(e.target.value)} />
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={4}>
-                        <FormControl fullWidth>
-                          <InputLabel id='estatus_input'>Estatus</InputLabel>
-                          <Select
-                            labelId='estatus_input'
-                            id='estatus'
-                            value={status}
-                            label='Estatus'
-                            onChange={(e) => setStatus(e.target.value)}
-                          >
-                            <MenuItem value=''>Estatus</MenuItem>
-                            <MenuItem value='Activo'>Activo</MenuItem>
-                            <MenuItem value='Inactivo'>Inactivo</MenuItem>
-                            <MenuItem value='Concluido'>Concluido</MenuItem>
-                            <MenuItem value='Suspendido'>Suspendido</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={2}>
-                        <Button sx={{ py: 1.8 }} type='submit' variant='contained' color='primary' fullWidth startIcon={<Search />} >
-                          Buscar
-                        </Button>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={2}>
-                        <Button sx={{ py: 1.8 }} variant='outlined' fullWidth startIcon={<Download />} onClick={handleExportPDF}>
-                          PDF
-                        </Button>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={2}>
-                        <Button sx={{ py: 1.8 }} variant='outlined' color='secondary' fullWidth startIcon={<Download />} onClick={handleExportExcel}>
-                          Excel
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </Paper>
-              </Box>
-            </Grid >
-            <Grid item xs={12}>
-              <Box p={2}>
-                <Paper elevation={0} sx={{
-                  mb: 3
-                }} >
-                  <AlertExpedientes despacho={usuarioC?.despacho} />
-                </Paper>
-                {isLoading
-                  ? <LinearProgress />
-                  : <TableIUS
-                    columns={columns}
-                    rows={expedientes}
-                    onPageChange={handlePageChange}
-                    currentPage={currentPage}
-                    totalRows={totalDocs}
-                    limit={limit}
-                    permisos={permisos}
-                  />
-                }
-              </Box>
-            </Grid>
-          </>
-      }
+    <>
 
-    </Grid >
+      <Grid container width={'100%'}>
+        <Grid item xs={12}>
+          <ButtonAction actual={title} create={altasLink} handleRefresh={() => fetchData()} permisos={permisos} />
+        </Grid>
+        {
+          permisos?.read === false
+            ? <Grid item xs={12}>
+              <Alert severity='error'>No tienes permisos para ver esta sección</Alert>
+            </Grid>
+            : <>
+              <Grid item xs={12}>
+                <Box px={2}>
+                  <Paper elevation={0} sx={{ p: 3, py: 5 }}>
+                    <Typography variant='subtitle1' mb={2} component='h2'>
+                      Selecciona un criterio de búsqueda
+                    </Typography>
+                    <Box onSubmit={handleFilter} as='form' component='form'>
+                      <Grid container spacing={2} alignItems='center'>
+                        <Grid item xs={12} sm={6} md={6}>
+                          <TextField fullWidth label='Buscar' id='Buscar' value={search} onChange={(e) => setSearch(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                          <FormControl fullWidth>
+                            <InputLabel id='estatus_input'>Estatus</InputLabel>
+                            <Select
+                              labelId='estatus_input'
+                              id='estatus'
+                              value={status}
+                              label='Estatus'
+                              onChange={(e) => setStatus(e.target.value)}
+                            >
+                              <MenuItem value=''>Estatus</MenuItem>
+                              <MenuItem value='Activo'>Activo</MenuItem>
+                              <MenuItem value='Inactivo'>Inactivo</MenuItem>
+                              <MenuItem value='Concluido'>Concluido</MenuItem>
+                              <MenuItem value='Suspendido'>Suspendido</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3} display='flex' justifyContent='space-around'>
+                          <Button
+                            variant='contained'
+                            title='Buscar'
+                            sx={{
+                              backgroundColor: '#c89211',
+                              color: 'white'
+                            }}
+                            type='submit'
+                          >
+                            <Search />
+                          </Button>
+                          {/* <CreateExcel
+                            columns={columns}
+                            rows={expedientes}
+                            type='pdf'
+                            title='Expedientes'
+                            icon='fa-regular fa-file-pdf'
+                          /> */}
+                          <CreateExcel
+                            columns={columns}
+                            rows={expedientes}
+                            type='excel'
+                            title='Expedientes'
+                            icon='fa-regular fa-file-excel'
+                          />
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </Paper>
+                </Box>
+              </Grid >
+              <Grid item xs={12}>
+                <Box p={{
+                  xs: 0,
+                  sm: 3
+                }}>
+                  <Paper elevation={0} sx={{
+                    mb: 3
+                  }} >
+                    <Box p={{
+                      xs: 0,
+                      sm: 3
+                    }}>
+                      <AlertExpedientes despacho={usuarioC?.despacho} />
+                    </Box>
+                    {isLoading
+                      ? <LinearProgress />
+                      : <TableIUS
+                        columns={columns}
+                        rows={expedientes}
+                        onPageChange={handlePageChange}
+                        currentPage={currentPage}
+                        totalRows={totalDocs}
+                        limit={limit}
+                        permisos={permisos}
+                      />
+                    }
+                  </Paper>
+                </Box>
+              </Grid>
+            </>
+        }
+
+      </Grid >
+    </>
   )
 }
 
-const getDataFunction = async (search, status, page) => {
+const getDataFunction = async (despacho, usuario, search, status, page) => {
   page = page + 1
-  const url = `/expedientes/65d1459652fb1c3c960d2d39/65d14725b7158c91a4d64081?search=${search}&estatus=${status}&page=${page}`
+  const url = `/expedientes/${despacho}/${usuario}?search=${search}&estatus=${status}&page=${page}`
   const { data } = await apiAuth().get(url)
 
   return data

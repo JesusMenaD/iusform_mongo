@@ -20,6 +20,7 @@ export const login = async (req, res) => {
     if (!userFind) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
+    console.log(desencriptar(userFind.password));
 
     const passwordValid = validarPassword(password, userFind.password);
 
@@ -223,7 +224,8 @@ export const actualizarUsuario = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { filename } = req.file;
+    const filename = req?.file?.filename ?? null;
+
     const {
       nombre,
       apellidoPaterno,
@@ -283,6 +285,64 @@ export const actualizarUsuario = async (req, res) => {
     userUpdate.password = desencriptar(userUpdate.password);
 
     res.status(200).json({ message: 'Usuario actualizado', data: userUpdate });
+  } catch (error) {
+    res.status(404).json({ message: error.message, line_error: error.stack });
+  }
+};
+
+export const obtenerUsuarios = async (req, res) => {
+  try {
+    const { page = 1, search = '', status = '' } = req.query;
+    const { despacho } = req.params;
+
+    if (!despacho) {
+      return res.status(400).json({ message: 'Falta el despacho' });
+    }
+
+    const limit = 10;
+
+    const options = {
+      page,
+      limit,
+      sort: {
+        estatus: 1,
+        nombre: 1
+      },
+      populate: 'tipoUsuario'
+    };
+
+    const query = {
+      despacho,
+      tipo: 'despacho'
+    };
+
+    if (status) {
+      query.estatus = status;
+    }
+
+    if (search) {
+      query.$or = [
+        { nombre: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { telefono: { $regex: search, $options: 'i' } },
+        { apellidoPaterno: { $regex: search, $options: 'i' } },
+        { apellidoMaterno: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const usuarios = await UsuariosModel.paginate(query, options);
+
+    usuarios.docs = usuarios.docs.map(user => {
+      if (user.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', user.foto))) {
+        user.foto = `${APP_URL}/uploads/usuarios/${user.foto}`;
+      } else {
+        user.foto = `${APP_URL}/uploads/default/icono_usuario_100x100_04.jpg`;
+      }
+
+      return user;
+    });
+
+    res.status(200).json({ usuarios });
   } catch (error) {
     res.status(404).json({ message: error.message, line_error: error.stack });
   }

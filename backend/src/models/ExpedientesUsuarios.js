@@ -35,4 +35,5 @@ const ExpedientesUsuarios = new Schema({
 });
 
 ExpedientesUsuarios.plugin(mongoosePaginate);
+
 export default model('expedientesUsuarios', ExpedientesUsuarios);

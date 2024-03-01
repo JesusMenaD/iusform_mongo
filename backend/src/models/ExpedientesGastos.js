@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const ExpedientesGastosSchema = new Schema({
   despacho: {
@@ -11,14 +12,22 @@ const ExpedientesGastosSchema = new Schema({
     ref: 'expedientes',
     required: true
   },
+  usuario: {
+    type: Schema.Types.ObjectId,
+    ref: 'usuarios',
+    required: true
+  },
   tipo: {
     type: String,
     enum: ['Gasto', 'Ingreso'],
-    required: true
+    required: true,
+    default: 'Gasto',
+    index: true
   },
   fecha: {
     type: Date,
-    required: true
+    required: true,
+    default: Date.now
   },
   concepto: {
     type: String,
@@ -26,20 +35,25 @@ const ExpedientesGastosSchema = new Schema({
   },
   importe: {
     type: Number,
-    required: true
+    required: true,
+    default: 0
   },
   adjunto: {
     nombre: {
       type: String,
-      required: false
+      required: false,
+      default: ''
     },
     archivo: {
       type: String,
-      required: false
+      required: false,
+      default: ''
     }
   }
 }, {
   versionKey: false
 });
+
+ExpedientesGastosSchema.plugin(mongoosePaginate);
 
 export default model('expedientesGastos', ExpedientesGastosSchema);

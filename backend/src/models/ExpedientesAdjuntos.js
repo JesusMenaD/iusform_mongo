@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const ExpedientesAdjuntosSchema = new Schema({
   despacho: {
@@ -22,9 +23,16 @@ const ExpedientesAdjuntosSchema = new Schema({
   fecha: {
     type: Date,
     required: true
+  },
+  creadoPor: {
+    type: Schema.Types.ObjectId,
+    ref: 'usuarios',
+    required: true
   }
 }, {
   versionKey: false
 });
+
+ExpedientesAdjuntosSchema.plugin(mongoosePaginate);
 
 export default model('expedientesAdjuntos', ExpedientesAdjuntosSchema);

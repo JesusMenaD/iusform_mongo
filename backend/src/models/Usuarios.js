@@ -1,10 +1,12 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const UsuariosSchema = new Schema({
   nombre: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    index: true
   },
   clave: { // Clave de usuario para el despacho o administrador del sistema
     type: String,
@@ -80,4 +82,5 @@ const UsuariosSchema = new Schema({
   versionKey: false
 });
 
+UsuariosSchema.plugin(mongoosePaginate);
 export default model('usuarios', UsuariosSchema);

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
-import { Alert, Collapse, AlertTitle, Typography, IconButton } from '@mui/material'
+import { Alert, Collapse, AlertTitle, Typography, IconButton, Paper } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 
 const AlertExpedientes = ({ despacho }) => {
@@ -35,30 +35,35 @@ const AlertExpedientes = ({ despacho }) => {
   }
 
   return (
-    <Collapse in={open}>
-      <Alert severity="info" action={
-        <IconButton
-          aria-label="close"
-          color="inherit"
-          size="small"
-          onClick={() => {
-            setOpen(false)
-          }}
-        >
-          <CloseIcon fontSize="inherit" />
-        </IconButton>
-      }>
-        <AlertTitle>Resumen de expedientes</AlertTitle>
-        <p>Expedientes restantes: {expedientesRestantes}
-        </p>
-        {diasRestantes < 7 && (
-          <Typography variant="h6" color="primary.main" >
-            {diasRestantes} días restantes
-          </Typography>
-        )}
+    <Paper sx={{
+      bgcolor: 'white'
+    }} elevation={0}>
 
-      </Alert>
-    </Collapse>
+      <Collapse in={open}>
+        <Alert severity="warning" action={
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={() => {
+              setOpen(false)
+            }}
+          >
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        }>
+          <AlertTitle>Resumen de expedientes</AlertTitle>
+          <p>Expedientes restantes: {expedientesRestantes}
+          </p>
+          {diasRestantes < 7 && (
+            <Typography variant="h6" color="primary.main" >
+              {diasRestantes} días restantes
+            </Typography>
+          )}
+
+        </Alert>
+      </Collapse>
+    </Paper>
   )
 }
 

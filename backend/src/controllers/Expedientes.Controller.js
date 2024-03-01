@@ -6,6 +6,7 @@ import MateriaModel from '../models/Materias.js';
 import JuzgadosModel from '../models/Juzgados.js';
 import ExpedientesMovimientosModel from '../models/ExpedientesMovimientos.js';
 import AsuntosModel from '../models/Asuntos.js';
+import DespachoModel from '../models/Despachos.js';
 import UsuarioModel from '../models/Usuarios.js';
 import { MovimientosExpedienteHTML } from '../Mail/MovimientosExpedienteHTML.js';
 import { sendMail } from '../config/mail.js';
@@ -15,7 +16,8 @@ const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 export const createExpediente = async (req, res) => {
   try {
     const { despacho } = req.params;
-    const { numeroExpediente = '', titulo, fechaInicio = new Date(), cliente, procedimiento, juzgado, materia, etapaProcesal, asunto, usuario } = req.body;
+    const fecha = new Date();
+    const { numeroExpediente = '', titulo, fechaInicio = new Date(), cliente, procedimiento, juzgado, materia, etapaProcesal, etapaOpcional, asunto, usuario } = req.body;
 
     if (!despacho) {
       return res.status(400).json({ message: 'El despacho es requerido' });
@@ -99,8 +101,35 @@ export const createExpediente = async (req, res) => {
           nombre,
           etapa: _id
         };
+      } else {
+        objExpediente.etapaProcesal = {
+          nombre: etapaOpcional ?? '',
+          etapa: undefined
+        };
       }
     }
+
+    const despachoObj = await DespachoModel.findById(despacho);
+
+    if (!despachoObj) {
+      return res.status(404).json({ message: 'El despacho no existe' });
+    }
+
+    const { contadorExp } = despachoObj;
+
+    const { contador, limite, vigencia } = contadorExp;
+
+    if (vigencia < fecha) {
+      return res.status(400).json({ message: 'El contador de expedientes ha caducado' });
+    }
+
+    if (contador >= limite) {
+      return res.status(400).json({ message: 'El contador de expedientes ha llegado a su límite' });
+    }
+
+    despachoObj.contadorExp.contador = contador + 1;
+
+    await despachoObj.save();
 
     const expediente = await ExpedienteModel.create(objExpediente);
 
@@ -126,7 +155,11 @@ export const createExpediente = async (req, res) => {
 
     await ExpedientesMovimientosModel.create(movimiento);
 
-    res.status(201).json({ message: 'El expediente se creó correctamente', expediente });
+    res.status(201).json({
+      message: 'El expediente se creó correctamente',
+      expediente,
+      despacho: despachoObj
+    });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
@@ -208,7 +241,7 @@ export const getExpedienteById = async (req, res) => {
       expediente // Agregar el campo expediente para buscar por _id
     };
 
-    const expedienteUsuario = await ExpedientesUsuarioModel.findOne(query);
+    const expedienteUsuario = await ExpedientesUsuarioModel.findOne(query).select(['rol', 'notificaciones']);
 
     if (!expedienteUsuario) {
       return res.status(404).json({ message: 'El expediente no existe o no tienes permisos para verlo' });
@@ -230,7 +263,7 @@ export const getExpedienteById = async (req, res) => {
       return res.status(404).json({ message: 'El expediente no existe o no tienes permisos para verlo' });
     }
 
-    res.status(200).json({ expediente: expedienteData });
+    res.status(200).json({ expediente: expedienteData, permios: expedienteUsuario });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
@@ -291,6 +324,15 @@ export const updateEstatus = async (req, res) => {
     await ExpedientesMovimientosModel.create(movimiento);
 
     findExpediente.estatus = estatus;
+    findExpediente.ultimoMovimiento = new Date();
+
+    if (estatus === 'Concluido' || estatus === 'Inactivo' || estatus === 'Suspendido') {
+      findExpediente.fechaTermino = new Date();
+    }
+
+    if (estatus === 'Activo') {
+      findExpediente.fechaTermino = undefined;
+    }
 
     await findExpediente.save();
     const findUsuarios = await ExpedientesUsuarioModel.find({ despacho, expediente, notificaciones: true }).populate('usuario', 'email nombre apellidoPaterno apellidoMaterno');

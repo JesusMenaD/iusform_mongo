@@ -26,9 +26,10 @@ export const sendMail = async (html, subject, correos) => {
       subject,
       html
     });
-
+    
     return info;
   } catch (error) {
+    console.log('Error al enviar correo', error)
     return error;
   }
 };

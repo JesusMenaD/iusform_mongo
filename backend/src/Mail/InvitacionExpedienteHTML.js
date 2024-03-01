@@ -1,9 +1,6 @@
 export const InvitacionExpedienteHTML = ({
   nombreDestinatario,
   nombreExpediente,
-  nombreRemitente,
-  detallesAdicionales,
-  fechaAsignacion,
   enlaceExpediente
 }) => {
   const year = new Date().getFullYear();
@@ -109,11 +106,8 @@ export const InvitacionExpedienteHTML = ({
             <tr>
                 <td class="content">
                     <p style="font-size: 18px; font-weight: bold;">¡Estimado ${nombreDestinatario}!</p>
-                    <p>Me complace informarte que has sido asignado al expediente <strong>${nombreRemitente}</strong>.
+                    <p>Me complace informarte que has sido asignado al expediente <strong>${nombreExpediente}</strong>.
                     </p>
-                    <p>En este caso, la asignación ha sido realizada por <strong>${nombreRemitente}</strong>.</p>
-                    <p>Detalles adicionales: ${detallesAdicionales}</p>
-                    <p>Esta asignación se efectuó el <strong>${fechaAsignacion}</strong>.</p>
                     <p>Por favor, revisa la información y no dudes en contactarnos si tienes alguna pregunta o necesitas más
                         detalles.</p>
                     <a class="button" href="${enlaceExpediente}">Ver Expediente</a>

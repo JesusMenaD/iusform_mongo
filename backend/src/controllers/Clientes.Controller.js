@@ -2,7 +2,7 @@ import ClienteModel from '../models/Clientes.js';
 
 export const getClientes = async (req, res) => {
   const { despacho } = req.params;
-  const { estatus, page = 1 } = req.query;
+  const { estatus, page = 1, search } = req.query;
   // El estatus es opcional, por lo que no es requerido.
   const options = {
     page,
@@ -20,6 +20,10 @@ export const getClientes = async (req, res) => {
 
   if (estatus) {
     query.estatus = estatus;
+  }
+
+  if (search) {
+    query.nombre = { $regex: search, $options: 'i' };
   }
 
   try {

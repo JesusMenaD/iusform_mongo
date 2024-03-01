@@ -3,9 +3,7 @@
 import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, Typography, IconButton, Tooltip } from '@mui/material'
 import { Delete, Edit } from '@mui/icons-material'
 import Swal from 'sweetalert2'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { useContext, useEffect, useState } from 'react'
-import { ModulosContext } from '../context/ModulosContext'
+import { useNavigate } from 'react-router-dom'
 // Modifica la función TableIUS para renderizar los componentes dinámicos
 const TableIUS = ({
   columns = [],
@@ -17,6 +15,7 @@ const TableIUS = ({
   handleDelete = (e) => { },
   handleEdit = (e) => { },
   permisos = null,
+  isHandling = true
 }) => {
   const navigate = useNavigate()
 
@@ -45,22 +44,26 @@ const TableIUS = ({
   }
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+    <Paper sx={{
+      // width: '100%', overflow: 'hidden'
+    }}>
       <TableContainer>
         <Table>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >{column.label}
-                </TableCell>
-              ))}
-              {(permisos?.delete === true || permisos?.update === true) && <TableCell align="right">Acciones</TableCell>}
-            </TableRow>
-          </TableHead>
+          {isHandling &&
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >{column.label}
+                  </TableCell>
+                ))}
+                {(permisos?.delete === true || permisos?.update === true) && <TableCell align="right">Acciones</TableCell>}
+              </TableRow>
+            </TableHead>
+          }
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
@@ -81,12 +84,8 @@ const TableIUS = ({
                   {(permisos?.delete === true || permisos?.update === true) &&
 
                     <TableCell key={index + 'eliminar'} sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignContent: 'center'
 
                     }}>
-
                       {
                         permisos?.update === true &&
                         <Tooltip title="editar">
@@ -111,7 +110,6 @@ const TableIUS = ({
                       }
                     </TableCell>
                   }
-
                 </TableRow>
               ))
 
@@ -119,19 +117,21 @@ const TableIUS = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        component="div"
-        rowsPerPageOptions={[]}
-        count={totalRows}
-        rowsPerPage={limit}
-        page={currentPage}
-        align='center'
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={(event) => {
-          console.log(event)
-        }}
-        labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
-      />
+      {limit < totalRows &&
+        <TablePagination
+          component="div"
+          rowsPerPageOptions={[]}
+          count={totalRows}
+          rowsPerPage={limit}
+          page={currentPage}
+          align='center'
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={(event) => {
+            console.log(event)
+          }}
+          labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+        />
+      }
     </Paper>
   )
 }

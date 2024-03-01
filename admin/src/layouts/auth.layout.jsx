@@ -39,7 +39,7 @@ import { useToggle } from '../hooks/useToggle'
 import { apiAuth } from '../api'
 import { ModulosContext } from '../context/ModulosContext'
 
-const drawerWidth = 250
+const drawerWidth = 240
 // import { apiAuth } from '../api'
 const styles = {
   listItemButton: {
@@ -63,8 +63,8 @@ const styles = {
     padding: '10px 20px',
     backgroundColor: 'primary.main',
     '& .MuiTypography-root': {
-      fontSize: 11,
-      fontFamily: 'Roboto'
+      fontSize: 11
+      // fontFamily: 'Roboto'
     }
   },
   badge: {
@@ -127,19 +127,23 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     backgroundColor: '#f2f2f2',
     boxSizing: 'border-box',
     flexGrow: 1,
-    padding: window.innerWidth < 600 ? '16px' : theme.spacing(0),
+    padding: theme.spacing(0), // Ajusta el padding para el contenido principal
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: `-${drawerWidth}px`,
+    marginLeft: `-${drawerWidth}px`, // Ajusta el margen izquierdo cuando el cajón está abierto
+    width: '100%', // El contenido ocupa todo el ancho disponible
     ...(open && {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen
       }),
-      marginLeft: 0
-    })
+      marginLeft: 0 // Ajusta el margen izquierdo cuando el cajón está cerrado
+    }),
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2) // Ajusta el padding para tamaños de pantalla pequeños
+    }
   })
 )
 
@@ -161,8 +165,10 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' 
 const NavbarContent = () => {
   const navigate = useNavigate()
   const [userContext, setUsuarioContext] = useContext(UsuarioContext)
+  const [, setCModulos] = useContext(ModulosContext)
   const logout = () => {
     setUsuarioContext(null)
+    setCModulos([])
     localStorage.removeItem('usuario')
     navigate('/login')
   }
@@ -304,14 +310,16 @@ const ListItemCollapse = ({ name, Icon, tos = [], active = false }) => {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {
-            tos.map((to, index) => (
-              <ListItemButton key={index} sx={{ ...styles.listItemButton, pl: 4 }} component={NavLink} to={to.to}>
-                <ListItemIcon>
-                  <Image src={to.imagen} alt={to.nombre} width={18} height={18} />
-                </ListItemIcon>
-                <ListItemText primary={to.nombre} sx={styles.listItemText} />
-              </ListItemButton>
-            ))
+            tos.map((to, index) => {
+              return (
+                <ListItemButton key={index} sx={{ ...styles.listItemButton, pl: 4 }} component={NavLink} to={to.enlace}>
+                  <ListItemIcon>
+                    <Image src={to.imagen} alt={to.nombre} width={18} height={18} />
+                  </ListItemIcon>
+                  <ListItemText primary={to.nombre} sx={styles.listItemText} />
+                </ListItemButton>
+              )
+            })
           }
         </List>
       </Collapse>
@@ -414,7 +422,8 @@ const AuthLayout = ({ titleDespacho = '', logo = '' }) => {
       </Drawer>
       <Main open={open} sx={{
         width: '100%',
-        transition: 'margin-left 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms'
+        transition: 'margin-left 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
+        overflow: 'hidden'
       }}>
         <Box sx={{ height: 70 }} />
         <Outlet />

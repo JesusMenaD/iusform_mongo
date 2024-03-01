@@ -11,3 +11,5 @@ export const apiAuth = (headers = {
     ...headers
   }
 })
+
+export const URI_API = URI

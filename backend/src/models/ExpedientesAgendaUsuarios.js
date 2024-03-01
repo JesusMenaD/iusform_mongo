@@ -4,26 +4,46 @@ const ExpedientesAgendaUsuariosSchema = new Schema({
   despacho: {
     type: Schema.Types.ObjectId,
     ref: 'despachos',
-    required: true
+    required: true,
+    index: true
   },
   expediente: {
     type: Schema.Types.ObjectId,
     ref: 'expedientes',
-    required: true
+    required: false,
+    index: true
   },
-  usuarios: {
+  usuario: {
     type: Schema.Types.ObjectId,
     ref: 'usuarios',
     required: true
   },
-  fechaRecordatorio: {
-    type: Date,
+  agenda: {
+    type: Schema.Types.ObjectId,
+    ref: 'expedientesAgenda',
     required: true
   },
-  estado: {
+  recordar: {
+    type: Number,
+    required: false,
+    default: 0
+  },
+  fechaRecordatorio: {
+    type: Date,
+    required: false,
+    default: null,
+    index: true
+  },
+  comentario: {
     type: String,
-    enum: ['Aceptada', 'Rechazada', 'Pendiente'],
-    required: true
+    required: false,
+    default: ''
+  },
+  estatus: {
+    type: String,
+    enum: ['Pendiente', 'Cancelada', 'Realizada', 'Aceptada', 'Rechazada'],
+    required: true,
+    default: 'Pendiente'
   }
 }, {
   versionKey: false
