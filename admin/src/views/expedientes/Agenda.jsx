@@ -239,17 +239,17 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
             Cronología
           </Button>
         </ButtonGroup >
-        {permisos?.rol === 'Creador' || permisos?.rol === 'Editor'
-          ? <Button
-            variant="contained"
-            title="Agregar usuario al expediente"
-            onClick={() => setModalNuevoEvento(true)}
-            sx={{ backgroundColor: '#c89211', color: 'white' }}
-          >
-            <Plus />
-          </Button>
+        {/* {permisos?.rol === 'Creador' || permisos?.rol === 'Editor' */}
+        <Button
+          variant="contained"
+          title="Agregar usuario al expediente"
+          onClick={() => setModalNuevoEvento(true)}
+          sx={{ backgroundColor: '#c89211', color: 'white' }}
+        >
+          <Plus />
+        </Button>
 
-          : null}
+        {/* : null} */}
 
       </Box>
 
@@ -318,15 +318,15 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
 
                       {event.estatus === 'Realizada' || event.estatus === 'Cancelada' || event.estatus === 'Rechazada'
                         ? null
-                        : permisos?.rol === 'Creador' || permisos?.rol === 'Editor' && (<ButtonIcon
-                          color="primary"
-                          size="small"
-                          onClick={() => openModal(event)}
-                        >
-                          <Edit size={17} />
-                        </ButtonIcon>
-                        )
-
+                        : permisos?.rol === 'Creador' || permisos?.rol === 'Editor'
+                          ? <ButtonIcon
+                            color="primary"
+                            size="small"
+                            onClick={() => openModal(event)}
+                          >
+                            <Edit size={17} />
+                          </ButtonIcon>
+                          : null
                       }
 
                       {event.comentario !== '' && event.comentario !== null && event.comentario !== undefined && (

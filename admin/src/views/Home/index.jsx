@@ -1,73 +1,118 @@
-// import { memo, useState } from 'react'
-// import { AppBar, Divider, IconButton, SwipeableDrawer, Toolbar } from '@mui/material'
-// import { Box } from '@mui/system'
-// import Image from 'mui-image'
-// // import logo from '../../assets/images/logo_4cap.svg'
-// import { Menu, Box as BoxIcon } from 'react-feather'
+import { memo } from 'react'
+// import logo from '../../assets/images/logo_4cap.svg'
+import { Container, Unstable_Grid2 as Grid } from '@mui/material'
+import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material'
 
-// const Home = () => {
-//   const [drawer, setDrawer] = useState(true)
-//   const ruoter = [
-//     {
-//       title: 'Main',
-//       children: [
-//         {
-//           title: 'dashboard',
-//           path: '/',
-//           icon: <BoxIcon />
-//         }
-//       ]
-//     },
-//     {
-//       title: 'WEB APPS',
-//       children: [
-//         {
-//           title: 'dashboard',
-//           path: '/',
-//           icon: <BoxIcon />
-//         }
-//       ]
-//     }
-//   ]
+const sx = {
 
-//   const styles = {
-//     drawer: {
-//       width: '240px',
-//       flexShrink: 0,
-//       '& .MuiDrawer-paper': {
-//         width: '240px',
-//         boxSizing: 'border-box',
-//         backgroundColor: 'primary.main'
-//       }
-//     },
-//     drawerHeader: {
-//       display: 'flex',
-//       justifyContent: 'space-between'
-//     },
-//     drawerHeaderIcon: {
-//       marginLeft: '10px'
-//     }
-//   }
+}
+const Home = () => {
+  return (
 
-//   const DrawerHeader = () => (
-//     <Box sx={styles.drawerHeader} py={1} px={2}>
-//       <Image style={styles.drawerHeaderIcon} src='https://www.posibilidades.com.mx/4cap2023/images/logo/logo_4cap_300x100.svg' alt='logo' width={120} height={40} duration={0} />
-//       <IconButton color='grey' onClick={() => setDrawer(false)}>
-//         <Menu size={22} />
-//       </IconButton>
-//     </Box>
-//   )
-//   return (
-//     <>
-//       <AppBar position='fixed'>
-//         <Toolbar>
-//         </Toolbar>
-//       </AppBar>
-//       <SwipeableDrawer open={true} onClose={() => { }} onOpen={() => { }} sx={styles.drawer}>
-//         <DrawerHeader />
-//         <Divider />
-//       </SwipeableDrawer>
-//     </>
-//   )
-// }
-// export default memo(Home)
+    <Grid
+      container
+      spacing={3}
+    >
+      <Grid
+        xs={12}
+        sm={6}
+        lg={3}
+      >
+        <Card sx={sx}>
+          <CardContent>
+            <Stack
+              alignItems="flex-start"
+              direction="row"
+              justifyContent="space-between"
+              spacing={3}
+            >
+              <Stack spacing={1}>
+                <Typography
+                  color="text.secondary"
+                  variant="overline"
+                >
+                  Budget
+                </Typography>
+                <Typography variant="h4">
+                  value
+                </Typography>
+              </Stack>
+              <Avatar
+                sx={{
+                  backgroundColor: 'error.main',
+                  height: 56,
+                  width: 56
+                }}
+              >
+                ico
+              </Avatar>
+            </Stack>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid
+        xs={12}
+        sm={6}
+        lg={3}
+      >
+        {/* <OverviewTotalCustomers
+          difference={16}
+          positive={false}
+          sx={{ height: '100%' }}
+          value="1.6k"
+        /> */}
+      </Grid>
+      <Grid
+        xs={12}
+        sm={6}
+        lg={3}
+      >
+        {/* <OverviewTasksProgress
+          sx={{ height: '100%' }}
+          value={75.5}
+        /> */}
+      </Grid>
+      <Grid
+        xs={12}
+        sm={6}
+        lg={3}
+      >
+        {/* <OverviewTotalProfit
+          sx={{ height: '100%' }}
+          value="$15k"
+        /> */}
+      </Grid>
+      <Grid
+        xs={12}
+        lg={8}
+      >
+        {/* <OverviewSales
+          chartSeries={[
+            {
+              name: 'This year',
+              data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20]
+            },
+            {
+              name: 'Last year',
+              data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13]
+            }
+          ]}
+          sx={{ height: '100%' }}
+        /> */}
+      </Grid>
+      <Grid
+        xs={12}
+        md={6}
+        lg={4}
+      >
+        {/* <OverviewTraffic
+          chartSeries={[63, 15, 22]}
+          labels={['Desktop', 'Tablet', 'Phone']}
+          sx={{ height: '100%' }}
+        /> */}
+      </Grid>
+    </Grid>
+
+  )
+}
+export default memo(Home)

@@ -39,7 +39,7 @@ import { useToggle } from '../hooks/useToggle'
 import { apiAuth } from '../api'
 import { ModulosContext } from '../context/ModulosContext'
 
-const drawerWidth = 240
+const drawerWidth = 260
 // import { apiAuth } from '../api'
 const styles = {
   listItemButton: {

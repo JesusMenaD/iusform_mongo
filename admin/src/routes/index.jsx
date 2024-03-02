@@ -22,6 +22,7 @@ import { Expedientes, CreateExpedientes, EditarExpediente, PautasExpediente } fr
 import { Clientes } from '../views/clientes'
 
 import { Usuarios } from '../views/usuarios'
+import Home from '../views/Home'
 
 // * Configuraciones
 const Router = () => {
@@ -42,21 +43,13 @@ const Router = () => {
         {clave !== null && (
           <Route element={<ProtectedRoute />}>
             <Route element={<AuthLayout titleDespacho={despachoNombre} logo={logo} />}>
-              <Route path={`/${clave}`} element={
-                <div>
-                  <h1>Dashboard</h1>
-                </div>
-              } />
-              <Route path={`/${clave}/dashboard`} element={
-                <div>
-                  <h1>Dashboard</h1>
-                </div>
-              } />
+              <Route path={`/${clave}`} element={<Home />} />
+              {/* <Route path={`/${clave}/dashboard`} element={<Home />} /> */}
               <Route path={`/${clave}/perfil/editar`} element={<EditarPerfil />} />
               <Route path={`/${clave}/expedientes`} element={<Expedientes />} />
               <Route path={`/${clave}/expedientes/crear`} element={<CreateExpedientes usuarioC={usuario} />} />
               <Route path={`/${clave}/expedientes/:_id/editar`} element={<EditarExpediente usuarioC={usuario} />} />
-              <Route path={`/${clave}/expedientes/:_id/pautas`} element={<PautasExpediente usuarioC={usuario} />} />
+              <Route path={`/${clave}/pautas/:_id`} element={<PautasExpediente usuarioC={usuario} />} />
 
               {/* PautasExpediente */}
 

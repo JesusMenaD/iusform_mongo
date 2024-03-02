@@ -259,7 +259,7 @@ const EditarExpediente = ({ usuarioC }) => {
                       </Box>
                       <TabPanel sx={{ p: 0 }} value="9">
                         <IconModule iconModule={<Avatar sx={{ bgcolor: 'primary.main' }}> <Briefcase /></Avatar>} title='Pautas' />
-                        <Pautas despacho={despacho} usuario={usuario} _id={_id} permisos={permisosExpediente} />
+                        <Pautas despacho={despacho} usuario={usuario} _id={_id} permisos={permisosExpediente} clave={usuarioC?.clave} />
 
                       </TabPanel>
                       <TabPanel sx={{ p: 0 }} value="1">
