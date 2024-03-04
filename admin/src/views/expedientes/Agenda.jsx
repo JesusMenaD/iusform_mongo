@@ -96,7 +96,7 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
     const fetchEvents = async () => {
       setIsLoading(true)
       try {
-        const data = await getEvents(despacho, usuario)
+        const data = await getEvents(despacho, usuario, expediente)
         const eventosLocal = data.eventos.map((event) => ({
           _id: event._id,
           id: event.id,
@@ -539,7 +539,7 @@ const getEvents = async (despacho, usuario, expediente = null) => {
   try {
     if (!usuario) return []
     if (!despacho) return []
-    const url = `/agenda/${despacho}/${usuario}`
+    const url = `/agenda/${despacho}/${usuario}?expediente=${expediente}`
     const { data } = await apiAuth().get(url)
     return data
   } catch (error) {

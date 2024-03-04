@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+/* eslint-disable react/prop-types */
+// import { useEffect } from 'react'
 import ReactQuill, { Quill } from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import ImageResize from 'quill-image-resize-module-react'
@@ -7,23 +8,16 @@ import ImageResize from 'quill-image-resize-module-react'
 
 Quill.register('modules/imageResize', ImageResize)
 
-const Editor = ({ placeholder, handleValue }) => {
-  const [editorHtml, setEditorHtml] = useState('')
-
-  useEffect(() => {
-  }, [])
-
-  const handleChange = (html) => {
-    setEditorHtml(html)
-    console.log(html)
-    handleValue(html)
-  }
+const Editor = ({ placeholder, value, handleChange }) => {
+  // useEffect(() => {
+  //   handleChange(value)
+  // }, [value])
 
   return (
     <ReactQuill
       theme={'snow'}
       onChange={handleChange}
-      value={editorHtml}
+      value={value}
       modules={Editor.modules}
       formats={Editor.formats}
       bounds={'#root'}
@@ -31,6 +25,7 @@ const Editor = ({ placeholder, handleValue }) => {
     />
   )
 }
+
 Editor.modules = {
   toolbar: [
     [{ header: '1' }, { header: '2' }, { font: [] }],
@@ -42,7 +37,7 @@ Editor.modules = {
       { indent: '-1' },
       { indent: '+1' }
     ],
-    ['link', 'image', 'video'],
+    ['video'],
     ['clean']
   ],
   clipboard: {

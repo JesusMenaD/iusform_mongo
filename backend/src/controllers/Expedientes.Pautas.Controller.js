@@ -68,10 +68,11 @@ export const getPautaById = async (req, res) => {
   const { id } = req.params;
   try {
     const pauta = await PautasModel.findById(id);
+    if (!pauta) return res.status(404).json({ message: 'Pauta no encontrada' });
 
     res.status(200).json(pauta);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(404).json({ message: 'No se pudo encontrar la pauta' });
   }
 };
 

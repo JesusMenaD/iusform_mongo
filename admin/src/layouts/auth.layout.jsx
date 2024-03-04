@@ -23,7 +23,9 @@ import {
   ListItem,
   ListItemText,
   Paper,
-  Tooltip
+  Tooltip,
+  Card,
+  Button
 } from '@mui/material'
 import MuiAppBar from '@mui/material/AppBar'
 import {
@@ -357,6 +359,28 @@ const DrawerContent = () => {
             <ListItemLink key={index} name={modulo.nombre} to={modulo.enlace} Icon={modulo.imagen} />
           )
         })}
+        <Card
+          sx={{
+            mx: 1,
+            p: 2,
+            mt: 3,
+            color: 'grey.600',
+            backgroundColor: 'grey.100',
+            borderRadius: 2,
+            boxShadow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.5
+          }}
+        >
+          <Typography level="title-sm">Plana actual</Typography>
+          <Typography level="body-xs">
+            30 días de prueba
+          </Typography>
+          <Button size="sm" variant="outlined">
+            Upgrade plan
+          </Button>
+        </Card>
       </List>
     </nav>
   )

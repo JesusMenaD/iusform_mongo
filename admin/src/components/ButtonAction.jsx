@@ -52,6 +52,7 @@ const ButtonAction = (
             </span>
           ))}
           {actual}
+          ba
         </p>
       </Grid>
 
@@ -90,7 +91,8 @@ const ButtonAction = (
               color: 'white',
               '&:hover': {
                 backgroundColor: '#c89211'
-              }
+              },
+              mx: 1
             }}
           >
             <Image src={BackImnage} alt='back' width={20} />

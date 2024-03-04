@@ -254,14 +254,17 @@ const EditarExpediente = ({ usuarioC }) => {
                           <Tab sx={{ fontSize: '10px' }} label="DOCUMENTOS" value="6" icon={<File />} />
                           <Tab sx={{ fontSize: '10px' }} label="MOVIMIENTOS" value="7" icon={<TrendingUp />} />
                           <Tab sx={{ fontSize: '10px' }} label="RECURSOS E INCIDENCIAS" value="8" icon={<Boxes />} />
-                          <Tab sx={{ fontSize: '10px' }} label="PAUTAS" value="9" icon={<Briefcase />} />
+
+                          {expediente?.materia?.nombre === 'Penal' ? <Tab sx={{ fontSize: '10px' }} label="PAUTAS" value="9" icon={<Briefcase />} /> : null}
+
                         </TabList>
                       </Box>
-                      <TabPanel sx={{ p: 0 }} value="9">
-                        <IconModule iconModule={<Avatar sx={{ bgcolor: 'primary.main' }}> <Briefcase /></Avatar>} title='Pautas' />
-                        <Pautas despacho={despacho} usuario={usuario} _id={_id} permisos={permisosExpediente} clave={usuarioC?.clave} />
-
-                      </TabPanel>
+                      {expediente?.materia?.nombre === 'Penal'
+                        ? <TabPanel sx={{ p: 0 }} value="9">
+                          <IconModule iconModule={<Avatar sx={{ bgcolor: 'primary.main' }}> <Briefcase /></Avatar>} title='Pautas' />
+                          <Pautas despacho={despacho} usuario={usuario} _id={_id} permisos={permisosExpediente} clave={usuarioC?.clave} />
+                        </TabPanel>
+                        : null}
                       <TabPanel sx={{ p: 0 }} value="1">
                         <IconModule iconModule={<Avatar sx={{ bgcolor: 'primary.main' }}> <Calendar /></Avatar>} title='Agenda' />
                         <Agenda despacho={despacho} usuario={usuario} usuarios={usuariosExpedientes} expediente={_id} permisos={permisosExpediente} />
