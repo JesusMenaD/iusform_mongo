@@ -464,7 +464,7 @@ const CreateExpedientes = ({ usuarioC = null }) => {
               }
               <Grid item xs={12}>
                 <Button variant='contained' type='submit'>
-                  Guardar expediente
+                  Guardar
                 </Button>
               </Grid>
             </Grid>

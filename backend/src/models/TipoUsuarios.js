@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const TipoUsuarioSchema = new Schema({
   nombre: {
@@ -10,6 +11,11 @@ const TipoUsuarioSchema = new Schema({
     required: true,
     enum: ['admin', 'despacho'],
     default: 'Administrador'
+  },
+  despacho: {
+    type: Schema.Types.ObjectId,
+    ref: 'despachos',
+    required: false
   },
   modulos: [{
     modulo: {
@@ -29,4 +35,5 @@ const TipoUsuarioSchema = new Schema({
   versionKey: false
 });
 
+TipoUsuarioSchema.plugin(mongoosePaginate);
 export default model('tipoUsuarios', TipoUsuarioSchema);

@@ -105,12 +105,18 @@ const Notas = ({ despacho, usuario, expediente, permisos }) => {
 
         {isLoading
           ? <LinearProgress />
-          : notas.map((nota) => (
-            <Grid item xs={12} sm={6} key={nota._id}>
-              <Nota nota={nota} permisos={permisos} handleRender={() => setUpdate(update + 1)} usuario={usuario} despacho={despacho} />
-
+          : notas.length === 0
+            ? <Grid item xs={12}>
+              <Typography variant='body1' align='center'>
+                No hay elementos para mostrar.
+              </Typography>
             </Grid>
-          ))
+            : notas.map((nota) => (
+              <Grid item xs={12} sm={6} key={nota._id}>
+                <Nota nota={nota} permisos={permisos} handleRender={() => setUpdate(update + 1)} usuario={usuario} despacho={despacho} />
+
+              </Grid>
+            ))
         }
         {notas.length !== 0 && limit < totalRows && (
           <Grid item xs={12}>

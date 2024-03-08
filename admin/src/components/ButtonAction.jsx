@@ -52,7 +52,6 @@ const ButtonAction = (
             </span>
           ))}
           {actual}
-          ba
         </p>
       </Grid>
 

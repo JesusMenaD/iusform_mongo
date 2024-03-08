@@ -7,6 +7,10 @@ import {
   DialogTitle,
   DialogContent,
   Avatar,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  FormLabel,
   DialogActions, Paper, Chip, Divider, Typography, Button, FormControl, InputLabel, Select, Tooltip, MenuItem, Grid, Box, LinearProgress, Alert
 } from '@mui/material'
 import ButtonAction from '../../components/ButtonAction'
@@ -32,6 +36,8 @@ import Gastos from './gastos'
 import Ingresos from './ingresos'
 import Balance from './balance'
 import Pautas from './Pautas'
+import Recursos from './recursos'
+import IncidenciasMov from './Incidencias'
 const formatFechaHora12H = (fecha) => {
   fecha = new Date(fecha)
 
@@ -80,8 +86,10 @@ const EditarExpediente = ({ usuarioC }) => {
   const [openModalNoExpediente, setOpenModalNoExpediente] = useState(false)
   const [openModalTitulo, setOpenModalTitulo] = useState(false)
   const [openModalJuicio, setOpenModalJuicio] = useState(false)
+  const [openModalEtapa, setOpenModalEtapa] = useState(false)
   // const [value, setValue] = useState(0)
   const [usuariosExpedientes, setUsuariosExpedientes] = useState([])
+  const [cargas, setCargas] = useState(0)
   // const [currentPageMovimientos, setCurrentPageMovimientos] = useState(0)
 
   useEffect(() => {
@@ -112,7 +120,7 @@ const EditarExpediente = ({ usuarioC }) => {
     getUsuariosSinPaginate(despacho, _id, usuario).then(data => {
       setUsuariosExpedientes(data)
     })
-  }, [])
+  }, [cargas])
 
   const handleCreate = async (e) => {
     e.preventDefault()
@@ -127,26 +135,6 @@ const EditarExpediente = ({ usuarioC }) => {
   const handleChangeTabs = (event, newValue) => {
     settabs(newValue)
   }
-
-  // function CustomTabPanel(props) {
-  //   const { children, value, index, ...other } = props
-
-  //   return (
-  //     <div
-  //       role="tabpanel"
-  //       hidden={value !== index}
-  //       id={`simple-tabpanel-${index}`}
-  //       aria-labelledby={`simple-tab-${index}`}
-  //       {...other}
-  //     >
-  //       {value === index && (
-  //         <Box sx={{ p: 3 }}>
-  //           <Typography>{children}</Typography>
-  //         </Box>
-  //       )}
-  //     </div>
-  //   )
-  // }
 
   return (
     <>
@@ -225,11 +213,11 @@ const EditarExpediente = ({ usuarioC }) => {
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      {expediente?.cliente?.nombre ? <DataLine isEdit={false} label='Cliente:' value={expediente?.cliente?.nombre} /> : <DataLine label='Cliente:' value='No asignado' isEdit={false} />}
+                      {expediente?.cliente?.nombre ? <DataLine isEdit={false} labefl='Cliente:' value={expediente?.cliente?.nombre} /> : <DataLine label='Cliente:' value='No asignado' isEdit={false} />}
                       <DataLine label='Procedimiento:' isEdit={false} value={expediente?.procedimiento} />
                       <DataLine label='Juzgado:' isEdit={false} value={expediente?.juzgado?.nombre} />
                       {expediente?.materia?.nombre && <DataLine isEdit={false} label='Materia:' value={expediente?.materia?.nombre} />}
-                      <DataLine isEdit={true} label='Etapa procesal:' value={expediente?.etapaProcesal?.nombre} />
+                      <DataLine isEdit={true} label='Etapa procesal:' value={expediente?.etapaProcesal?.nombre} onHandEdit={() => setOpenModalEtapa(true)} />
                       {/* <DataLine label='Etapa procesal:' value={expediente?.etapaProcesal?.nombre} /> */}
                       {/* <DataLine label='Etapa del proceso:' value={expediente?.numeroExpedienteInterno} /> */}
                     </Grid>
@@ -321,12 +309,14 @@ const EditarExpediente = ({ usuarioC }) => {
                           <Box sx={{ borderBottom: 1, borderColor: 'divider' }} display={'flex'} justifyContent={'center'} bgcolor={'#f9f9f9'}>
                             <TabList onChange={(event, newValue) => settabsRecursos(newValue)} >
                               <Tab sx={{ fontSize: '10px' }} label="RECURSOS" value="1" icon={<Calendar />} />
-                              <Tab sx={{ fontSize: '10px' }} label="INCIDENCIAS" value="3" icon={<Briefcase />} />
+                              <Tab sx={{ fontSize: '10px' }} label="INCIDENCIAS" value="2" icon={<Briefcase />} />
                             </TabList>
                           </Box>
                           <TabPanel sx={{ p: 0 }} value="1">
+                            <Recursos despacho={despacho} usuario={usuario} _id={_id} cargas={cargarMov} permisos={permisosExpediente} />
                           </TabPanel>
                           <TabPanel sx={{ p: 0 }} value="2">
+                            <IncidenciasMov despacho={despacho} usuario={usuario} _id={_id} cargas={cargarMov} permisos={permisosExpediente} />
                           </TabPanel>
                         </TabContext>
                       </TabPanel>
@@ -401,6 +391,19 @@ const EditarExpediente = ({ usuarioC }) => {
         juicioExp={expediente?.asunto?.nombre}
       />
 
+      <ModalEtapa
+        _id={_id}
+        open={openModalEtapa}
+        handleClose={() => setOpenModalEtapa(false)}
+        handleExpediente={(_) => {
+          // setCargasMov(cargarMov + 1)
+          setCargas(cargas + 1)
+        }}
+        usuarioC={usuarioC}
+        expediente={expediente}
+        materia={expediente?.materia?.materia?._id}
+
+      />
     </>
   )
 }
@@ -437,7 +440,6 @@ const DataLine = ({ label = '', value = '', onHandEdit = () => { }, isEdit = tru
                 </Button>
               </Tooltip>
             </>}
-
           </Typography>
         </Grid>
       </Grid>
@@ -543,6 +545,312 @@ const ModalEstatus = ({ _id, open, handleClose, handleEstatus, usuarioC, estatus
             </Select>
           </FormControl>
           <TextField multiline fullWidth label='Descripción' {...descripcion} sx={{ mb: 2 }} minRows={3} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} variant='outlined'>
+            Cancelar
+          </Button>
+          <Button type='submit' variant='contained'>
+            Guardar
+          </Button>
+        </DialogActions>
+      </Box>
+    </Dialog>
+  )
+}
+
+const ModalEtapa = ({ _id, open, handleClose, handleExpediente, usuarioC, expediente, materia }) => {
+  // const [estatus, setEstatus] = useState(estatusExped)
+  const [listaEtapas, setListaEtapas] = useState([])
+  const [expedienteL, setExpedienteL] = useState(expediente)
+  const [isOpcional, setIsOpcional] = useState(expedienteL?.etapaProcesal?.etapa?._id === undefined)
+  const [etapa, setEtapa] = useState(expedienteL?.etapaProcesal?.etapa?._id !== undefined ? expedienteL?.etapaProcesal?.etapa?._id : 'Otra')
+  const [opcional, setOpcional] = useState(expedienteL?.etapaProcesal?.nombre)
+
+  const [isRecursos, setIsRecursos] = useState(false)
+  const [isIncidencia, setIsIncidencia] = useState(false)
+
+  const [descripcion, setDescripcion] = useState('')
+
+  const [incidencias, setIncidencias] = useState([])
+  const [recursos, setRecursos] = useState([])
+  const [recursoOpcional] = useState('')
+
+  const [incidencia, setIncidencia] = useState('')
+  const [recurso, setRecurso] = useState('')
+  const [descripcionRI, setDescripcionRI] = useState('')
+
+  useEffect(() => {
+    if (!materia) {
+      return
+    }
+
+    getRecursosIncidenciasMateria(materia, 'Incidencia').then((data) => {
+      if (!data) {
+        return
+      }
+      const soloRecursos = data.filter(item => item.tipo === 'Recurso')
+      const soloIncidencias = data.filter(item => item.tipo === 'Incidencia')
+
+      setIncidencias(soloIncidencias)
+      setRecursos(soloRecursos)
+    })
+  }, [isRecursos, isIncidencia])
+
+  useEffect(() => {
+    setExpedienteL(expediente)
+  }, [expediente])
+
+  useEffect(() => {
+    setEtapa(expedienteL?.etapaProcesal?.etapa?._id !== undefined ? expedienteL?.etapaProcesal?.etapa?._id : 'Otra')
+    setIsOpcional(expedienteL?.etapaProcesal?.etapa?._id === undefined)
+    setOpcional(expedienteL?.etapaProcesal?.nombre)
+  }, [expedienteL])
+
+  useEffect(() => {
+    if (!materia) {
+      return
+    }
+    getEtapas(materia).then((data) => {
+      console.log(data, 'all')
+      if (!data) {
+        return
+      }
+
+      const etapasData = data.map(item => {
+        const etapa = {
+          _id: item._id,
+          nombre: item.nombre
+        }
+        return etapa
+      })
+
+      setListaEtapas(etapasData)
+    }).catch((error) => {
+      console.error('Error fetching data:', error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al obtener las etapas',
+        text: error.message
+      })
+    })
+  }, [materia])
+
+  const [loading, setLoading] = useState(false)
+
+  const handleCreate = async (e) => {
+    e.preventDefault()
+
+    setLoading(true)
+
+    try {
+      const despacho = usuarioC?.despacho?._id
+      const usuario = usuarioC?._id
+
+      let tipo
+
+      if (isRecursos) {
+        tipo = 'Recurso'
+      }
+
+      if (isIncidencia) {
+        tipo = 'Incidencia'
+      }
+
+      let recursoManda
+
+      if (isRecursos) {
+        recursoManda = recurso
+      }
+
+      if (isIncidencia) {
+        recursoManda = incidencia
+      }
+
+      let etapaOpcional
+
+      if (isOpcional) {
+        etapaOpcional = opcional
+      } else {
+        etapaOpcional = undefined
+      }
+
+      let etapaID
+      if (etapa === 'Otra') {
+        etapaID = undefined
+      } else {
+        etapaID = etapa
+      }
+
+      const exp = await updateEtapa(
+        {
+          despacho,
+          usuario,
+          _id,
+          etapa: etapaID,
+          etapaOpcional,
+          descripcion,
+          recurso: recursoManda,
+          recursoOpcional,
+          comentario: descripcionRI,
+          tipo
+        }
+      )
+
+      setLoading(false)
+      handleClose()
+
+      handleExpediente(exp)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      setLoading(false)
+      handleClose()
+      // Swal.fire({
+      //   icon: 'error',
+      //   title: 'Error al actualizar el estatus',
+      //   text: error.message
+      // })
+    }
+  }
+
+  return (
+    <Dialog open={open} onClose={handleClose} fullWidth >
+      <DialogTitle>
+        Cambiar etapa procesal
+      </DialogTitle>
+      <Box sx={{ py: 2 }} component='form'
+        autoComplete='off' onSubmit={handleCreate}>
+        <DialogContent>
+          {loading && <LinearProgress />}
+          <FormControl fullWidth sx={sx}>
+            <InputLabel id='select-etapa'>Etapa procesal *</InputLabel>
+            <Select
+              labelId='select-etapa'
+              value={etapa === '' ? '' : etapa}
+              label='Etapa procesal'
+              onChange={e => {
+                if (e.target.value === 'Otra') {
+                  setIsOpcional(true)
+                  // setOpcional('')
+                } else {
+                  setIsOpcional(false)
+                  // setOpcional(e.target.value)
+                }
+                return setEtapa(e.target.value === '' ? '' : e.target.value)
+              }}
+              required
+            >
+              {listaEtapas.map((item, index) => (
+                <MenuItem key={index} value={item._id}>
+                  {item.nombre}
+                </MenuItem>
+              ))}
+              <MenuItem value='Otra'>
+                Otra
+              </MenuItem>
+            </Select>
+          </FormControl>
+          {isOpcional
+            ? <TextField
+              fullWidth
+              required
+              value={opcional}
+              onChange={e => setOpcional(e.target.value)}
+              sx={{ mb: 2 }}
+              label='Etapa procesal'
+            />
+            : null
+          }
+          <TextField multiline fullWidth label='Descripción'
+            value={descripcion}
+            onChange={e => setDescripcion(e.target.value)}
+            sx={{ mb: 2 }} minRows={3} />
+          <FormControl
+            sx={sx}
+            component="fieldset" variant="standard">
+            <FormLabel >
+              Asociar a:
+            </FormLabel>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={isRecursos} onChange={() => {
+                    setIsRecursos(!isRecursos)
+                    if (isIncidencia) {
+                      setIsIncidencia(false)
+                    }
+                  }} />
+                }
+                label="Recursos"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={isIncidencia} onChange={() => {
+                    setIsIncidencia(!isIncidencia)
+                    if (isRecursos) {
+                      setIsRecursos(false)
+                    }
+                  }} />
+                }
+                label="Incidencias"
+              />
+            </FormGroup>
+          </FormControl>
+
+          {isRecursos
+            ? <FormControl fullWidth sx={sx}>
+              <InputLabel id='select-recurso'>Recurso *</InputLabel>
+              <Select
+                labelId='select-recurso'
+                value={recurso}
+                label='Recurso'
+                onChange={e => setRecurso(e.target.value)}
+                required
+              >
+                {/* <MenuItem value=''>
+                  <em>None</em>
+                </MenuItem> */}
+                {recursos.map((item, index) => (
+                  <MenuItem key={index} value={item._id}>
+                    {item.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            : null
+          }
+
+          {isIncidencia
+            ? <FormControl fullWidth sx={sx}>
+              <InputLabel id='select-incidencia'>Incidencia *</InputLabel>
+              <Select
+                labelId='select-incidencia'
+                value={incidencia}
+                label='Incidencia'
+                onChange={e => setIncidencia(e.target.value)}
+                required
+              >
+                {/* <MenuItem value=''>
+                  <em>None</em>
+                </MenuItem> */}
+                {incidencias.map((item, index) => (
+                  <MenuItem key={index} value={item._id}>
+                    {item.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            : null
+          }
+
+          {isIncidencia || isRecursos
+            ? <TextField multiline fullWidth label='Descripción'
+              value={descripcionRI}
+              onChange={e => setDescripcionRI(e.target.value)}
+              sx={{ mb: 2 }} minRows={3} />
+            : null
+          }
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} variant='outlined'>
@@ -834,5 +1142,104 @@ const getUsuariosSinPaginate = async (despacho, expediente, usuario) => {
     return data?.usuarios
   } catch (error) {
     return []
+  }
+}
+
+const getEtapas = async (materia = '') => {
+  let allEtapas = [] // Almacena todas las etapas
+  let hasNextPage = true // Indica si hay más páginas disponibles
+  let page = 1 // Página inicial
+  if (materia === '' || materia === null || materia === undefined) {
+    return []
+  }
+  try {
+    while (hasNextPage) {
+      const uri = `/etapas-procesales?page=${page}&estatus=Activo&materia=${materia}`
+
+      const { data } = await apiAuth().get(uri)
+      const etapas = data.etapasProcesales.docs
+
+      allEtapas = [...allEtapas, ...etapas]
+
+      hasNextPage = data.etapasProcesales.hasNextPage ?? false
+
+      page++
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  }
+
+  return allEtapas
+}
+
+const getRecursosIncidenciasMateria = async (materia) => {
+  try {
+    if (!materia) {
+      return []
+    }
+    const { data } = await apiAuth().get(`/recursos-incidencias/${materia}`)
+    return data?.data
+  } catch (error) {
+    return []
+  }
+}
+
+const updateEtapa = async ({ despacho, usuario, _id, etapa, etapaOpcional, descripcion, recurso, recursoOpcional, comentario, tipo }) => {
+  try {
+    const url = `/expedientes/${despacho}/${usuario}/${_id}/etapa`
+
+    const payload = {
+    }
+
+    if (etapa) {
+      payload.etapaProcesal = etapa
+    }
+
+    if (etapaOpcional) {
+      payload.etapaOpcional = etapaOpcional
+      payload.etapaProcesal = undefined
+    }
+
+    if (descripcion) {
+      payload.descripcion = descripcion
+    }
+
+    if (recurso) {
+      payload.recursosIncidencia = recurso
+    }
+
+    if (recursoOpcional) {
+      payload.recursosIncidenciaOpcional = recursoOpcional
+      payload.recurso = undefined
+    }
+
+    if (comentario) {
+      payload.descripcionRC = comentario
+    }
+
+    if (tipo) {
+      payload.tipo = tipo
+    }
+
+    const { data } = await apiAuth({ 'Content-Type': 'application/json' }).patch(url, payload)
+
+    const { message } = data
+
+    if (message) {
+      Swal.fire({
+        icon: 'success',
+        title: message
+      })
+    }
+
+    return data
+  } catch (error) {
+    console.error('Error fetching data:', error.message)
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al actualizar la etapa procesal',
+      text: error.message
+    })
+    return null
   }
 }

@@ -31,7 +31,7 @@ const columns = [
   {
     id: 'correo', label: 'Correo', render: (row) => (<a href={`mailto:${row.correo}`}>{row.correo}</a>)
   },
-  { id: 'direccion', label: 'Dirección', render: (row) => (<a href={`https://www.google.com/maps/search/?api=1&query=${row.direccion}`} target='_blank' rel='noreferrer'>{row.direccion}</a>) },
+  { id: 'observaciones', label: 'Observaciones', render: (row) => (row.observaciones) },
   { id: 'estado.nombre', label: 'Estado', render: (row) => row?.estado?.nombre },
   {
     id: 'estatus',
@@ -53,7 +53,6 @@ const columns = [
 const Clientes = () => {
   const [usuarioC] = useContext(UsuarioContext)
   const despacho = usuarioC?.despacho?._id
-  const usuario = usuarioC?._id
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
@@ -66,6 +65,15 @@ const Clientes = () => {
   const [modulosC] = useContext(ModulosContext)
   const [permisos, setPermisos] = useState(null)
   const locationPath = location.pathname
+
+  const deleteCliente = async (row) => {
+    try {
+      await apiAuth().delete(`/clientes/${row?._id}`)
+      fetchData()
+    } catch (error) {
+      console.error('Error deleting cliente:', error)
+    }
+  }
 
   useEffect(() => {
     modulosC.forEach(modulo => {
@@ -193,6 +201,7 @@ const Clientes = () => {
                       totalRows={totalDocs}
                       limit={limit}
                       permisos={permisos}
+                      handleDelete={deleteCliente}
                     />
                   }
                 </Box>

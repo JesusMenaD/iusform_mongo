@@ -15,7 +15,8 @@ const TableIUS = ({
   handleDelete = (e) => { },
   handleEdit = (e) => { },
   permisos = null,
-  isHandling = true
+  isHandling = true,
+  deletePosition = 0
 }) => {
   const navigate = useNavigate()
 
@@ -24,7 +25,7 @@ const TableIUS = ({
   }
 
   const handleDeleteConfirmar = async (row, index) => {
-    const columValue = row[columns[0].id]
+    const columValue = row[columns[deletePosition].id]
     const { isConfirmed } = await Swal.fire({
       title: '¿Estas seguro de eliminarlo?',
       text: `Eliminarás el registro ${columValue}`,
@@ -48,7 +49,9 @@ const TableIUS = ({
       // width: '100%', overflow: 'hidden'
     }}>
       <TableContainer>
-        <Table>
+        <Table sx={{
+          backgroundColor: '#fff'
+        }}>
           {isHandling &&
             <TableHead>
               <TableRow>
@@ -75,7 +78,7 @@ const TableIUS = ({
               rows.map((row, index) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   {columns.map((column) => (
-                    <TableCell key={column.id} align={column.align}>
+                    <TableCell key={column.id} align={column.align} colSpan={column.colSpan || 0} rowSpan={column.rowSpan || 1}>
                       {/* Verifica si hay una función de renderización definida para esta columna */}
                       {column.render ? column.render(row) : row[column.id]}
                     </TableCell>
@@ -83,9 +86,7 @@ const TableIUS = ({
                   {/* si isDeleting o isEditing son verdaderos, renderiza los botones de eliminar y editar */}
                   {(permisos?.delete === true || permisos?.update === true) &&
 
-                    <TableCell key={index + 'eliminar'} sx={{
-
-                    }}>
+                    <TableCell key={index + 'eliminar'} align="right">
                       {
                         permisos?.update === true &&
                         <Tooltip title="editar">

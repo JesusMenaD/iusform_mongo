@@ -12,7 +12,7 @@ import { apiAuth } from '../../api'
 import { Link, useLocation } from 'react-router-dom'
 import { ModulosContext } from '../../context/ModulosContext'
 import { UsuarioContext } from '../../context/UsuarioContext'
-import CreateExcel from '../../components/CreateExcel'
+// import CreateExcel from '../../components/CreateExcel'
 
 const title = 'Usuarios'
 const altasLink = 'crear'
@@ -81,12 +81,13 @@ const Clientes = () => {
 
   useEffect(() => {
     modulosC.forEach(modulo => {
-      console.log('modulo', modulo)
       if (modulo.enlace === locationPath) {
+        console.log()
         setPermisos(modulo.permisos)
       }
+
       modulo.child.forEach(submodulo => {
-        console.log('submodulo', submodulo)
+        console.log('submodulo', submodulo.enlace, locationPath)
         if (submodulo.enlace === locationPath) {
           setPermisos(submodulo.permisos)
         }
@@ -173,7 +174,7 @@ const Clientes = () => {
                             </Select>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3} display='flex' justifyContent='space-around'>
+                        <Grid item xs={12} sm={6} md={3} >
                           <Button
                             variant='contained'
                             title='Buscar'
@@ -185,13 +186,13 @@ const Clientes = () => {
                           >
                             <Search />
                           </Button>
-                          <CreateExcel
+                          {/* <CreateExcel
                             columns={columns}
                             rows={expedientes}
                             type='excel'
-                            title='Expedientes'
+                            title='Usuarios'
                             icon='fa-regular fa-file-excel'
-                          />
+                          /> */}
                         </Grid>
                       </Grid>
                     </Box>
@@ -213,6 +214,12 @@ const Clientes = () => {
                       totalRows={totalDocs}
                       limit={limit}
                       permisos={permisos}
+                      handleDelete={async (row) => {
+                        const url = `/usuario/${row._id}`
+                        await apiAuth().delete(url)
+                        fetchData()
+                      }}
+                      deletePosition={1}
                     />
                   }
                 </Box>

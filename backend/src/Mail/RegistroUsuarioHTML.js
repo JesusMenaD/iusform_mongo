@@ -1,6 +1,7 @@
-export const RegistroUsuarioHTML = (nombre, usuario, password) => {
+const DESPACHO_APP = process.env.DESPACHO_APP;
+
+export const RegistroUsuarioHTML = (nombre, usuario, password, url = DESPACHO_APP) => {
   const year = new Date().getFullYear();
-  const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
   return `
       <table border="0" cellspacing="0" cellpadding="0" style="width:100%; background-color:#fffdf9;margin:0px !important;">
@@ -53,7 +54,7 @@ export const RegistroUsuarioHTML = (nombre, usuario, password) => {
                     <td style="width:30%; background-color:#C89211; font-family: Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold; color:#FFFFFF; text-align:left; vertical-align:middle; padding:5px; border-right-width:2px; border-right-style:solid; border-right-color:#FFFFFF;border-bottom-width:2px; border-bottom-style:solid; border-bottom-color:#FFFFFF;">
                       URL:</td>
                     <td style="width:70%; background-color:#F2F2F2; font-family: Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold; color:#0F181F; text-align:left; vertical-align:middle; padding:5px;border-right-width:2px; border-right-style:solid; border-right-color:#FFFFFF;border-bottom-width:2px; border-bottom-style:solid; border-bottom-color:#FFFFFF;">
-                      <a style="text-decoration:none;color:#0F181F;" href="${APP_URL}}" target="_blank">${APP_URL}</a>
+                      <a style="text-decoration:none;color:#0F181F;" href="${url}" target="_blank">${url}</a>
                     </td>
                   </tr>
                   <tr>
@@ -118,6 +119,7 @@ export const RegistroUsuarioHTML = (nombre, usuario, password) => {
                     </td>
                   </tr>
                 </table>
+                
                 <table border="0" align="center" cellpadding="0" cellspacing="0" style="width:100%;">
                   <tr>
                     <td align="center" style="width:100%; font-family: Arial, Helvetica, sans-serif; font-size:12px; text-align:center; color:#5C5A5B; font-weight:normal;">

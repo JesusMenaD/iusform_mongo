@@ -10,6 +10,7 @@ import { validarPassword, generatePassword, encriptar, desencriptar, deleteFile 
 import { sendMail } from '../config/mail.js';
 import { RegistroUsuarioHTML } from '../Mail/RegistroUsuarioHTML.js';
 const APP_URL = process.env.APP_URL;
+const DESPACHO_APP = process.env.DESPACHO_APP;
 
 export const login = async (req, res) => {
   try {
@@ -292,7 +293,7 @@ export const actualizarUsuario = async (req, res) => {
 
 export const obtenerUsuarios = async (req, res) => {
   try {
-    const { page = 1, search = '', status = '' } = req.query;
+    const { page = 1, search = '', estatus = '' } = req.query;
     const { despacho } = req.params;
 
     if (!despacho) {
@@ -307,8 +308,8 @@ export const obtenerUsuarios = async (req, res) => {
       sort: {
         estatus: 1,
         nombre: 1
-      },
-      populate: 'tipoUsuario'
+      }
+      // populate: 'tipoUsuario'
     };
 
     const query = {
@@ -316,8 +317,8 @@ export const obtenerUsuarios = async (req, res) => {
       tipo: 'despacho'
     };
 
-    if (status) {
-      query.estatus = status;
+    if (estatus) {
+      query.estatus = estatus;
     }
 
     if (search) {
@@ -343,6 +344,133 @@ export const obtenerUsuarios = async (req, res) => {
     });
 
     res.status(200).json({ usuarios });
+  } catch (error) {
+    res.status(404).json({ message: error.message, line_error: error.stack });
+  }
+};
+
+export const createUsuarioDespacho = async (req, res) => {
+  try {
+    const { despacho } = req.params;
+    const { nombre, apellidoPaterno, apellidoMaterno, telefono, email, tipoUsuario, clave } = req.body;
+
+    if (!despacho) {
+      return res.status(400).json({ message: 'Falta el despacho' });
+    }
+
+    if (!nombre || !email || !tipoUsuario || !clave) {
+      return res.status(400).json({ message: 'Faltan datos' });
+    }
+
+    const objUser = {
+      nombre,
+      apellidoPaterno,
+      apellidoMaterno,
+      telefono,
+      email,
+      tipo: 'despacho',
+      despacho,
+      clave,
+      estatus: 'Activo',
+      tipoUsuario
+    };
+
+    const findEmailExist = await UsuariosModel.findOne({
+      email
+    });
+
+    if (findEmailExist) {
+      return res.status(400).json({ message: 'El correo ya existe' });
+    }
+
+    const passwordSin = generatePassword();
+    const passwordEncrypt = encriptar(passwordSin);
+    objUser.password = passwordEncrypt;
+    const userSave = await UsuariosModel.create(objUser);
+
+    // enviar correo con la contraseña
+    const htmlRegistro = RegistroUsuarioHTML(nombre, email, passwordSin, `${DESPACHO_APP}/login`);
+    sendMail(htmlRegistro, 'Registro de usuario', email);
+    res.status(201).json({ message: 'Usuario creado', data: userSave });
+  } catch (error) {
+    res.status(404).json({ message: error.message, line_error: error.stack });
+  }
+};
+
+export const obtenerUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UsuariosModel.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    // if (user.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', user.foto))) {
+    //   user.foto = `${APP_URL}/uploads/usuarios/${user.foto}`;
+    // } else {
+    //   user.foto = `${APP_URL}/uploads/default/icono_usuario_100x100_04.jpg`;
+    // }
+
+    // if (user.despacho && user.despacho.logo) {
+    //   user.despacho.logo = `${APP_URL}/uploads/despachos/${user.despacho.logo}`;
+    // }
+
+    user.password = desencriptar(user.password);
+
+    res.status(200).json({ message: 'Usuario encontrado', data: user });
+  } catch (error) {
+    res.status(404).json({ message: error.message, line_error: error.stack });
+  }
+};
+
+export const updateUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      nombre,
+      apellidoPaterno,
+      apellidoMaterno,
+      telefono,
+      email,
+      tipoUsuario,
+      estatus
+    } = req.body;
+
+    const objUser = {
+      nombre,
+      apellidoPaterno,
+      apellidoMaterno,
+      telefono,
+      email,
+      tipoUsuario,
+      estatus
+    };
+
+    const objAntes = await UsuariosModel.findByIdAndUpdate(id, objUser);
+
+    if (!objAntes) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.status(200).json({ message: 'Usuario actualizado' });
+  } catch (error) {
+    res.status(404).json({ message: error.message, line_error: error.stack });
+  }
+};
+
+export const deleteUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UsuariosModel.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    if (user.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', user.foto))) {
+      const folderPath = path.join('src/uploads/usuarios', user.foto);
+      deleteFile(folderPath);
+    }
+
+    await UsuariosModel.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Usuario eliminado' });
   } catch (error) {
     res.status(404).json({ message: error.message, line_error: error.stack });
   }

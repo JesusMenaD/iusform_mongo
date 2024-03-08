@@ -39,7 +39,10 @@ export const getUsuarios = async (req, res) => {
     const usuarios = await ExpedientesUsuariosModel.paginate(query, options);
 
     usuarios.docs.forEach(usuario => {
-      if (usuario.usuario.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', usuario.usuario.foto))) {
+      if (!usuario?.usuario) {
+        return;
+      }
+      if (usuario?.usuario?.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', usuario?.usuario?.foto))) {
         usuario.usuario.foto = `${APP_URL}/uploads/usuarios/${usuario.usuario.foto}`;
       } else {
         usuario.usuario.foto = `${APP_URL}/uploads/default/icono_usuario_100x100_04.jpg`;
@@ -48,6 +51,7 @@ export const getUsuarios = async (req, res) => {
 
     res.status(200).json({ usuarios });
   } catch (error) {
+    console.log('error', error);
     res.status(404).json({ message: error.message });
   }
 };
@@ -182,7 +186,8 @@ export const getUsuariosExpedienteSinPaginar = async (req, res) => {
     const usuarios = await ExpedientesUsuariosModel.find(query).populate('usuario', 'nombre apellidoPaterno apellidoMaterno email foto');
 
     usuarios.forEach(usuario => {
-      if (usuario.usuario.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', usuario.usuario.foto))) {
+      console.log(path.join('src/uploads/usuarios', usuario?.usuario?.foto ?? ''));
+      if (usuario?.usuario?.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', usuario?.usuario?.foto || ''))) {
         usuario.usuario.foto = `${APP_URL}/uploads/usuarios/${usuario.usuario.foto}`;
       } else {
         usuario.usuario.foto = `${APP_URL}/uploads/default/icono_usuario_100x100_04.jpg`;

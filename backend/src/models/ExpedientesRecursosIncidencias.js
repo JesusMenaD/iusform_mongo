@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const ExpedientesRecursosIncidenciasSchema = new Schema({
   despacho: {
@@ -20,11 +21,11 @@ const ExpedientesRecursosIncidenciasSchema = new Schema({
   recursoIncidencia: {
     type: Schema.Types.ObjectId,
     ref: 'recursosIncidencias',
-    required: true
+    required: false
   },
   opcional: {
     type: String,
-    required: true,
+    required: false,
     default: ''
   },
   creadoPor: {
@@ -34,15 +35,19 @@ const ExpedientesRecursosIncidenciasSchema = new Schema({
   },
   fecha: {
     type: Date,
+    default: Date.now,
     required: true
   },
   comentario: {
     type: String,
-    required: true
+    required: false,
+    default: ''
   }
 
 }, {
   versionKey: false
 });
+
+ExpedientesRecursosIncidenciasSchema.plugin(mongoosePaginate);
 
 export default model('expedienteRecursosIncidencia', ExpedientesRecursosIncidenciasSchema);

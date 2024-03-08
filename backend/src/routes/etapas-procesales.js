@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { getEtapasProcesales } from '../controllers/EtapasProcesales.Controller.js';
+import { getEtapasProcesales, getEtapasProcesalesSinPagina } from '../controllers/EtapasProcesales.Controller.js';
 
 const router = Router();
 
 router.get('/', getEtapasProcesales);
-
+router.get('/sin-pagina', getEtapasProcesalesSinPagina);
 
 // router.post('/:despacho', createCliente);
 

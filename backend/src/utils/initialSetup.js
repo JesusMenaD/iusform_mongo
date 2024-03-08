@@ -6,6 +6,8 @@ import EstadoSchema from '../models/Estados.js';
 import JuzgadosSchema from '../models/Juzgados.js';
 import MateriaSchema from '../models/Materias.js';
 import EtapasProcesalesSchema from '../models/EtapasProcesales.js';
+import RecursosIncidencias from '../models/RecursosIncidencias.js';
+import RegimenSchema from '../models/RegimenFiscales.js';
 
 const generateModules = async () => {
   const count = await ModulosSchema.countDocuments();
@@ -187,64 +189,10 @@ const generateModules = async () => {
         tipo: 'despacho'
       },
       {
-        nombre: 'Directorios',
-        enlace: '/directorios',
-        imagen: 'iconos_principales_150x150_consultas.svg',
-        orden: 4,
-        estatus: 'Activo',
-        padre: '',
-        tipo: 'despacho'
-      },
-      {
-        nombre: 'Plantillas',
-        enlace: '/plantillas',
-        imagen: 'iconos_principales_150x150_plantillas.svg',
-        orden: 5,
-        estatus: 'Activo',
-        padre: '',
-        tipo: 'despacho'
-      },
-      {
-        nombre: 'Reportes',
-        enlace: '/reportes',
-        imagen: 'iconos_principales_150x150_reportes.svg',
-        orden: 6,
-        estatus: 'Activo',
-        padre: '',
-        tipo: 'despacho'
-      },
-      {
         nombre: 'Control interno',
         enlace: '/control-interno',
         imagen: 'icono_administrador_iusform_control_interno.svg',
         orden: 7,
-        estatus: 'Activo',
-        padre: '',
-        tipo: 'despacho'
-      },
-      {
-        nombre: 'Legislaciones y reglamentos',
-        enlace: '/legislaciones-reglamentos',
-        imagen: 'iconos_principales_150x150_legislacion_reglamentos.svg',
-        orden: 8,
-        estatus: 'Activo',
-        padre: '',
-        tipo: 'despacho'
-      },
-      {
-        nombre: 'Legislación y Reglamentos',
-        enlace: '/legislacion-reglamentos',
-        imagen: 'iconos_principales_150x150_legislacion_reglamentos.svg',
-        orden: 9,
-        estatus: 'Activo',
-        padre: '',
-        tipo: 'despacho'
-      },
-      {
-        nombre: 'Configuraciones',
-        enlace: '/configuraciones',
-        imagen: 'iconos_principales_150x150_configuraciones.svg',
-        orden: 10,
         estatus: 'Activo',
         padre: '',
         tipo: 'despacho'
@@ -268,16 +216,7 @@ const generateModules = async () => {
         tipo: 'despacho'
       },
       {
-        nombre: 'Permisos',
-        enlace: '/permisos',
-        imagen: 'iconos_principales_150x150_configuraciones.svg',
-        orden: 2,
-        estatus: 'Activo',
-        padre: '/configuraciones',
-        tipo: 'despacho'
-      },
-      {
-        nombre: 'Datos fiscales',
+        nombre: 'Configuraciones del despacho',
         enlace: '/datos-fiscales',
         imagen: 'iconos_menu_usuario_150x150_configuraciones_2.svg',
         orden: 3,
@@ -367,28 +306,10 @@ const generateModules = async () => {
         tipo: 'despacho'
       },
       {
-        nombre: 'Historial compras',
-        enlace: '/historial-compras',
-        imagen: 'iconos_principales_150x150_reportes.svg',
-        orden: 8,
-        estatus: 'Activo',
-        padre: '/control-interno',
-        tipo: 'despacho'
-      },
-      {
         nombre: 'Declaraciones fiscales',
         enlace: '/declaraciones-fiscales',
         imagen: 'iconos_principales_150x150_declaraciones.svg',
         orden: 9,
-        estatus: 'Activo',
-        padre: '/control-interno',
-        tipo: 'despacho'
-      },
-      {
-        nombre: 'Paquetes de expedientes',
-        enlace: '/paquetes-expedientes',
-        imagen: 'iconos_principales_150x150_declaraciones.svg',
-        orden: 10,
         estatus: 'Activo',
         padre: '/control-interno',
         tipo: 'despacho'
@@ -2607,6 +2528,458 @@ const generateEtapasProcesales = async () => {
     console.error('Error al crear etapas procesales'.red, error);
   }
 };
+
+const generateRecursosIncidencias = async () => {
+  const count = await RecursosIncidencias.countDocuments();
+  if (count > 0) return;
+
+  try {
+    const recursosIncidenciasArray = [
+      {
+        nombre: 'Recurso de Revisión.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Queja.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Reclamación.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Impugnación.',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Apelación. \r\n',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Queja.',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Denegación de Apelación.',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de revocación.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Apelación.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de apelación extraordinaria. ',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de queja.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de revocación.',
+        materia: '65d3d3a060dc42b618520bbd',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Apelación.',
+        materia: '65d3d3a060dc42b618520bbd',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de reposición.',
+        materia: '65d3d3a060dc42b618520bbd',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Reclamación.',
+        materia: '65d3d3a060dc42b618520bbe',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Reconsideración.',
+        materia: '65d3d3a060dc42b618520bbe',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Revisión de Actos.',
+        materia: '65d3d3a060dc42b618520bbe',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Revisión.',
+        materia: '65d3d3a060dc42b618520bbf',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de revocación..',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Apelación.',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de reposición.  ',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de apelación extraordinaria.',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de queja.',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Recurso de Revisión.',
+        materia: '65d3d3a060dc42b618520bc1',
+        tipo: 'Recurso'
+      },
+      {
+        nombre: 'Incidente de Suspensión del Acto Reclamado.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Reposición de Autos.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Incompetencia.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Acumulación.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Falsedad de Documentos.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Reclamación de Daños y Perjuicio.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Cumplimiento Sustituto de Sentencias.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Revocación o Modificación de la Suspensión del Acto Reclamado.',
+        materia: '65d3d3a060dc42b618520bba',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Nulidad de Actos Procesales.',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Excusa y Reposición.',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Acumulación.',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Nulidad de Notificaciones.',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Medidas Cautelares.',
+        materia: '65d3d3a060dc42b618520bbb',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Cuestiones de competencia.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Impedimentos.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Acumulación de procesos.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Separación de procesos.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Suspensión del proceso.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidentes de Suspensión del proceso civil.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidentes diversos.',
+        materia: '65d3d3a060dc42b618520bbc',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Integración.',
+        materia: '65d3d3a060dc42b618520bbd',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Nulidad de Actuaciones.',
+        materia: '65d3d3a060dc42b618520bbd',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Nulidad de Notificaciones.',
+        materia: '65d3d3a060dc42b618520bbd',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidentes de Preparación.',
+        materia: '65d3d3a060dc42b618520bbd',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de liquidación.',
+        materia: '65d3d3a060dc42b618520bbd',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Nulidad.',
+        materia: '65d3d3a060dc42b618520bbe',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Competencia.',
+        materia: '65d3d3a060dc42b618520bbe',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Personalidad.',
+        materia: '65d3d3a060dc42b618520bbe',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Acumulación.',
+        materia: '65d3d3a060dc42b618520bbe',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Excusas.',
+        materia: '65d3d3a060dc42b618520bbe',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Nulidad de Notificaciones.',
+        materia: '65d3d3a060dc42b618520bbf',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Competencia.',
+        materia: '65d3d3a060dc42b618520bbf',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Acumulación de procesos.',
+        materia: '65d3d3a060dc42b618520bbf',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Cuestiones de competencia.',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Impedimentos.',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Acumulación de procesos.',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'Incidente de Separación de procesos.',
+        materia: '65d3d3a060dc42b618520bc0',
+        tipo: 'Incidencia'
+      },
+      {
+        nombre: 'La ley agraria es omisa al señalar los incidentes que se pueden tramitar en su materia , por tanto se aplican supletoriamente los establecidos en materia civil.',
+        materia: '65d3d3a060dc42b618520bc1',
+        tipo: 'Incidencia'
+      }
+    ];
+
+    await RecursosIncidencias.insertMany(recursosIncidenciasArray);
+  } catch (error) {
+    console.error('Error al crear recursos e incidencias'.red, error);
+  }
+};
+
+const generateRegimen = async () => {
+  const count = await RegimenSchema.countDocuments();
+  if (count > 0) return;
+
+  try {
+    const regimenes = [
+      {
+        regimen: '601',
+        descripcion: 'General de Ley Personas Morales',
+        fisica: 'No',
+        moral: 'Si'
+      },
+      {
+        regimen: '603',
+        descripcion: 'Personas Morales con Fines no Lucrativos',
+        fisica: 'No',
+        moral: 'Si'
+      },
+      {
+        regimen: '605',
+        descripcion: 'Sueldos y Salarios e Ingresos Asimilados a Salarios',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '606',
+        descripcion: 'Arrendamiento',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '608',
+        descripcion: 'Demás ingresos',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '610',
+        descripcion: 'Residentes en el Extranjero sin Establecimiento Permanente en México',
+        fisica: 'Si',
+        moral: 'Si'
+      },
+      {
+        regimen: '611',
+        descripcion: 'Ingresos por Dividendos (socios y accionistas)',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '612',
+        descripcion: 'Personas Físicas con Actividades Empresariales y Profesionales',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '614',
+        descripcion: 'Ingresos por intereses',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '616',
+        descripcion: 'Sin obligaciones fiscales',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '620',
+        descripcion: 'Sociedades Cooperativas de Producción que optan por diferir sus ingresos',
+        fisica: 'No',
+        moral: 'Si'
+      },
+      {
+        regimen: '621',
+        descripcion: 'Incorporación Fiscal',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '622',
+        descripcion: 'Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras',
+        fisica: 'Si',
+        moral: 'Si'
+      },
+      {
+        regimen: '623',
+        descripcion: 'Opcional para Grupos de Sociedades',
+        fisica: 'No',
+        moral: 'Si'
+      },
+      {
+        regimen: '624',
+        descripcion: 'Coordinados',
+        fisica: 'No',
+        moral: 'Si'
+      },
+      {
+        regimen: '607',
+        descripcion: 'Régimen de Enajenación o Adquisición de Bienes',
+        fisica: 'No',
+        moral: 'Si'
+      },
+      {
+        regimen: '615',
+        descripcion: 'Régimen de los ingresos por obtención de premios',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '625',
+        descripcion: 'Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas',
+        fisica: 'Si',
+        moral: 'No'
+      },
+      {
+        regimen: '626',
+        descripcion: 'Régimen Simplificado de Confianza',
+        fisica: 'Si',
+        moral: 'Si'
+      }
+    ];
+
+    await RegimenSchema.insertMany(regimenes);
+  } catch (error) {
+    console.error('Error al crear regimenes'.red, error);
+  }
+};
 (async () => {
   await generateModules();
   await generateTipoUsuarios();
@@ -2616,4 +2989,6 @@ const generateEtapasProcesales = async () => {
   await generateJuzgados();
   await generateMaterias();
   await generateEtapasProcesales();
+  await generateRecursosIncidencias();
+  await generateRegimen();
 })();

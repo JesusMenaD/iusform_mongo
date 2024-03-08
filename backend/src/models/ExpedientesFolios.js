@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const FoliosSchema = new Schema({
   despacho: {
@@ -7,17 +8,10 @@ const FoliosSchema = new Schema({
     required: true
   },
   materia: {
-    nombre: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    materia: {
-      type: Schema.Types.ObjectId,
-      ref: 'materias',
-      required: true,
-      index: true
-    }
+    type: Schema.Types.ObjectId,
+    ref: 'materias',
+    required: true,
+    index: true
   },
   clave: {
     type: String,
@@ -35,4 +29,5 @@ const FoliosSchema = new Schema({
   versionKey: false
 });
 
+FoliosSchema.plugin(mongoosePaginate);
 export default model('folios', FoliosSchema);

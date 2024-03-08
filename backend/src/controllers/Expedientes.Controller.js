@@ -10,6 +10,8 @@ import DespachoModel from '../models/Despachos.js';
 import UsuarioModel from '../models/Usuarios.js';
 import { MovimientosExpedienteHTML } from '../Mail/MovimientosExpedienteHTML.js';
 import { sendMail } from '../config/mail.js';
+import RecursosIncidenciasExpedienteModel from '../models/ExpedientesRecursosIncidencias.js';
+import RecursosExpediente from '../models/RecursosIncidencias.js';
 
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
@@ -252,7 +254,7 @@ export const getExpedienteById = async (req, res) => {
       { path: 'asunto', select: 'nombre' },
       { path: 'juzgado.juzgado', select: 'nombre' },
       { path: 'materia.materia', select: 'nombre' },
-      { path: 'etapaProcesal.etapa', select: 'nombre' }
+      { path: 'etapaProcesal.etapa', select: 'nombre _id' }
     ];
 
     const queryExpediente = { _id: expediente };
@@ -604,7 +606,7 @@ export const updateJuicio = async (req, res) => {
 export const updateEtapaProcesal = async (req, res) => {
   const { despacho, usuario, expediente } = req.params;
 
-  const { etapaProcesal, etapaOpcional, descripcion } = req.body;
+  const { etapaProcesal, etapaOpcional = '', descripcion = '', recursosIncidencia = null, recursosIncidenciaOpcional = '', descripcionRC = '', tipo = 'Recurso' } = req.body;
 
   try {
     if (!despacho) {
@@ -648,6 +650,37 @@ export const updateEtapaProcesal = async (req, res) => {
       nuevaEtapa = etapaOpcional;
     } else {
       nuevaEtapa = findEtapaProcesal.nombre;
+    }
+
+    if (recursosIncidencia !== null || recursosIncidenciaOpcional !== '') {
+      // crea un nu nueva recurso o incidencia
+      const objRecursoIncidencia = {
+        despacho,
+        expediente,
+        creadoPor: usuario,
+        comentario: descripcionRC
+      };
+
+      if (recursosIncidencia) {
+        const findRecursoIncidencia = await RecursosExpediente.findById(recursosIncidencia);
+
+        if (!findRecursoIncidencia) {
+          return res.status(400).json({ message: 'El recurso o incidencia no existe' });
+        }
+
+        const { tipo } = findRecursoIncidencia;
+
+        objRecursoIncidencia.tipo = tipo;
+        objRecursoIncidencia.recursoIncidencia = recursosIncidencia;
+      }
+
+      if (recursosIncidenciaOpcional) {
+        objRecursoIncidencia.opcional = recursosIncidenciaOpcional;
+        objRecursoIncidencia.recursoIncidencia = undefined;
+        objRecursoIncidencia.tipo = tipo;
+      }
+
+      await RecursosIncidenciasExpedienteModel.create(objRecursoIncidencia);
     }
 
     const movimiento = {

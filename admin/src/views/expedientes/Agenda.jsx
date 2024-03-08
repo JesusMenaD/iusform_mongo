@@ -23,16 +23,19 @@ import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent'
 import TimelineDot from '@mui/lab/TimelineDot'
 import Typography from '@mui/material/Typography'
 import { apiAuth } from '../../api' // Asegúrate de que este es el camino correcto
-import Scheduler from './prueba' // Asegúrate de que este es el camino correcto
+import Scheduler from '../../components/Calendario' // Asegúrate de que este es el camino correcto
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import TextField from '@mui/material/TextField'
 import Modal from '@mui/material/Modal'
 import ButtonIcon from '@mui/material/Button'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DateTimeField } from '@mui/x-date-pickers/DateTimeField'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { TimeField } from '@mui/x-date-pickers/TimeField'
+import moment from 'moment-timezone'
+
+const fecha = moment().tz('America/Mexico_City')
 
 const sx = {
   mb: 2
@@ -75,7 +78,14 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
   const [render, setRender] = useState(0)
   const [error, setError] = useState('')
 
-  const [nuevoEvento, setNuevoEvento] = useState(null)
+  const [nuevoEvento, setNuevoEvento] = useState({
+    titulo: '',
+    descripcion: '',
+    fecha: fecha.format('YYYY-MM-DD HH:mm A'),
+    horaFin: '',
+    recordar: 0,
+    usuarios: []
+  })
   const [modalNuevoEvento, setModalNuevoEvento] = useState(false)
 
   const openModal = (event) => {
@@ -180,36 +190,35 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
     try {
       e.preventDefault()
 
-      const hora24to12 = (hora) => {
-        const [horaStr, minutos] = hora.split(':')
+      const fecha12 = (fecha = '20:20') => {
+        console.log(fecha)
+        if (!fecha) return ''
+        const [horaStr, minutos] = fecha.split(':')
         const horaInt = parseInt(horaStr)
         const ampm = horaInt >= 12 ? 'PM' : 'AM'
         const hora12 = horaInt % 12 || 12
         return `${hora12}:${minutos} ${ampm}`
       }
+      console.log(nuevoEvento.fecha)
+      const horaIni = fecha12(moment(nuevoEvento.fecha).format('HH:mm'))
+      const fechaSolo = moment(nuevoEvento.fecha).format('YYYY-MM-DD')
 
-      // hay que hacer un obj Date con la fecha y hora juntando nuevoEvento.fecha(2023-10-10) y nuevoEvento.horaInicio(10:30 AM)
-      const fechaRecordatorio = new Date(`${nuevoEvento.fecha}T${nuevoEvento.horaInicio.slice(0, 5)}`).toISOString()
-      console.log(fechaRecordatorio)
-      nuevoEvento.horaInicio = hora24to12(nuevoEvento.horaInicio)
+      // nuevoEvento.horaFin = fecha12(nuevoEvento.horaFin)
 
-      if (nuevoEvento.horaFin) {
-        nuevoEvento.horaFin = hora24to12(nuevoEvento.horaFin)
-      }
-      const eventNuevo = {
+      const eventNuevoob = {
         titulo: nuevoEvento.titulo,
         descripcion: nuevoEvento.descripcion ?? '',
-        horaInicio: nuevoEvento.horaInicio,
-        fecha: nuevoEvento.fecha,
+        horaInicio: horaIni,
+        fecha: fechaSolo,
         expediente,
-        horaFin: nuevoEvento.horaFin,
-        recordar: nuevoEvento.recordar,
-        fechaRecordatorio: nuevoEvento.recordar !== 0 ? fechaRecordatorio : null,
+        horaFin: fecha12(nuevoEvento.horaFin) === '' ? undefined : fecha12(nuevoEvento.horaFin),
+        recordar: nuevoEvento.recordar ?? 0,
+        fechaRecordatorio: nuevoEvento?.recordar !== 0 ? fecha.subtract(nuevoEvento?.recordar, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ') : null,
         usuarios: nuevoEvento.usuarios
       }
-      console.log(nuevoEvento.horaInicio)
+      console.log(eventNuevoob)
 
-      const { data } = await apiAuth().post(`/agenda/${despacho}/${usuario}`, eventNuevo)
+      const { data } = await apiAuth().post(`/agenda/${despacho}/${usuario}`, eventNuevoob)
       const { message } = data
       console.log('message', message)
       setRender(render + 1)
@@ -248,8 +257,6 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
         >
           <Plus />
         </Button>
-
-        {/* : null} */}
 
       </Box>
 
@@ -367,7 +374,7 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
             <Select
               labelId="recordar"
               id="recordar"
-              value={selectedEvent ? selectedEvent.recordar : '0'}
+              value={selectedEvent ? selectedEvent.recordar : 0}
               label="Recordar"
               onChange={(e) => setSelectedEvent({ ...selectedEvent, recordar: e.target.value })}
             >
@@ -460,33 +467,28 @@ const Agenda = ({ despacho, usuario, usuarios, expediente, permisos }) => {
             />
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <FormControl fullWidth required>
-                <DatePicker
-                  label='Fecha *'
-                  onChange={(date) => setNuevoEvento({ ...nuevoEvento, fecha: date.format('YYYY-MM-DD') })}
+                <DateTimeField
+                  // defaultValue={fecha}
+                  label='Fecha'
+                  format='DD/MM/YYYY HH:mm A'
+                  required
+                  typeof='datetime-local'
+                  // value={nuevoEvento?.fecha}
+                  onChange={(date) => setNuevoEvento({ ...nuevoEvento, fecha: date })}
                   sx={{
                     mb: 2,
                     width: '100%'
                   }} />
 
               </FormControl>
-              <TimePicker
-                label='Hora inicio *'
-                ampm={false}
-                required
-                onChange={(date) => setNuevoEvento({ ...nuevoEvento, horaInicio: date.format('HH:mm') })}
-                sx={{
-                  mb: 2,
-                  width: '100%'
-                }} />
-
-              <TimePicker
-                label='Hora Final'
-                ampm={false}
+              <TimeField
+                label='Hora Fin'
                 onChange={(date) => setNuevoEvento({ ...nuevoEvento, horaFin: date.format('HH:mm') })}
                 sx={{
                   mb: 2,
                   width: '100%'
                 }} />
+
             </LocalizationProvider>
             <MultipleSelectCheckmarks handUsuarioSeleccionado={(usuariosSeleccionados) => {
               setNuevoEvento({ ...nuevoEvento, usuarios: usuariosSeleccionados })

@@ -47,6 +47,9 @@ const ExpedientesAgendaSchema = new Schema({
     default: null,
     validate: {
       validator: (v) => {
+        if (!v) {
+          return true;
+        }
         const regex = /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/i;
         return regex.test(v);
       },

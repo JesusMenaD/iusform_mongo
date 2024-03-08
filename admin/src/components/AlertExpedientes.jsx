@@ -55,7 +55,7 @@ const AlertExpedientes = ({ despacho }) => {
           <AlertTitle>Resumen de expedientes</AlertTitle>
           <p>Expedientes restantes: {expedientesRestantes}
           </p>
-          {diasRestantes < 7 && (
+          {diasRestantes < 10 && (
             <Typography variant="h6" color="primary.main" >
               {diasRestantes} días restantes
             </Typography>

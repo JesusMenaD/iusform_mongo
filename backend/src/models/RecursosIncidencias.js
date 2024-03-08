@@ -10,10 +10,16 @@ const RecursosIncidencias = new Schema({
     ref: 'materias',
     required: true
   },
+  tipo: {
+    type: String,
+    enum: ['Recurso', 'Incidencia'],
+    required: true
+  },
   estatus: {
     type: String,
     enum: ['Activo', 'Inactivo'],
-    required: true
+    default: 'Activo'
+    // required: true
   }
 }, {
   versionKey: false

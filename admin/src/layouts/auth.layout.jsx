@@ -34,7 +34,8 @@ import {
   Menu as MenuIcon,
   X,
   Edit,
-  LogOut
+  LogOut,
+  Box as BoxIcon
 } from 'react-feather'
 import { UsuarioContext } from '../context/UsuarioContext'
 import { useToggle } from '../hooks/useToggle'
@@ -282,11 +283,16 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }))
 
 // eslint-disable-next-line react/prop-types
-const ListItemLink = ({ name, to, Icon, chil = [] }) => (
+const ListItemLink = ({ name, to, Icon, chil = [], tipo = 'url' }) => (
   <ListItem disablePadding>
     <ListItemButton component={NavLink} to={to} sx={styles.listItemButton} LinkComponent={Link}>
       <ListItemIcon>
-        <Image src={Icon} alt={name} width={18} height={18} />
+
+        {
+          tipo === 'url' ? <Image src={Icon} alt={name} width={18} height={18} /> : <BoxIcon color='white' size={20} />
+        }
+
+        {/* < Image src={Icon} alt={name} width={18} height={18} /> */}
       </ListItemIcon>
       <ListItemText primary={name} sx={styles.listItemText} />
     </ListItemButton>
@@ -332,10 +338,11 @@ const DrawerContent = () => {
   const [usuario] = useContext(UsuarioContext)
   const { tipo } = usuario
   const { _id } = usuario
+  const despacho = usuario.despacho._id
   const [modulosC, setCModulos] = useContext(ModulosContext)
 
   const fetchModulos = async () => {
-    const { data } = await apiAuth().get(`modulos/${_id}?tipo=${tipo}`)
+    const { data } = await apiAuth().get(`modulos/${despacho}/${_id}?tipo=${tipo}`)
     return data.data
   }
 
@@ -349,6 +356,8 @@ const DrawerContent = () => {
   return (
     <nav>
       <List>
+        <ListItemLink name='Dashbord' to="/" Icon={<BoxIcon />} tipo='ico' />
+
         {modulosC.map((modulo, index) => {
           if (modulo.child.length > 0) {
             return (
@@ -373,12 +382,12 @@ const DrawerContent = () => {
             gap: 1.5
           }}
         >
-          <Typography level="title-sm">Plana actual</Typography>
+          <Typography level="title-sm">Plan actual</Typography>
           <Typography level="body-xs">
             30 días de prueba
           </Typography>
           <Button size="sm" variant="outlined">
-            Upgrade plan
+            Actualizar plan
           </Button>
         </Card>
       </List>

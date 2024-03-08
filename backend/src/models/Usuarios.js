@@ -12,7 +12,8 @@ const UsuariosSchema = new Schema({
     type: String,
     required: true,
     trim: true,
-    index: true
+    index: true,
+    default: ''
   },
   apellidoPaterno: {
     type: String,

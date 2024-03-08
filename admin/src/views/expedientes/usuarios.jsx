@@ -92,7 +92,6 @@ const MultipleSelectCheckmarks = ({ despacho, expediente, handUsuarioSeleccionad
 }
 
 const UsuariosTable = ({ despacho, usuario, _id, cargas = 0, permisos = null }) => {
-  console.log(permisos?.rol)
   const [usuarios, setUsuarios] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(0)
@@ -121,37 +120,37 @@ const UsuariosTable = ({ despacho, usuario, _id, cargas = 0, permisos = null }) 
       id: 'usuario.foto',
       label: 'Foto',
       render: (row) => {
-        return <Avatar alt={row.usuario.nombre} src={row.usuario.foto} />
+        return <Avatar alt={row?.usuario?.nombre} src={row?.usuario?.foto} />
       }
     },
     {
       id: 'usuario.nombre',
       label: 'Usuario',
       render: (row) => {
-        if (row.usuario._id === usuario) { return <Chip label={'Tú'} color='primary' /> }
-        return `${row.usuario.nombre} ${row.usuario.apellidoPaterno} ${row.usuario.apellidoMaterno}`
+        if (row?.usuario?._id === usuario) { return <Chip label={'Tú'} color='primary' /> }
+        return `${row?.usuario?.nombre} ${row?.usuario?.apellidoPaterno} ${row?.usuario?.apellidoMaterno}`
       }
     },
     {
       id: 'usuario.email',
       label: 'Correo',
       render: (row) => {
-        return <a href={`mailto:${row.usuario.email}`}>{row.usuario.email}</a>
+        return <a href={`mailto:${row?.usuario?.email}`}>{row?.usuario?.email}</a>
       }
     },
     {
       id: 'rol',
       label: 'Rol',
       render: (row) => {
-        if (row.rol === 'Creador') { return <Chip label={row.rol} color='primary' /> }
-        if (row.rol === 'Editor') { return <Chip label={row.rol} color='secondary' /> }
+        if (row?.rol === 'Creador') { return <Chip label={row?.rol} color='primary' /> }
+        if (row?.rol === 'Editor') { return <Chip label={row?.rol} color='secondary' /> }
         return <Chip label={row.rol} color='success' />
       }
     }, {
       id: 'notificaciones',
       label: 'Notificar',
       render: (row) => {
-        if (row.notificaciones) { return <Chip label='Si' color='primary' /> }
+        if (row?.notificaciones) { return <Chip label='Si' color='primary' /> }
         return <Chip label='No' color='secondary' />
       }
     },
@@ -159,14 +158,14 @@ const UsuariosTable = ({ despacho, usuario, _id, cargas = 0, permisos = null }) 
       id: 'acciones',
       label: 'Acciones',
       render: (row) => {
-        if (row.rol === 'Creador') return null
+        if (row?.rol === 'Creador') return null
 
         if (permisos?.rol === 'Lector') return null
 
         return (
 
           <IconButton IconButton onClick={() => {
-            const url = `/expedientes-usuarios/${row._id}`
+            const url = `/expedientes-usuarios/${row?._id}`
 
             if (row.rol === 'Creador') {
               Swal.fire({
