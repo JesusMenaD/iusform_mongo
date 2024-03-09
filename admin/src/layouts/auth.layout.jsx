@@ -8,6 +8,19 @@ import Avatar from '@mui/material/Avatar'
 import logoIus from '../assets/images/logo/logo_iusform_300x74_original.png'
 import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom'
 import {
+  ShoppingCart,
+  ChevronDown,
+  ChevronUp,
+  Menu as MenuIcon,
+  X,
+  Edit,
+  LogOut,
+  Box as BoxIcon,
+  Search as SearchIcon,
+  Paperclip as PaperclipIcon
+  , Search
+} from 'react-feather'
+import {
   Box,
   Drawer,
   Toolbar,
@@ -25,22 +38,19 @@ import {
   Paper,
   Tooltip,
   Card,
-  Button
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Grid
 } from '@mui/material'
 import MuiAppBar from '@mui/material/AppBar'
-import {
-  ChevronDown,
-  ChevronUp,
-  Menu as MenuIcon,
-  X,
-  Edit,
-  LogOut,
-  Box as BoxIcon
-} from 'react-feather'
 import { UsuarioContext } from '../context/UsuarioContext'
 import { useToggle } from '../hooks/useToggle'
 import { apiAuth } from '../api'
 import { ModulosContext } from '../context/ModulosContext'
+import TableIUS from '../components/TableIUS'
 
 const drawerWidth = 260
 // import { apiAuth } from '../api'
@@ -165,7 +175,9 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' 
   })
 }))
 
-const NavbarContent = () => {
+const NavbarContent = ({
+  setDialogLegislaciones
+}) => {
   const navigate = useNavigate()
   const [userContext, setUsuarioContext] = useContext(UsuarioContext)
   const [, setCModulos] = useContext(ModulosContext)
@@ -175,6 +187,7 @@ const NavbarContent = () => {
     localStorage.removeItem('usuario')
     navigate('/login')
   }
+  const toEditProfile = `/${userContext.clave}/perfil/editar`
 
   const profileToggle = useToggle()
   const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -209,12 +222,57 @@ const NavbarContent = () => {
   return (
     <>
       <List sx={styles.list}>
+        <ListItem disablePadding sx={{
+          ...styles.block,
+          borderRadius: 2,
+          mr: 1,
+          border: '1px solid #c89211'
+        }}>
+          <Tooltip title="Directorio">
+            <ListItemButton
+              onClick={() => { }}>
+              <SearchIcon color='#c89211' size={20} />
+
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+
+        <ListItem disablePadding sx={{
+          ...styles.block,
+          borderRadius: 2,
+          mr: 1,
+          border: '1px solid #c89211'
+        }}>
+          <Tooltip title="Legislaciones y reglamentos">
+            <ListItemButton
+              onClick={() => setDialogLegislaciones(true)}>
+              <PaperclipIcon color='#c89211' size={20} />
+
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+        <ListItem disablePadding sx={{
+          ...styles.block,
+          borderRadius: 2,
+          mr: 1,
+          border: '1px solid #c89211'
+        }}>
+          <Tooltip title="Tienda">
+            <ListItemButton
+              component={Link}
+              to="/shop"
+            >
+              <ShoppingCart color='#c89211' size={20} />
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
         <ListItem disablePadding sx={styles.block}>
           <ListItemButton id="fade-profile"
             aria-controls={profileToggle.open ? 'fade-profile' : undefined}
             aria-haspopup="true"
             aria-expanded={profileToggle.open ? 'true' : undefined}
             onClick={profileToggle.handleClick}>
+
             <Tooltip title="Perfil">
               <StyledBadge
                 overlap="circular"
@@ -226,7 +284,8 @@ const NavbarContent = () => {
             </Tooltip>
           </ListItemButton>
         </ListItem>
-      </List>
+
+      </List >
       <Menu
         id="fade-profile"
         MenuListProps={{ 'aria-labelledby': 'fade-profile' }}
@@ -249,8 +308,8 @@ const NavbarContent = () => {
           </Box>
           <Divider />
           <List dense>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => navigate(`/${userContext.clave}/perfil/editar`)}>
+            <ListItem disablePadding >
+              <ListItemButton component={Link} to={toEditProfile}>
                 <ListItemIcon sx={styles.menuItem}>
                   <Edit size={16} />
                 </ListItemIcon>
@@ -356,7 +415,7 @@ const DrawerContent = () => {
   return (
     <nav>
       <List>
-        <ListItemLink name='Dashbord' to="/" Icon={<BoxIcon />} tipo='ico' />
+        <ListItemLink name='Panel' to="/" Icon={<BoxIcon />} tipo='ico' />
 
         {modulosC.map((modulo, index) => {
           if (modulo.child.length > 0) {
@@ -392,10 +451,13 @@ const DrawerContent = () => {
         </Card>
       </List>
     </nav>
+
   )
 }
 
 const AuthLayout = ({ titleDespacho = '', logo = '' }) => {
+  const [dialogLegislaciones, setDialogLegislaciones] = useState(false)
+
   const [open, setOpen] = useState(() => window.innerWidth > 960)
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -406,63 +468,249 @@ const AuthLayout = ({ titleDespacho = '', logo = '' }) => {
   }
 
   return (
-    <Box sx={{
-      display: 'flex'
-    }}>
-      <AppBar position="fixed" open={open} color='white' elevation={1}>
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <IconButton
-            edge="start"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            sx={{ marginRight: 5, ...(open && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'start'
-          }}>
-            {logo && <><Avatar alt="profile image" sx={{
-              bgcolor: 'primary.main'
-
-            }} src={logo} >{titleDespacho[0]}</Avatar>&nbsp;&nbsp;</>}
-            <span>{titleDespacho}</span>
-          </div>
-          <NavbarContent />
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        open={open}
-        anchor="left"
-        sx={styles.drawer}
-        variant="persistent"
-      >
-        <DrawerHeader
-        >
-          <Image src={logoIus} alt='logo' style={{
-            width: 150,
-            height: 37
-          }} duration={0} />
-          <IconButton
-            sx={{ color: 'grey' }}
-            onClick={handleDrawerClose}>
-            <X size={23} />
-          </IconButton>
-        </DrawerHeader>
-        <DrawerContent />
-      </Drawer>
-      <Main open={open} sx={{
-        width: '100%',
-        transition: 'margin-left 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
-        overflow: 'hidden'
+    <>
+      <Box sx={{
+        display: 'flex'
       }}>
-        <Box sx={{ height: 70 }} />
-        <Outlet />
-      </Main>
-    </Box >
+        <AppBar position="fixed" open={open} color='white' elevation={1}>
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <IconButton
+              edge="start"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              sx={{ marginRight: 5, ...(open && { display: 'none' }) }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'start'
+            }}>
+              {logo && <><Avatar alt="profile image" sx={{
+                bgcolor: 'primary.main'
+
+              }} src={logo} >{titleDespacho[0]}</Avatar>&nbsp;&nbsp;</>}
+              <span>{titleDespacho}</span>
+            </div>
+            <NavbarContent setDialogLegislaciones={setDialogLegislaciones} />
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          open={open}
+          anchor="left"
+          sx={styles.drawer}
+          variant="persistent"
+        >
+          <DrawerHeader
+          >
+            <Image src={logoIus} alt='logo' style={{
+              width: 150,
+              height: 37
+            }} duration={0} />
+            <IconButton
+              sx={{ color: 'grey' }}
+              onClick={handleDrawerClose}>
+              <X size={23} />
+            </IconButton>
+          </DrawerHeader>
+          <DrawerContent />
+        </Drawer>
+        <Main open={open} sx={{
+          width: '100%',
+          transition: 'margin-left 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
+          overflow: 'hidden'
+        }}>
+          <Box sx={{ height: 70 }} />
+          <Outlet />
+        </Main>
+      </Box >
+      <DialogLegislaciones open={dialogLegislaciones} handleClose={() => setDialogLegislaciones(false)} />
+    </>
   )
 }
 
 export default AuthLayout
+
+export const DialogLegislaciones = ({ open, handleClose }) => {
+  const colums = [
+    {
+      id: 'nombre',
+      label: 'Nombre'
+    }
+  ]
+
+  const [rows, setRows] = useState([
+    {
+      nombre: 'Ley Que Crea La Universidad Tecnológica De Puebla '
+    },
+    {
+      nombre: '— De Conformidad Con El Artículo Tercero Transitorio Del Decreto Número 85 Expedido Por La XV Legislatura Del Estado, Los Títulos Tercero Y Cuarto Quedarán Derogados Progresivamente Hasta La Conclusión Del Último Procedimiento Regido Por Lo Establecido En Las Disposiciones Contenidas En Dichos Títulos. '
+    },
+    {
+      nombre: 'Código Penal'
+    },
+    {
+      nombre: 'Ley de Amparo'
+    },
+    {
+      nombre: 'Código Civil'
+    },
+    {
+      nombre: 'Código Penal'
+    },
+    {
+      nombre: 'Ley de Amparo'
+    },
+    {
+      nombre: 'Código Civil'
+    },
+    {
+      nombre: 'Código Penal'
+    },
+    {
+      nombre: 'Ley de Amparo'
+    },
+    {
+      nombre: 'Código Civil'
+    },
+    {
+      nombre: 'Código Penal'
+    },
+    {
+      nombre: 'Ley de Amparo'
+    },
+    {
+      nombre: '— De Conformidad Con El Artículo Tercero Transitorio Del Decreto Número 85 Expedido Por La XV Legislatura Del Estado, Los Títulos Tercero Y Cuarto Quedarán Derogados Progresivamente Hasta La Conclusión Del Último Procedimiento Regido Por Lo Establecido En Las Disposiciones Contenidas En Dichos Títulos. '
+    },
+    {
+      nombre: 'Código Penal'
+    },
+    {
+      nombre: 'Ley de Amparo'
+    },
+    {
+      nombre: 'Código Civil'
+    },
+    {
+      nombre: 'Código Penal'
+    },
+    {
+      nombre: 'Ley de Amparo'
+    },
+    {
+      nombre: 'Código Civil'
+    },
+    {
+      nombre: 'Código Penal'
+    },
+    {
+      nombre: 'Ley de Amparo'
+    },
+    {
+      nombre: 'Código Civil'
+    },
+    {
+      nombre: 'Código Penal'
+    },
+    {
+      nombre: 'Ley de Amparo'
+    },
+    {
+      nombre: 'Código Civil'
+    },
+    {
+      nombre: 'Código Penal'
+    }
+  ])
+
+  const [search, setSearch] = useState('')
+  const handleFilter = (e) => {
+    e.preventDefault()
+    console.log(search)
+    setRows(rows.filter(row => row.nombre.toLowerCase().includes(search.toLowerCase())))
+  }
+
+  return (
+    <Dialog
+      fullWidth={true}
+      maxWidth="md"
+      open={open}
+      onClose={handleClose}
+    // no cerrar con esc o click fuera del dialog
+    // disableEscapeKeyDown
+    >
+      <DialogTitle>
+        Legislaciones y reglamentos
+      </DialogTitle>
+      <IconButton
+        aria-label="close"
+        onClick={handleClose}
+        sx={{
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: (theme) => theme.palette.grey[500]
+        }}
+      >
+        <X />
+      </IconButton>
+      <DialogContent sx={{
+        backgroundColor: 'grey.100',
+        // quiero que el pading solo zero cuando es mobile y cuando es desktop sea 8
+        padding: 0,
+        '@media (min-width: 600px)': {
+          padding: 2
+        }
+      }}>
+        {/* //Buscador */}
+        <Paper elevation={0} sx={{ p: 3, py: 5, mb: 3 }}>
+          <Typography variant='subtitle1' mb={2} component='h2'>
+            Selecciona un criterio de búsqueda
+          </Typography>
+          <Box onSubmit={handleFilter} as='form' component='form'>
+            <Grid container spacing={2} alignItems='center'>
+              <Grid item xs={12} sm={6} md={9}>
+                <TextField fullWidth label='Buscar' id='Buscar' value={search} onChange={(e) => setSearch(e.target.value)} />
+              </Grid>
+              <Grid item xs={12} sm={6} md={2} display='flex' justifyContent='space-around'>
+                <Button
+                  variant='contained'
+                  title='Buscar'
+                  sx={{
+                    backgroundColor: '#c89211',
+                    color: 'white'
+                  }}
+                  type='submit'
+                >
+                  <Search />
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+
+        <TableIUS
+          columns={colums}
+          rows={rows}
+          height={400}
+          isHandling={false}
+
+        />
+        <Box
+          noValidate
+          component="form"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            m: 'auto',
+            width: 'fit-content'
+          }}
+        >
+
+        </Box>
+      </DialogContent>
+    </Dialog>
+
+  )
+}

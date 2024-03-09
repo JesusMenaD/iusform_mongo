@@ -16,10 +16,17 @@ const title = 'Editar usuario'
 const sx = { mb: 4 }
 
 const EditarPermisos = ({ usuarioC = null }) => {
-  const handleChange = (_id, value) => {
-    console.log(_id, value)
+  const handleChange = (_id, value, tipo) => {
+    const modulosCambios = modulos.map(modulo => {
+      const moduloCopy = { ...modulo }
+      if (modulo._id === _id) {
+        moduloCopy.permisos[tipo] = value
+        console.log(!moduloCopy.permisos[tipo], value)
+      }
+      return moduloCopy
+    })
+    setModulos(modulosCambios)
   }
-
   const columns = [
     {
       id: 'nombre',
@@ -31,6 +38,7 @@ const EditarPermisos = ({ usuarioC = null }) => {
     {
       id: 'modulos.modulo.nombre',
       label: 'Permisos',
+      align: 'center',
       render: (row) => {
         return (
           <FormGroup sx={{
@@ -41,26 +49,26 @@ const EditarPermisos = ({ usuarioC = null }) => {
             <FormControlLabel
               control={
                 <Checkbox checked={row?.permisos?.read}
-                  onChange={(e) => handleChange(row._id, e.target.checked)} />
+                  onChange={(e) => handleChange(row._id, e.target.checked, 'read')} />
               }
               label="Leer"
             />
             <FormControlLabel
               control={
                 <Checkbox checked={row?.permisos?.create}
-                  onChange={handleChange} />
+                  onChange={(e) => handleChange(row._id, e.target.checked, 'create')} />
               }
               label="Crear"
             />
             <FormControlLabel
               control={
-                <Checkbox checked={row?.permisos?.update} onChange={handleChange} />
+                <Checkbox checked={row?.permisos?.update} onChange={(e) => handleChange(row._id, e.target.checked, 'update')} />
               }
               label="Editar"
             />
             <FormControlLabel
               control={
-                <Checkbox checked={row?.permisos?.delete} onChange={handleChange} />
+                <Checkbox checked={row?.permisos?.delete} onChange={(e) => handleChange(row._id, e.target.checked, 'delete')} />
               }
               label="Eliminar"
             />
@@ -115,14 +123,16 @@ const EditarPermisos = ({ usuarioC = null }) => {
       const url = `/usuario/${_id}`
 
       const data = {
-
+        nombre,
+        modulos
       }
+      console.log(data)
 
-      await apiAuth({
-        'Content-Type': 'application/json'
-      }).patch(url, data)
+      // await apiAuth({
+      //   'Content-Type': 'application/json'
+      // }).patch(url, data)
 
-      navigate(`/${usuarioC?.clave}/usuarios`)
+      // navigate(`/${usuarioC?.clave}/usuarios`)
     } catch (error) {
       const { response } = error
       console.log('error', response)
@@ -146,6 +156,8 @@ const EditarPermisos = ({ usuarioC = null }) => {
     const fetchData = async () => {
       try {
         const url = `/tipo-usuario/${despacho}/sin-paginar`
+
+        // const
         const { data } = await apiAuth().get(url)
         // setTipoUsuarios(data)
       } catch (error) {

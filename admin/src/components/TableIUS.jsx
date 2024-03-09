@@ -16,7 +16,8 @@ const TableIUS = ({
   handleEdit = (e) => { },
   permisos = null,
   isHandling = true,
-  deletePosition = 0
+  deletePosition = 0,
+  height = 'auto'
 }) => {
   const navigate = useNavigate()
 
@@ -47,6 +48,7 @@ const TableIUS = ({
   return (
     <Paper sx={{
       // width: '100%', overflow: 'hidden'
+      height
     }}>
       <TableContainer>
         <Table sx={{

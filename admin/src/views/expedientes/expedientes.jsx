@@ -200,7 +200,7 @@ const Expedientes = () => {
                   }} >
                     <Box p={{
                       xs: 0,
-                      sm: 3
+                      sm: 1.5
                     }}>
                       <AlertExpedientes despacho={usuarioC?.despacho} />
                     </Box>

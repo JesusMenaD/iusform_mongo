@@ -52,8 +52,10 @@ const Router = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/recovery' element={<RecoveryPassword />} />
         <Route element={<ProtectedRoute />}>
+
           {clave !== null && (
             <Route element={<AuthLayout titleDespacho={despachoNombre} logo={logo} />}>
+              <Route path={'/shop'} element={<h1>Shop</h1>} />
               <Route path={`/${clave}`} element={<Home />} />
               <Route path={`/${clave}/dashboard`} element={<Home />} />
               <Route path={`/${clave}/perfil/editar`} element={<EditarPerfil />} />
@@ -85,6 +87,7 @@ const Router = () => {
 
               <Route path='*' element={<_404 />} />
             </Route>
+
           )}
         </Route>
         <Route path='*' element={<_404 />} />

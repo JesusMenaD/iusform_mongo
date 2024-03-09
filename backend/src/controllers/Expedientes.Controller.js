@@ -185,10 +185,11 @@ export const getExpedientesByUsuario = async (req, res) => {
         fechaMovimiento: -1,
         ultimoCambio: -1
       },
-      populate: [
-        { path: 'cliente', select: 'nombre' },
-        { path: 'asunto', select: 'nombre' }
-      ]
+      populate:
+      {
+        path: 'cliente',
+        select: 'nombre'
+      }
     };
 
     const query = { despacho, usuario };

@@ -9,6 +9,7 @@ export const getClientes = async (req, res) => {
     limit: 20,
     sort: { nombre: 1 },
     populate: 'estado'
+
   };
 
   if (!despacho) {
