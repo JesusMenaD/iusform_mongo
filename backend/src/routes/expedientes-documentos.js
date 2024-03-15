@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { getDocumetnos, createDocumentos, deleteDocumento } from '../controllers/Expedientes.Documentos.js';
 import { configureMulterArray } from '../config/configureMulter.js';
+const upload = configureMulterArray('documentos', '/documentos');
 
 const router = Router();
-const upload = configureMulterArray('documentos', '/documentos');
 
 router.get('/:despacho/:expediente', getDocumetnos);
 

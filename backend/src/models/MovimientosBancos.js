@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const MovimientosBancosSchema = new Schema({
   despacho: {
@@ -18,7 +19,8 @@ const MovimientosBancosSchema = new Schema({
   },
   fecha: {
     type: Date,
-    required: true
+    required: false,
+    default: Date.now
   },
   ligadoa:
   {
@@ -27,12 +29,12 @@ const MovimientosBancosSchema = new Schema({
     required: true
   },
   folioLiga: {
-    gasto: {
+    gasto: { // cuando ligadoa = egreso = gasto
       type: Schema.Types.ObjectId,
       ref: 'gastos',
       required: false
     },
-    ingreso: {
+    ingreso: { // cuando ligadoa = ingreso = ingreso
       type: Schema.Types.ObjectId,
       ref: 'ingresos',
       required: false
@@ -57,4 +59,5 @@ const MovimientosBancosSchema = new Schema({
   versionKey: false
 });
 
+MovimientosBancosSchema.plugin(mongoosePaginate);
 export default model('movimientosBancos', MovimientosBancosSchema);

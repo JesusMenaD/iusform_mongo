@@ -1,10 +1,12 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const DeclaracionesFiscales = new Schema({
   despacho: {
     type: Schema.Types.ObjectId,
     ref: 'despachos',
-    required: true
+    required: true,
+    index: true
   },
   nombre: {
     type: String,
@@ -12,33 +14,43 @@ const DeclaracionesFiscales = new Schema({
   },
   tipo: {
     type: String,
+    enum: ['Anual', 'Mensual'],
     required: true
   },
   creadoPor: {
     type: Schema.Types.ObjectId,
     ref: 'usuarios',
-    required: true
+    required: true,
+    index: true
   },
-
   adjunto: {
     nombre: {
       type: String,
-      required: true
+      required: false,
+      default: ''
     },
     archivo: {
       type: String,
-      required: true
+      required: false,
+      default: ''
     }
-
+  },
+  fecha: {
+    type: Date,
+    required: true,
+    default: Date.now
   },
   estatus: {
     type: String,
-    enum: ['Pendiente', 'Pagada'],
-    required: true
+    required: false,
+    enum: ['Pendiente', 'Aceptado', 'Rechazado'],
+    default: 'Pendiente'
   }
 }, {
 
   versionKey: false
 });
+
+DeclaracionesFiscales.plugin(mongoosePaginate);
 
 export default model('declaracionesFiscales', DeclaracionesFiscales);

@@ -37,10 +37,29 @@ import { Folios, CreateFolio } from '../views/folios'
 // * Tipo de usuarios
 import { TipoUsuarios, EditarPermisos } from '../views/tipo_usuarios'
 
+// * Declaraciones Fiscales
+import { DeclaracionesFiscales, CreateDeclaraciones, EditarDeclaraciones } from '../views/declaraciones-fiscales'
+
+// * Configuraciones de despacho
+import { ConfiguracionDespacho } from '../views/despacho'
+
+// * Gastos en trámites
+import { GastosTramites } from '../views/gastos-tramites'
+
+// * Cuentas bancarias
+import { CuentasBancarias, CreateCuentasBancarias, EditCuentasBancarias } from '../views/cuentas-bancarias'
+
+// * historial bancos
+import { HistorialBancos, CreateHustorial, EditarHustorial } from '../views/historial-bancos'
+
+// * Gastos
+import { Gastos, CreateGastos, EditGastos } from '../views/gastos'
+
+// * Ingresos
+import { Ingresos, CreateIngresos } from '../views/ingresos_p/index.js'
+
 const Router = () => {
   const [usuario] = useContext(UsuarioContext)
-  const despachoNombre = usuario?.despacho?.nombre ?? ''
-  const logo = usuario?.despacho?.logo ?? ''
 
   // Verifica si el usuario está autenticado y tiene un ID único
   const clave = usuario && usuario.clave ? usuario.clave : null
@@ -54,7 +73,7 @@ const Router = () => {
         <Route element={<ProtectedRoute />}>
 
           {clave !== null && (
-            <Route element={<AuthLayout titleDespacho={despachoNombre} logo={logo} />}>
+            <Route element={<AuthLayout titleDespacho={usuario?.despacho?.nombre} logo={usuario?.despacho?.logo} />}>
               <Route path={'/shop'} element={<h1>Shop</h1>} />
               <Route path={`/${clave}`} element={<Home />} />
               <Route path={`/${clave}/dashboard`} element={<Home />} />
@@ -84,6 +103,29 @@ const Router = () => {
 
               <Route path={`/${clave}/tipo-usuarios`} element={<TipoUsuarios />} />
               <Route path={`/${clave}/tipo-usuarios/:_id/editar`} element={<EditarPermisos usuarioC={usuario} />} />
+
+              <Route path={`/${clave}/declaraciones-fiscales`} element={<DeclaracionesFiscales />} />
+              <Route path={`/${clave}/declaraciones-fiscales/crear`} element={<CreateDeclaraciones usuarioC={usuario} />} />
+              <Route path={`/${clave}/declaraciones-fiscales/:_id/editar`} element={<EditarDeclaraciones usuarioC={usuario} />} />
+
+              <Route path={`/${clave}/datos-fiscales`} element={<ConfiguracionDespacho />} />
+
+              <Route path={`/${clave}/gastos-tramites`} element={<GastosTramites />} />
+
+              <Route path={`/${clave}/cuentas-bancarias`} element={<CuentasBancarias />} />
+              <Route path={`/${clave}/cuentas-bancarias/crear`} element={<CreateCuentasBancarias usuarioC={usuario} />} />
+              <Route path={`/${clave}/cuentas-bancarias/:_id/editar`} element={<EditCuentasBancarias usuarioC={usuario} />} />
+
+              <Route path={`/${clave}/historial-bancos`} element={<HistorialBancos />} />
+              <Route path={`/${clave}/historial-bancos/crear`} element={<CreateHustorial usuarioC={usuario} />} />
+              <Route path={`/${clave}/historial-bancos/:_id/editar`} element={<EditarHustorial usuarioC={usuario} />} />
+
+              <Route path={`/${clave}/gastos`} element={<Gastos />} />
+              <Route path={`/${clave}/gastos/crear`} element={<CreateGastos usuarioC={usuario} />} />
+              <Route path={`/${clave}/gastos/:_id/editar`} element={<EditGastos usuarioC={usuario} />} />
+
+              <Route path={`/${clave}/ingresos`} element={<Ingresos />} />
+              <Route path={`/${clave}/ingresos/crear`} element={<CreateIngresos usuarioC={usuario} />} />
 
               <Route path='*' element={<_404 />} />
             </Route>

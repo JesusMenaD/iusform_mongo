@@ -12,7 +12,6 @@ import { MovimientosExpedienteHTML } from '../Mail/MovimientosExpedienteHTML.js'
 import { sendMail } from '../config/mail.js';
 import RecursosIncidenciasExpedienteModel from '../models/ExpedientesRecursosIncidencias.js';
 import RecursosExpediente from '../models/RecursosIncidencias.js';
-
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
 export const createExpediente = async (req, res) => {
@@ -56,6 +55,9 @@ export const createExpediente = async (req, res) => {
       if (findFolio) {
         const { clave, folio } = findFolio;
         numeroExpedienteInterno = `${clave}-${folio}`;
+
+        findFolio.folio = folio + 1;
+        await findFolio.save();
       }
     }
     // busca el usuario que lo va crear
@@ -179,7 +181,7 @@ export const getExpedientesByUsuario = async (req, res) => {
 
     const options = {
       page,
-      limit: 15,
+      limit: 10,
       sort: {
         estatus: 1,
         fechaMovimiento: -1,
@@ -188,7 +190,8 @@ export const getExpedientesByUsuario = async (req, res) => {
       populate:
       {
         path: 'cliente',
-        select: 'nombre'
+        select: 'nombre',
+        match: { nombre: { $regex: search, $options: 'i' } }
       }
     };
 
@@ -196,22 +199,30 @@ export const getExpedientesByUsuario = async (req, res) => {
 
     let searchQuery = {};
 
+    if (estatus) {
+      searchQuery.estatus = estatus;
+    }
+
+    const expedientesUsuarios = await ExpedientesUsuarioModel.find(query).select('expediente');
+    // const clientesIDS = [];
+
     if (search) {
+      // const clientes = await ClientesModel.find({ nombre: { $regex: search, $options: 'i' } }).select('_id');
+
+      // clientesIDS.push(...clientes.map(cliente => cliente._id));
       searchQuery = {
         $or: [
           { titulo: { $regex: search, $options: 'i' } },
           { numeroExpediente: { $regex: search, $options: 'i' } },
           { numeroExpedienteInterno: { $regex: search, $options: 'i' } }
         ]
+        // cliente: { $in: clientesIDS }
       };
     }
 
-    if (estatus) {
-      searchQuery.estatus = estatus;
-    }
-
-    const expedientesUsuarios = await ExpedientesUsuarioModel.find(query).select('expediente');
     const expedienteIds = expedientesUsuarios.map(exp => exp.expediente);
+
+    // const clientesIds = await
 
     const combinedQuery = { ...searchQuery, _id: { $in: expedienteIds } };
 
@@ -219,6 +230,7 @@ export const getExpedientesByUsuario = async (req, res) => {
 
     res.status(200).json(expedientes);
   } catch (error) {
+    console.log(error.message);
     res.status(409).json({ message: error.message });
   }
 };

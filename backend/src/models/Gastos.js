@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const GastosSchema = new Schema({
   despacho: {
@@ -17,7 +18,7 @@ const GastosSchema = new Schema({
         type: String,
         required: true
       },
-      precio: {
+      importe: {
         type: Number,
         required: true
       }
@@ -25,7 +26,8 @@ const GastosSchema = new Schema({
   ],
   fecha: {
     type: Date,
-    required: true
+    required: false,
+    default: Date.now
   },
   total: {
     type: Number,
@@ -34,6 +36,7 @@ const GastosSchema = new Schema({
   referencia: {
     type: String,
     required: true
+
   },
   creadoPor: {
     type: Schema.Types.ObjectId,
@@ -42,16 +45,18 @@ const GastosSchema = new Schema({
   },
   comentario: {
     type: String,
-    required: true
+    required: false,
+    default: ''
   },
   estatus: {
     type: String,
     enum: ['Vigente', 'Cancelado'],
     required: true,
-    default: 'Pendiente'
+    default: 'Vigente'
   }
 }, {
   versionKey: false
 });
 
+GastosSchema.plugin(mongoosePaginate);
 export default model('gastos', GastosSchema);

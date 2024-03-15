@@ -9,7 +9,8 @@ const ClientesSchema = new Schema({
   },
   nombre: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   direccion: {
     type: String,

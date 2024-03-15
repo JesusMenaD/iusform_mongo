@@ -84,7 +84,9 @@ const Expedientes = () => {
 
   const handleFilter = (e) => {
     e.preventDefault()
+
     setCurrentPage(0)
+
     // Cancela el timeout anterior para evitar múltiples búsquedas rápidas
     clearTimeout(searchTimeout)
     // Configura un nuevo timeout para realizar la búsqueda después de 500ms
@@ -193,7 +195,7 @@ const Expedientes = () => {
               <Grid item xs={12}>
                 <Box p={{
                   xs: 0,
-                  sm: 3
+                  sm: 2
                 }}>
                   <Paper elevation={0} sx={{
                     mb: 3

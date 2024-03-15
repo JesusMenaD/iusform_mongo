@@ -13,6 +13,7 @@ export const useLocalStorage = (key, initialValue) => {
       return initialValue
     }
   })
+
   const setValue = (value) => {
     try {
       const valueToStore =

@@ -38,7 +38,8 @@ const styles = {
   },
   box: {
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    margin: '0 0 130px'
   }
 }
 const _404 = ({ to = '/' }) => {

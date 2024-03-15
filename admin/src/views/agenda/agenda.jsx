@@ -180,7 +180,7 @@ const Agenda = ({ despacho, usuario }) => {
         : <>
           <Paper
             sx={{
-              p: 4,
+              p: 2,
               m: 2,
               mt: 5,
               borderRadius: 2,

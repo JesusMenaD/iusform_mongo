@@ -5,12 +5,14 @@ const ExpedientesGastosSchema = new Schema({
   despacho: {
     type: Schema.Types.ObjectId,
     ref: 'despachos',
-    required: true
+    required: true,
+    index: true
   },
   expediente: {
     type: Schema.Types.ObjectId,
     ref: 'expedientes',
-    required: true
+    required: true,
+    index: true
   },
   usuario: {
     type: Schema.Types.ObjectId,

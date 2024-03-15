@@ -487,10 +487,13 @@ const AuthLayout = ({ titleDespacho = '', logo = '' }) => {
               alignItems: 'center',
               justifyContent: 'start'
             }}>
-              {logo && <><Avatar alt="profile image" sx={{
-                bgcolor: 'primary.main'
+              {logo &&
+                <>
+                  <Avatar alt="profile image" sx={{
+                    bgcolor: 'primary.main'
 
-              }} src={logo} >{titleDespacho[0]}</Avatar>&nbsp;&nbsp;</>}
+                  }} src={logo} >{titleDespacho[0]}</Avatar>&nbsp;&nbsp;
+                </>}
               <span>{titleDespacho}</span>
             </div>
             <NavbarContent setDialogLegislaciones={setDialogLegislaciones} />

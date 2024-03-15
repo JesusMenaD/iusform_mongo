@@ -12,6 +12,7 @@ import { apiAuth } from '../../api'
 import { Link, useLocation } from 'react-router-dom'
 import { ModulosContext } from '../../context/ModulosContext'
 import { UsuarioContext } from '../../context/UsuarioContext'
+import CreateExcel from '../../components/CreateExcel'
 // import CreateExcel from '../../components/CreateExcel'
 
 const title = 'Usuarios'
@@ -174,7 +175,7 @@ const Clientes = () => {
                             </Select>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={3} >
+                        <Grid item >
                           <Button
                             variant='contained'
                             title='Buscar'
@@ -186,13 +187,15 @@ const Clientes = () => {
                           >
                             <Search />
                           </Button>
-                          {/* <CreateExcel
+                        </Grid>
+                        <Grid item >
+                          <CreateExcel
                             columns={columns}
                             rows={expedientes}
                             type='excel'
                             title='Usuarios'
                             icon='fa-regular fa-file-excel'
-                          /> */}
+                          />
                         </Grid>
                       </Grid>
                     </Box>

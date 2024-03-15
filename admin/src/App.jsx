@@ -7,6 +7,9 @@ import { useState } from 'react'
 import { getUsuarioLS } from './api/auth'
 import { NotificationContext } from './context/NotificationConext'
 import { ModulosContext } from './context/ModulosContext'
+import moment from 'moment-timezone'
+// Establece la zona horaria predeterminada para todo el proyecto
+moment.tz.setDefault('America/Mexico_City')
 
 const App = () => {
   const data = getUsuarioLS()
@@ -17,10 +20,10 @@ const App = () => {
   return (
     <UsuarioContext.Provider value={[usuario, setUsuario]}>
       <ModulosContext.Provider value={[modulos, setModulos]}>
-      <NotificationContext.Provider value={[notification, setNotification]}>
-        <ThemeProvider theme={theme}>
-          <Router key={usuario?.id} />
-        </ThemeProvider>
+        <NotificationContext.Provider value={[notification, setNotification]}>
+          <ThemeProvider theme={theme}>
+            <Router key={usuario?.id} />
+          </ThemeProvider>
         </NotificationContext.Provider>
       </ModulosContext.Provider>
     </UsuarioContext.Provider>

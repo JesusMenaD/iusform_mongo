@@ -26,9 +26,11 @@ const EditarPerfil = () => {
 
   const actualizarUsuarioMutation = useMutation({
     mutationFn: async (payload) => {
+      // console.log(payload, 'payload')
       const { data } = await apiAuth({ 'Content-Type': 'multipart/form-data' }).put(`/usuario/${usuarioContext._id}`, payload)
       return data
     },
+
     onSuccess: (data) => {
       const { message } = data
       queryClient.invalidateQueries('usuario')
@@ -107,9 +109,7 @@ const EditarPerfil = () => {
               setFoto(r.target.files[0])
             }}
           />
-          {/* <input type='file' name='foto' onChange={(r) => {
-            setFoto(r.target.files[0])
-          }} /> */}
+
           <TextField
             sx={sx}
             label='Nombre'

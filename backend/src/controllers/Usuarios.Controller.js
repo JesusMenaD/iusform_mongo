@@ -236,42 +236,32 @@ export const actualizarUsuario = async (req, res) => {
       password
     } = req.body;
 
-    const objUser = {
-      nombre,
-      apellidoPaterno,
-      apellidoMaterno,
-      telefono,
-      email
-    };
-
-    if (password) {
-      const passwordEncrypt = encriptar(password);
-      objUser.password = passwordEncrypt;
-    }
-
-    // Si se sube una foto, se guarda el nombre de la foto en el objeto
-    if (filename) {
-      objUser.foto = filename;
-    }
+    const passwordEncrypt = encriptar(password);
 
     // Actualizar el usuario sin devolver el objeto actualizado
-    const objAntes = await UsuariosModel.findByIdAndUpdate(id, objUser);
+    const objAntes = await UsuariosModel.findById(id);
 
     if (!objAntes) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    if (objAntes.foto !== '') {
+    if (filename !== null && objAntes.foto !== '') {
       const folderPath = path.join('src/uploads/usuarios', objAntes.foto);
       deleteFile(folderPath);
     }
 
+    objAntes.nombre = nombre ?? objAntes.nombre;
+    objAntes.apellidoPaterno = apellidoPaterno ?? objAntes.apellidoPaterno;
+    objAntes.apellidoMaterno = apellidoMaterno ?? objAntes.apellidoMaterno;
+    objAntes.telefono = telefono ?? objAntes.telefono;
+    objAntes.email = email ?? objAntes.email;
+    objAntes.password = passwordEncrypt ?? objAntes.password;
+    objAntes.foto = filename ?? objAntes.foto;
+
+    await objAntes.save();
+
     // Buscar y devolver el objeto actualizado
     const userUpdate = await UsuariosModel.findById(id).populate('despacho');
-
-    if (!userUpdate) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
 
     if (userUpdate.foto !== '') {
       userUpdate.foto = `${APP_URL}/uploads/usuarios/${userUpdate.foto}`;
@@ -308,8 +298,9 @@ export const obtenerUsuarios = async (req, res) => {
       sort: {
         estatus: 1,
         nombre: 1
-      }
-      // populate: 'tipoUsuario'
+      },
+      populate: 'tipoUsuario'
+
     };
 
     const query = {

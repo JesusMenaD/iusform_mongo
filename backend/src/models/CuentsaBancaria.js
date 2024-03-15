@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const CuentasBancarias = new Schema({
   despacho: {
@@ -6,7 +7,7 @@ const CuentasBancarias = new Schema({
     ref: 'despachos',
     required: true
   },
-  alias: {
+  nombre: {
     type: String,
     required: true
   },
@@ -15,13 +16,21 @@ const CuentasBancarias = new Schema({
     ref: 'bancos',
     required: true
   },
-  numeroCuota: {
-    type: Number,
-    required: true
+  numeroCuenta: {
+    type: String,
+    required: false,
+    default: ''
+
   },
   clave: {
     type: String,
-    required: true
+    required: false,
+    default: ''
+  },
+  saldoInicial: {
+    type: Number,
+    required: false,
+    default: 0
   },
   estatus: {
     type: String,
@@ -33,4 +42,5 @@ const CuentasBancarias = new Schema({
   versionKey: false
 });
 
+CuentasBancarias.plugin(mongoosePaginate);
 export default model('cuentasBancarias', CuentasBancarias);

@@ -5,7 +5,7 @@ const BancocosSchema = new Schema({
     type: String,
     required: true
   },
-  nombre: {
+  banco: {
     type: String,
     required: true
   }

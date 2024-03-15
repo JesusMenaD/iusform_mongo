@@ -8,6 +8,7 @@ import MateriaSchema from '../models/Materias.js';
 import EtapasProcesalesSchema from '../models/EtapasProcesales.js';
 import RecursosIncidencias from '../models/RecursosIncidencias.js';
 import RegimenSchema from '../models/RegimenFiscales.js';
+import BancoSchema from '../models/Bancos.js';
 
 const generateModules = async () => {
   const count = await ModulosSchema.countDocuments();
@@ -2980,6 +2981,388 @@ const generateRegimen = async () => {
     console.error('Error al crear regimenes'.red, error);
   }
 };
+
+const generateBancos = async () => {
+  const count = await BancoSchema.countDocuments();
+  if (count > 0) return;
+
+  try {
+    const bancos = [
+      {
+        clave: '002',
+        banco: 'BANAMEX  '
+      },
+      {
+        clave: '006',
+        banco: 'BANCOMEXT  '
+      },
+      {
+        clave: '009',
+        banco: 'BANOBRAS  '
+      },
+      {
+        clave: '012',
+        banco: 'BBVA BANCOMER '
+      },
+      {
+        clave: '014',
+        banco: 'SANTANDER  '
+      },
+      {
+        clave: '019',
+        banco: 'BANJERCITO  '
+      },
+      {
+        clave: '021',
+        banco: 'HSBC  '
+      },
+      {
+        clave: '030',
+        banco: 'BAJIO  '
+      },
+      {
+        clave: '032',
+        banco: 'IXE  '
+      },
+      {
+        clave: '036',
+        banco: 'INBURSA  '
+      },
+      {
+        clave: '037',
+        banco: 'INTERACCIONES  '
+      },
+      {
+        clave: '042',
+        banco: 'MIFEL  '
+      },
+      {
+        clave: '044',
+        banco: 'SCOTIABANK  '
+      },
+      {
+        clave: '058',
+        banco: 'BANREGIO  '
+      },
+      {
+        clave: '059',
+        banco: 'INVEX  '
+      },
+      {
+        clave: '060',
+        banco: 'BANSI  '
+      },
+      {
+        clave: '062',
+        banco: 'AFIRME  '
+      },
+      {
+        clave: '072',
+        banco: 'BANORTE  '
+      },
+      {
+        clave: '102',
+        banco: 'THE ROYAL BANK'
+      },
+      {
+        clave: '103',
+        banco: 'AMERICAN EXPRESS '
+      },
+      {
+        clave: '106',
+        banco: 'BAMSA  '
+      },
+      {
+        clave: '108',
+        banco: 'TOKYO  '
+      },
+      {
+        clave: '110',
+        banco: 'JP MORGAN '
+      },
+      {
+        clave: '112',
+        banco: 'BMONEX  '
+      },
+      {
+        clave: '113',
+        banco: 'VE POR MAS'
+      },
+      {
+        clave: '116',
+        banco: 'ING  '
+      },
+      {
+        clave: '124',
+        banco: 'DEUTSCHE  '
+      },
+      {
+        clave: '126',
+        banco: 'CREDIT SUISSE '
+      },
+      {
+        clave: '127',
+        banco: 'BANCO AZTECA '
+      },
+      {
+        clave: '128',
+        banco: 'AUTOFIN  '
+      },
+      {
+        clave: '129',
+        banco: 'BARCLAYS  '
+      },
+      {
+        clave: '130',
+        banco: 'COMPARTAMOS  '
+      },
+      {
+        clave: '131',
+        banco: 'BANCO FAMSA '
+      },
+      {
+        clave: '132',
+        banco: 'BMULTIVA  '
+      },
+      {
+        clave: '133',
+        banco: 'ACTINVER  '
+      },
+      {
+        clave: '134',
+        banco: 'WAL-MART  '
+      },
+      {
+        clave: '135',
+        banco: 'NAFIN  '
+      },
+      {
+        clave: '136',
+        banco: 'INTERBANCO  '
+      },
+      {
+        clave: '137',
+        banco: 'BANCOPPEL  '
+      },
+      {
+        clave: '138',
+        banco: 'ABC CAPITAL ABC'
+      },
+      {
+        clave: '139',
+        banco: 'UBS BANK '
+      },
+      {
+        clave: '140',
+        banco: 'CONSUBANCO  '
+      },
+      {
+        clave: '141',
+        banco: 'VOLKSWAGEN  '
+      },
+      {
+        clave: '143',
+        banco: 'CIBANCO  '
+      },
+      {
+        clave: '145',
+        banco: 'BBASE  '
+      },
+      {
+        clave: '166',
+        banco: 'BANSEFI  '
+      },
+      {
+        clave: '168',
+        banco: 'HIPOTECARIA FEDERAL '
+      },
+      {
+        clave: '600',
+        banco: 'MONEXCB  '
+      },
+      {
+        clave: '601',
+        banco: 'GBM  '
+      },
+      {
+        clave: '602',
+        banco: 'MASARI  '
+      },
+      {
+        clave: '605',
+        banco: 'VALUE  '
+      },
+      {
+        clave: '606',
+        banco: 'ESTRUCTURADORES  '
+      },
+      {
+        clave: '607',
+        banco: 'TIBER  '
+      },
+      {
+        clave: '608',
+        banco: 'VECTOR  '
+      },
+      {
+        clave: '610',
+        banco: 'B&B B y'
+      },
+      {
+        clave: '614',
+        banco: 'ACCIVAL  '
+      },
+      {
+        clave: '615',
+        banco: 'MERRILL LYNCH '
+      },
+      {
+        clave: '616',
+        banco: 'FINAMEX  '
+      },
+      {
+        clave: '617',
+        banco: 'VALMEX  '
+      },
+      {
+        clave: '618',
+        banco: 'UNICA  '
+      },
+      {
+        clave: '619',
+        banco: 'MAPFRE  '
+      },
+      {
+        clave: '620',
+        banco: 'PROFUTURO  '
+      },
+      {
+        clave: '621',
+        banco: 'CB ACTINVER '
+      },
+      {
+        clave: '622',
+        banco: 'OACTIN  '
+      },
+      {
+        clave: '623',
+        banco: 'SKANDIA  '
+      },
+      {
+        clave: '626',
+        banco: 'CBDEUTSCHE  '
+      },
+      {
+        clave: '627',
+        banco: 'ZURICH  '
+      },
+      {
+        clave: '628',
+        banco: 'ZURICHVI  '
+      },
+      {
+        clave: '629',
+        banco: 'SU CASITA '
+      },
+      {
+        clave: '630',
+        banco: 'CB INTERCAM '
+      },
+      {
+        clave: '631',
+        banco: 'CI BOLSA CI'
+      },
+      {
+        clave: '632',
+        banco: 'BULLTICK CB '
+      },
+      {
+        clave: '633',
+        banco: 'STERLING  '
+      },
+      {
+        clave: '634',
+        banco: 'FINCOMUN  '
+      },
+      {
+        clave: '636',
+        banco: 'HDI SEGUROS '
+      },
+      {
+        clave: '637',
+        banco: 'ORDER  '
+      },
+      {
+        clave: '638',
+        banco: 'AKALA  '
+      },
+      {
+        clave: '640',
+        banco: 'CB JPMORGAN '
+      },
+      {
+        clave: '642',
+        banco: 'REFORMA  '
+      },
+      {
+        clave: '646',
+        banco: 'STP  '
+      },
+      {
+        clave: '647',
+        banco: 'TELECOMM  '
+      },
+      {
+        clave: '648',
+        banco: 'EVERCORE  '
+      },
+      {
+        clave: '649',
+        banco: 'SKANDIA OPERADORA DE'
+      },
+      {
+        clave: '651',
+        banco: 'SEGUROS MONTERREY '
+      },
+      {
+        clave: '652',
+        banco: 'ASEA  '
+      },
+      {
+        clave: '653',
+        banco: 'KUSPIT  '
+      },
+      {
+        clave: '655',
+        banco: 'SOFIEXPRESS  '
+      },
+      {
+        clave: '656',
+        banco: 'UNAGRA  '
+      },
+      {
+        clave: '659',
+        banco: 'OPCIONES EMPRESARIALES DEL'
+      },
+      {
+        clave: '901',
+        banco: 'CLS  '
+      },
+      {
+        clave: '902',
+        banco: 'INDEVAL SD '
+      },
+      {
+        clave: '670',
+        banco: 'LIBERTAD  '
+      }
+    ];
+
+    await BancoSchema.insertMany(bancos);
+  } catch (error) {
+    console.error('Error al crear bancos'.red, error);
+  }
+};
 (async () => {
   await generateModules();
   await generateTipoUsuarios();
@@ -2991,4 +3374,5 @@ const generateRegimen = async () => {
   await generateEtapasProcesales();
   await generateRecursosIncidencias();
   await generateRegimen();
+  await generateBancos();
 })();
