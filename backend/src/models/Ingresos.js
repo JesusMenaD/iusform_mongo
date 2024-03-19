@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const IngresosSchema = new Schema({
   despacho: {
@@ -70,4 +70,4 @@ const IngresosSchema = new Schema({
 
 IngresosSchema.plugin(mongoosePaginate);
 
-export default model('ingresos', IngresosSchema);
+module.exports = model('ingresos', IngresosSchema);

@@ -1,6 +1,6 @@
-import MateriasModel from '../models/Materias.js';
+const MateriasModel = require('../models/Materias.js');
 
-export const getMaterias = async (req, res) => {
+const getMaterias = async (req, res) => {
   const { estatus, page = 1 } = req.query;
 
   const options = {
@@ -21,4 +21,8 @@ export const getMaterias = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getMaterias
 };

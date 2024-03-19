@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { actualizarUsuario, obtenerUsuarios, createUsuarioDespacho, obtenerUsuario, updateUsuario, deleteUsuario } from '../controllers/Usuarios.Controller.js';
-import { configureMulterSingle } from '../config/configureMulter.js';
+const { Router } = require('express');
+const { actualizarUsuario, obtenerUsuarios, createUsuarioDespacho, obtenerUsuario, updateUsuario, deleteUsuario } = require('../controllers/Usuarios.Controller.js');
+const { configureMulterSingle } = require('../config/configureMulter.js');
 
 const router = Router();
 const upload = configureMulterSingle('foto', '/usuarios');
@@ -12,4 +12,4 @@ router.get('/:id/by-id', obtenerUsuario);
 router.patch('/:id', updateUsuario);
 router.delete('/:id', deleteUsuario);
 
-export default router;
+module.exports = router;

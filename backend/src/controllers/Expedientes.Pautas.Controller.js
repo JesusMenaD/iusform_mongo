@@ -1,8 +1,9 @@
-import PautasModel from '../models/ExpedientesPautas.js';
-import fs from 'fs';
-import path from 'path';
+const PautasModel = require('../models/ExpedientesPautas.js');
+const fs = require('fs');
+const path = require('path');
+
 const APP_URL = process.env.APP_URL;
-export const create = async (req, res) => {
+const create = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { nombre, usuario } = req.body;
   try {
@@ -25,7 +26,7 @@ export const create = async (req, res) => {
   }
 };
 
-export const getPautas = async (req, res) => {
+const getPautas = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { page = 1 } = req.query;
 
@@ -64,7 +65,7 @@ export const getPautas = async (req, res) => {
   }
 };
 
-export const getPautaById = async (req, res) => {
+const getPautaById = async (req, res) => {
   const { id } = req.params;
   try {
     const pauta = await PautasModel.findById(id);
@@ -76,7 +77,7 @@ export const getPautaById = async (req, res) => {
   }
 };
 
-export const updatePauta = async (req, res) => {
+const updatePauta = async (req, res) => {
   const { id } = req.params;
   const { documento = '' } = req.body;
 
@@ -91,7 +92,7 @@ export const updatePauta = async (req, res) => {
   }
 };
 
-export const deletePauta = async (req, res) => {
+const deletePauta = async (req, res) => {
   const { id } = req.params;
   try {
     await PautasModel.findByIdAndRemove(id);
@@ -100,4 +101,12 @@ export const deletePauta = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  create,
+  getPautas,
+  getPautaById,
+  updatePauta,
+  deletePauta
 };

@@ -1,7 +1,8 @@
-import ExpedientesAgenda from '../models/ExpedientesAgenda.js';
-import UsuariosAgenda from '../models/ExpedientesAgendaUsuarios.js';
-import moment from 'moment';
-export const getEvents = async (req, res) => {
+const ExpedientesAgenda = require('../models/ExpedientesAgenda.js');
+const UsuariosAgenda = require('../models/ExpedientesAgendaUsuarios.js');
+const moment = require('moment');
+
+const getEvents = async (req, res) => {
   const { despacho, usuario } = req.params;
   const { expediente = null } = req.query;
 
@@ -106,7 +107,7 @@ export const getEvents = async (req, res) => {
   }
 };
 
-export const createEvent = async (req, res) => {
+const createEvent = async (req, res) => {
   const { despacho, usuario } = req.params;
   const { expediente = null, titulo, descripcion = '', fecha = new Date(), horaInicio, horaFin = null, usuarios = [], fechaRecordatorio = null, recordar = 0 } = req.body;
 
@@ -165,7 +166,7 @@ const estatusColors = (estatus) => {
   }
 };
 
-export const updateEvent = async (req, res) => {
+const updateEvent = async (req, res) => {
   const { _id } = req.params;
   const { estatus, fechaRecordatorio, comentario, recordar } = req.body;
 
@@ -193,4 +194,10 @@ export const updateEvent = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getEvents,
+  createEvent,
+  updateEvent
 };

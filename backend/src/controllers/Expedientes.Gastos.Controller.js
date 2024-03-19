@@ -1,8 +1,10 @@
-import ExpedienteGastosModel from '../models/ExpedientesGastos.js';
-import fs from 'fs';
-import path from 'path';
+const ExpedienteGastosModel = require('../models/ExpedientesGastos.js');
+const fs = require('fs');
+const path = require('path');
+
 const APP_URL = process.env.APP_URL;
-export const create = async (req, res) => {
+
+const create = async (req, res) => {
   const { despacho, expediente, usuario } = req.params;
   const { tipo, fecha, concepto, importe } = req.body;
 
@@ -60,7 +62,7 @@ export const create = async (req, res) => {
   }
 };
 
-export const get = async (req, res) => {
+const get = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { tipo = 'Gasto' } = req.query;
   const { page = 1 } = req.query;
@@ -94,7 +96,7 @@ export const get = async (req, res) => {
   }
 };
 
-export const deleteGasto = async (req, res) => {
+const deleteGasto = async (req, res) => {
   const { id } = req.params;
   try {
     const gasto = await ExpedienteGastosModel.findById(id);
@@ -108,7 +110,7 @@ export const deleteGasto = async (req, res) => {
   }
 };
 
-export const balance = async (req, res) => {
+const balance = async (req, res) => {
   const { despacho, expediente } = req.params;
   try {
     const gastos = await ExpedienteGastosModel.find({ despacho, expediente, tipo: 'Gasto' });
@@ -122,4 +124,11 @@ export const balance = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  create,
+  get,
+  deleteGasto,
+  balance
 };

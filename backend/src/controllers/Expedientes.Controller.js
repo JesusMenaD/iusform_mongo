@@ -1,20 +1,20 @@
-import ExpedienteModel from '../models/Expedientes.js';
-import ExpedientesUsuarioModel from '../models/ExpedientesUsuarios.js';
-import FoliosModel from '../models/ExpedientesFolios.js';
-import EtapasProcesalesModel from '../models/EtapasProcesales.js';
-import MateriaModel from '../models/Materias.js';
-import JuzgadosModel from '../models/Juzgados.js';
-import ExpedientesMovimientosModel from '../models/ExpedientesMovimientos.js';
-import AsuntosModel from '../models/Asuntos.js';
-import DespachoModel from '../models/Despachos.js';
-import UsuarioModel from '../models/Usuarios.js';
-import { MovimientosExpedienteHTML } from '../Mail/MovimientosExpedienteHTML.js';
-import { sendMail } from '../config/mail.js';
-import RecursosIncidenciasExpedienteModel from '../models/ExpedientesRecursosIncidencias.js';
-import RecursosExpediente from '../models/RecursosIncidencias.js';
+const ExpedienteModel = require('../models/Expedientes.js');
+const ExpedientesUsuarioModel = require('../models/ExpedientesUsuarios.js');
+const FoliosModel = require('../models/ExpedientesFolios.js');
+const EtapasProcesalesModel = require('../models/EtapasProcesales.js');
+const MateriaModel = require('../models/Materias.js');
+const JuzgadosModel = require('../models/Juzgados.js');
+const ExpedientesMovimientosModel = require('../models/ExpedientesMovimientos.js');
+const AsuntosModel = require('../models/Asuntos.js');
+const DespachoModel = require('../models/Despachos.js');
+const UsuarioModel = require('../models/Usuarios.js');
+const { MovimientosExpedienteHTML } = require('../Mail/MovimientosExpedienteHTML.js');
+const { sendMail } = require('../config/mail.js');
+const RecursosIncidenciasExpedienteModel = require('../models/ExpedientesRecursosIncidencias.js');
+const RecursosExpediente = require('../models/RecursosIncidencias.js');
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
-export const createExpediente = async (req, res) => {
+const createExpediente = async (req, res) => {
   try {
     const { despacho } = req.params;
     const fecha = new Date();
@@ -169,7 +169,7 @@ export const createExpediente = async (req, res) => {
   }
 };
 
-export const getExpedientesByUsuario = async (req, res) => {
+const getExpedientesByUsuario = async (req, res) => {
   try {
     const { despacho, usuario } = req.params;
     const { estatus, page = 1, search } = req.query;
@@ -235,7 +235,7 @@ export const getExpedientesByUsuario = async (req, res) => {
   }
 };
 
-export const getExpedienteById = async (req, res) => {
+const getExpedienteById = async (req, res) => {
   try {
     const { despacho, usuario, expediente } = req.params;
 
@@ -284,7 +284,7 @@ export const getExpedienteById = async (req, res) => {
   }
 };
 
-export const updateEstatus = async (req, res) => {
+const updateEstatus = async (req, res) => {
   const { despacho, usuario, expediente } = req.params;
 
   const { estatus, descripcion } = req.body;
@@ -374,7 +374,7 @@ export const updateEstatus = async (req, res) => {
   }
 };
 
-export const updateTitulo = async (req, res) => {
+const updateTitulo = async (req, res) => {
   const { despacho, usuario, expediente } = req.params;
 
   const { titulo, descripcion } = req.body;
@@ -451,7 +451,7 @@ export const updateTitulo = async (req, res) => {
   }
 };
 
-export const updateNumeroExpediente = async (req, res) => {
+const updateNumeroExpediente = async (req, res) => {
   const { despacho, usuario, expediente } = req.params;
 
   const { numeroExpediente, descripcion } = req.body;
@@ -530,7 +530,7 @@ export const updateNumeroExpediente = async (req, res) => {
   }
 };
 // asunto
-export const updateJuicio = async (req, res) => {
+const updateJuicio = async (req, res) => {
   const { despacho, usuario, expediente } = req.params;
 
   const { nombreJuicio, descripcion } = req.body;
@@ -616,7 +616,7 @@ export const updateJuicio = async (req, res) => {
   }
 };
 
-export const updateEtapaProcesal = async (req, res) => {
+const updateEtapaProcesal = async (req, res) => {
   const { despacho, usuario, expediente } = req.params;
 
   const { etapaProcesal, etapaOpcional = '', descripcion = '', recursosIncidencia = null, recursosIncidenciaOpcional = '', descripcionRC = '', tipo = 'Recurso' } = req.body;
@@ -743,4 +743,15 @@ export const updateEtapaProcesal = async (req, res) => {
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
+};
+
+module.exports = {
+  createExpediente,
+  getExpedientesByUsuario,
+  getExpedienteById,
+  updateEstatus,
+  updateTitulo,
+  updateNumeroExpediente,
+  updateJuicio,
+  updateEtapaProcesal
 };

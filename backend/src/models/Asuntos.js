@@ -1,5 +1,6 @@
-import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 const AsuntosSchema = new Schema({
   despacho: {
     type: Schema.Types.ObjectId,
@@ -28,4 +29,4 @@ const AsuntosSchema = new Schema({
 
 AsuntosSchema.plugin(mongoosePaginate);
 
-export default model('asuntos', AsuntosSchema);
+module.exports = model('asuntos', AsuntosSchema);

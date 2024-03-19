@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { create, getPautas, updatePauta, getPautaById, deletePauta } from '../controllers/Expedientes.Pautas.Controller.js';
+const { Router } = require('express');
+const { create, getPautas, updatePauta, getPautaById, deletePauta } = require('../controllers/Expedientes.Pautas.Controller.js');
 
 const router = Router();
 
@@ -9,4 +9,4 @@ router.get('/:id', getPautaById);
 router.put('/:id', updatePauta);
 router.delete('/:id', deletePauta);
 
-export default router;
+module.exports = router;

@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { RegistroUsuarioHTML } from '../Mail/RegistroUsuarioHTML.js';
-import { sendMail } from '../config/mail.js';
+const { Router } = require('express');
+const { RegistroUsuarioHTML } = require('../Mail/RegistroUsuarioHTML.js');
+const { sendMail } = require('../config/mail.js');
 const router = Router();
 
 router.get('/', async (req, res) => {
@@ -9,4 +9,4 @@ router.get('/', async (req, res) => {
   res.send(RegistroUsuarioHTML('nombre', 'usuario', 'password', 'url'));
 });
 
-export default router;
+module.exports = router;

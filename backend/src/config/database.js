@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import 'colors';
+require('colors');
+const mongoose = require('mongoose');
 const URI = process.env.MONGODB_URI;
-// mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', false);
 console.log(URI.bgRed);
 mongoose.connect(URI, {
   useNewUrlParser: true,

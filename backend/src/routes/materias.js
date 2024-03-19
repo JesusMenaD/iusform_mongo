@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import { getMaterias } from '../controllers/Materias.Controller.js';
+const { Router } = require('express');
+const { getMaterias } = require('../controllers/Materias.Controller.js');
 
 const router = Router();
 
 router.get('/', getMaterias);
 
-export default router;
+module.exports = router;

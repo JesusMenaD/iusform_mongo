@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const MateriasSchema = new Schema({
   nombre: {
@@ -18,4 +18,4 @@ const MateriasSchema = new Schema({
 });
 
 MateriasSchema.plugin(mongoosePaginate);
-export default model('materias', MateriasSchema);
+module.exports = model('materias', MateriasSchema);

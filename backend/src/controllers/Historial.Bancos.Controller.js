@@ -1,5 +1,6 @@
-import HistorialBancos from '../models/MovimientosBancos.js';
-export const getHistorialBancos = async (req, res) => {
+const HistorialBancos = require('../models/MovimientosBancos.js');
+
+const getHistorialBancos = async (req, res) => {
   const { despacho } = req.params;
   const { estatus, banco, page = 1, search } = req.query;
 
@@ -93,7 +94,7 @@ export const getHistorialBancos = async (req, res) => {
   }
 };
 
-export const createMovimientoBanco = async (req, res) => {
+const createMovimientoBanco = async (req, res) => {
   const { despacho } = req.params;
 
   const { tipo, concepto, importe, banco, liga, estatus, fecha } = req.body;
@@ -146,7 +147,7 @@ export const createMovimientoBanco = async (req, res) => {
   }
 };
 
-export const deleteMovimientoBanco = async (req, res) => {
+const deleteMovimientoBanco = async (req, res) => {
   const { id } = req.params;
   try {
     const movimiento = await HistorialBancos.findById(id);
@@ -162,7 +163,7 @@ export const deleteMovimientoBanco = async (req, res) => {
   }
 };
 
-export const getMovimientoById = async (req, res) => {
+const getMovimientoById = async (req, res) => {
   const { id } = req.params;
   try {
     const movimiento = await HistorialBancos.findById(id);
@@ -175,7 +176,7 @@ export const getMovimientoById = async (req, res) => {
   }
 };
 
-export const updateMovimientoBanco = async (req, res) => {
+const updateMovimientoBanco = async (req, res) => {
   const { id } = req.params;
   const { tipo, concepto, importe, banco, liga, estatus, fecha } = req.body;
   const tipos = ['Cargo', 'Abono']; // cargo = egreso = gasto, abono = ingreso = ingreso
@@ -223,4 +224,12 @@ export const updateMovimientoBanco = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'No se pudo actualizar el movimiento' });
   }
+};
+
+module.exports = {
+  getHistorialBancos,
+  createMovimientoBanco,
+  deleteMovimientoBanco,
+  getMovimientoById,
+  updateMovimientoBanco
 };

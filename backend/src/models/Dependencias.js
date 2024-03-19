@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const DependenciasSchema = new Schema({
   nombre: {
@@ -27,4 +27,4 @@ const DependenciasSchema = new Schema({
   versionKey: false
 });
 
-export default model('dependencias', DependenciasSchema);
+module.exports = model('dependencias', DependenciasSchema);

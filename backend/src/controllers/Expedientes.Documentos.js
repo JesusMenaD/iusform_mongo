@@ -1,9 +1,9 @@
-import ExpedientesDocumentosModel from '../models/ExpedientesAdjuntos.js';
-import fs from 'fs';
-import path from 'path';
+const ExpedientesDocumentosModel = require('../models/ExpedientesAdjuntos.js');
+const fs = require('fs');
+const path = require('path');
 const APP_URL = process.env.APP_URL;
 
-export const getDocumetnos = async (req, res) => {
+const getDocumetnos = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { page = 1 } = req.query;
 
@@ -49,7 +49,7 @@ export const getDocumetnos = async (req, res) => {
   }
 };
 
-export const createDocumentos = async (req, res) => {
+const createDocumentos = async (req, res) => {
   const { despacho, usuario, expediente } = req.params;
 
   const documentos = req?.files ?? [];
@@ -90,7 +90,7 @@ export const createDocumentos = async (req, res) => {
   res.status(200).json({ message: 'Documentos creados' });
 };
 
-export const deleteDocumento = async (req, res) => {
+const deleteDocumento = async (req, res) => {
   const { _id } = req.params;
   try {
     const documento = await ExpedientesDocumentosModel.findById(_id);
@@ -102,4 +102,10 @@ export const deleteDocumento = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getDocumetnos,
+  createDocumentos,
+  deleteDocumento
 };

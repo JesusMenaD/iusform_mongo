@@ -1,14 +1,13 @@
-import ExpedientesUsuariosModel from '../models/ExpedientesUsuarios.js';
-import UsuarioModel from '../models/Usuarios.js';
-import ExpedienteModel from '../models/Expedientes.js';
-import { InvitacionExpedienteHTML } from '../Mail/InvitacionExpedienteHTML.js';
-import { sendMail } from '../config/mail.js';
-
-import fs from 'fs';
-import path from 'path';
+const ExpedientesUsuariosModel = require('../models/ExpedientesUsuarios.js');
+const UsuarioModel = require('../models/Usuarios.js');
+const ExpedienteModel = require('../models/Expedientes.js');
+const { InvitacionExpedienteHTML } = require('../Mail/InvitacionExpedienteHTML.js');
+const { sendMail } = require('../config/mail.js');
+const fs = require('fs');
+const path = require('path');
 const APP_URL = process.env.APP_URL;
 
-export const getUsuarios = async (req, res) => {
+const getUsuarios = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { page = 1 } = req.query;
 
@@ -56,7 +55,7 @@ export const getUsuarios = async (req, res) => {
   }
 };
 
-export const getUsuarioExpedienteSinAsignar = async (req, res) => {
+const getUsuarioExpedienteSinAsignar = async (req, res) => {
   const { despacho, expediente } = req.params;
 
   if (!despacho) {
@@ -92,7 +91,7 @@ export const getUsuarioExpedienteSinAsignar = async (req, res) => {
   }
 };
 
-export const deleteUsuarioExpediente = async (req, res) => {
+const deleteUsuarioExpediente = async (req, res) => {
   try {
     const { _id } = req.params;
 
@@ -108,7 +107,7 @@ export const deleteUsuarioExpediente = async (req, res) => {
   }
 };
 
-export const createUsuariosExpediente = async (req, res) => {
+const createUsuariosExpediente = async (req, res) => {
   try {
     const { despacho, expediente } = req.params;
 
@@ -165,7 +164,7 @@ export const createUsuariosExpediente = async (req, res) => {
   }
 };
 
-export const getUsuariosExpedienteSinPaginar = async (req, res) => {
+const getUsuariosExpedienteSinPaginar = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { sin } = req.query;
 
@@ -198,4 +197,12 @@ export const getUsuariosExpedienteSinPaginar = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getUsuarios,
+  getUsuarioExpedienteSinAsignar,
+  deleteUsuarioExpediente,
+  createUsuariosExpediente,
+  getUsuariosExpedienteSinPaginar
 };

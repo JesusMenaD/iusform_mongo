@@ -1,6 +1,6 @@
-import etapasProcesalesModel from '../models/EtapasProcesales.js';
+const etapasProcesalesModel = require('../models/EtapasProcesales.js');
 
-export const getEtapasProcesales = async (req, res) => {
+const getEtapasProcesales = async (req, res) => {
   const { estatus, page = 1, materia } = req.query;
 
   const options = {
@@ -23,7 +23,7 @@ export const getEtapasProcesales = async (req, res) => {
   }
 };
 
-export const getEtapasProcesalesSinPagina = async (req, res) => {
+const getEtapasProcesalesSinPagina = async (req, res) => {
   const { estatus, materia } = req.query;
 
   try {
@@ -38,4 +38,9 @@ export const getEtapasProcesalesSinPagina = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getEtapasProcesales,
+  getEtapasProcesalesSinPagina
 };

@@ -1,9 +1,9 @@
-import ExpedientesNotasModel from '../models/ExpedientesNotas.js';
-import fs from 'fs';
-import path from 'path';
+const ExpedientesNotasModel = require('../models/ExpedientesNotas.js');
+const fs = require('fs');
+const path = require('path');
 const APP_URL = process.env.APP_URL;
 
-export const getNotas = async (req, res) => {
+const getNotas = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { page = 1 } = req.query;
 
@@ -54,7 +54,7 @@ export const getNotas = async (req, res) => {
   }
 };
 
-export const createNotas = async (req, res) => {
+const createNotas = async (req, res) => {
   const { despacho, expediente, usuario } = req.params;
   const { nota } = req.body;
 
@@ -90,7 +90,7 @@ export const createNotas = async (req, res) => {
   }
 };
 
-export const deleteNotas = async (req, res) => {
+const deleteNotas = async (req, res) => {
   const { id } = req.params;
   if (!id) {
     return res.status(400).json({ message: 'El id es requerido' });
@@ -103,7 +103,7 @@ export const deleteNotas = async (req, res) => {
   }
 };
 
-export const updateNotas = async (req, res) => {
+const updateNotas = async (req, res) => {
   const { id } = req.params;
   const { nota } = req.body;
   if (!id) {
@@ -122,4 +122,11 @@ export const updateNotas = async (req, res) => {
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getNotas,
+  createNotas,
+  deleteNotas,
+  updateNotas
 };

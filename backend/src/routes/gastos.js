@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { getGastos, createGastos, deleteGasto, getGasto, updateGasto } from '..//controllers/Gastos.Controller.js';
-import { configureMulterArray } from '../config/configureMulter.js';
+const { Router } = require('express');
+const { getGastos, createGastos, deleteGasto, getGasto, updateGasto } = require('..//controllers/Gastos.Controller.js');
+const { configureMulterArray } = require('../config/configureMulter.js');
 const upload = configureMulterArray('documentos', 'gastos');
 
 const router = Router();
@@ -11,4 +11,4 @@ router.delete('/:id', deleteGasto);
 router.get('/:id/by-id', getGasto);
 router.patch('/:id', updateGasto);
 
-export default router;
+module.exports = router;

@@ -1,32 +1,26 @@
-import { Router } from 'express';
-import { readdirSync } from 'fs';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import 'colors';
-const PORT = process.env.PORT || 3000;
+const Router = require('express');
+const { readdirSync } = require('fs');
+// const { PORT } = require("../config/index.js");
+require('colors');
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 const router = Router();
 
-const removeExtension = fileName => {
+const pathRouter = `${__dirname}`;
+const PORT = 3000;
+
+const removeExtension = (fileName) => {
   return fileName.split('.').shift();
 };
 
 // eslint-disable-next-line array-callback-return
-readdirSync(__dirname).filter(file => {
+readdirSync(pathRouter).filter((file) => {
   const fileWithOutExt = removeExtension(file);
-
   const skip = ['index'].includes(fileWithOutExt);
-
-  import(`./${fileWithOutExt}.js`).then(module => {
-    if (!skip) {
-      router.use(`/${fileWithOutExt}`, module.default);
-
-      const ruta = `http://localhost:${PORT}/api/${fileWithOutExt}`;
-
-      console.log('CARGAR RUTA ----> ', ruta.green);
-    }
-  });
+  if (!skip) {
+    router.use(`/${fileWithOutExt}`, require(`./${fileWithOutExt}`));
+    const ruta = `http://localhost:${PORT}/api/${fileWithOutExt}`;
+    console.log('CARGAR RUTA ---->', ruta.green);
+  }
 });
 
-export default router;
+module.exports = router;

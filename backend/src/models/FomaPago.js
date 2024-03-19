@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const FormaPagoSchema = new Schema({
   formaPago: {
@@ -21,4 +21,4 @@ const FormaPagoSchema = new Schema({
   versionKey: false
 });
 
-export default model('formaPago', FormaPagoSchema);
+module.exports = model('formaPago', FormaPagoSchema);

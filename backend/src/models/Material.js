@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const MaterialSchema = new Schema({
   Nombre_Mat: {
@@ -25,4 +25,4 @@ const MaterialSchema = new Schema({
 }, {
   versionKey: false
 });
-export default model('Material', MaterialSchema);
+module.exports = model('Material', MaterialSchema);

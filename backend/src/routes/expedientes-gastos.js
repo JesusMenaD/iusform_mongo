@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { create, get, deleteGasto, balance } from '../controllers/Expedientes.Gastos.Controller.js';
-import { configureMulterSingle } from '../config/configureMulter.js';
+const { Router } = require('express');
+const { create, get, deleteGasto, balance } = require('../controllers/Expedientes.Gastos.Controller.js');
+const { configureMulterSingle } = require('../config/configureMulter.js');
 const router = Router();
 const upload = configureMulterSingle('comprobante', '/expedientes-gastos');
 
@@ -9,4 +9,4 @@ router.get('/:despacho/:expediente', get);
 router.delete('/:id', deleteGasto);
 router.get('/balance/:despacho/:expediente', balance);
 
-export default router;
+module.exports = router;

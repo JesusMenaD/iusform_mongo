@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { getMateriaNoAsignadas, getFolios, createFolio, deleteFolio } from '../controllers//Expedientes.Folios.js';
+const { Router } = require('express');
+const { getMateriaNoAsignadas, getFolios, createFolio, deleteFolio } = require('../controllers//Expedientes.Folios.js');
 
 const router = Router();
 
@@ -8,4 +8,4 @@ router.get('/:despacho', getFolios);
 router.post('/:despacho', createFolio);
 router.delete('/:id', deleteFolio);
 
-export default router;
+module.exports = router;

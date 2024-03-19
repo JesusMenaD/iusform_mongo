@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { getHistorialBancos, createMovimientoBanco, deleteMovimientoBanco, getMovimientoById, updateMovimientoBanco } from '..//controllers/Historial.Bancos.Controller.js';
+const { Router } = require('express');
+const { getHistorialBancos, createMovimientoBanco, deleteMovimientoBanco, getMovimientoById, updateMovimientoBanco } = require('..//controllers/Historial.Bancos.Controller.js');
 
 const router = Router();
 
@@ -9,4 +9,4 @@ router.delete('/:id', deleteMovimientoBanco);
 router.get('/:id/by-id', getMovimientoById);
 router.patch('/:id', updateMovimientoBanco);
 
-export default router;
+module.exports = router;

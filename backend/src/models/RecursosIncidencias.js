@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const RecursosIncidencias = new Schema({
   nombre: {
@@ -25,4 +25,4 @@ const RecursosIncidencias = new Schema({
   versionKey: false
 });
 
-export default model('recursosIncidencias', RecursosIncidencias);
+module.exports = model('recursosIncidencias', RecursosIncidencias);

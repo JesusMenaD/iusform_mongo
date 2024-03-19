@@ -395,13 +395,13 @@ const ListItemCollapse = ({ name, Icon, tos = [], active = false }) => {
 }
 const DrawerContent = () => {
   const [usuario] = useContext(UsuarioContext)
-  const { tipo } = usuario
+  // const { tipo } = usuario
   const { _id } = usuario
-  const despacho = usuario.despacho._id
+  // const despacho = usuario.despacho._id
   const [modulosC, setCModulos] = useContext(ModulosContext)
 
   const fetchModulos = async () => {
-    const { data } = await apiAuth().get(`modulos/${despacho}/${_id}?tipo=${tipo}`)
+    const { data } = await apiAuth().get(`modulos/${_id}`)
     return data.data
   }
 

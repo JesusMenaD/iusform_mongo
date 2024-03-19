@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const ModulosSchema = new Schema({
   nombre: {
@@ -39,4 +39,4 @@ const ModulosSchema = new Schema({
   versionKey: false
 });
 
-export default model('modulos', ModulosSchema);
+module.exports = model('modulos', ModulosSchema);

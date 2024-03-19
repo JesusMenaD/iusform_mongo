@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const JuzgadosSchema = new Schema({
   nombre: {
@@ -39,4 +39,4 @@ const JuzgadosSchema = new Schema({
 
 JuzgadosSchema.plugin(mongoosePaginate);
 
-export default model('juzgados', JuzgadosSchema);
+module.exports = model('juzgados', JuzgadosSchema);

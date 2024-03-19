@@ -1,7 +1,7 @@
-import CuentasBancariaSchema from '../models/CuentsaBancaria.js';
-import Moivimientos from '../models/MovimientosBancos.js';
+const CuentasBancariaSchema = require('../models/CuentsaBancaria.js');
+const Moivimientos = require('../models/MovimientosBancos.js');
 
-export const getCuentasBancarias = async (req, res) => {
+const getCuentasBancarias = async (req, res) => {
   const { despacho } = req.params;
   const { page = 1, limit = 10 } = req.query;
 
@@ -24,7 +24,7 @@ export const getCuentasBancarias = async (req, res) => {
   }
 };
 
-export const createCuentasBancarias = async (req, res) => {
+const createCuentasBancarias = async (req, res) => {
   const { despacho } = req.params;
 
   const {
@@ -66,7 +66,7 @@ export const createCuentasBancarias = async (req, res) => {
         afectacion: 'Abono',
         ligadoa: 'Otro',
         concepto: 'Saldo inicial',
-        importe: saldoInicial,
+        conste: saldoInicial,
         estatus: 'Aplicado'
       };
       await Moivimientos.create(objMov);
@@ -78,7 +78,7 @@ export const createCuentasBancarias = async (req, res) => {
   }
 };
 
-export const deleteCuentasBancarias = async (req, res) => {
+const deleteCuentasBancarias = async (req, res) => {
   const { id } = req.params;
   try {
     await CuentasBancariaSchema.findByIdAndRemove(id);
@@ -88,7 +88,7 @@ export const deleteCuentasBancarias = async (req, res) => {
   }
 };
 
-export const getById = async (req, res) => {
+const getById = async (req, res) => {
   const { id } = req.params;
   try {
     const cuenta = await CuentasBancariaSchema.findById(id);
@@ -103,7 +103,7 @@ export const getById = async (req, res) => {
   }
 };
 
-export const updateCuentasBancarias = async (req, res) => {
+const updateCuentasBancarias = async (req, res) => {
   const { id } = req.params;
   const {
     nombre,
@@ -136,7 +136,7 @@ export const updateCuentasBancarias = async (req, res) => {
   }
 };
 
-export const geyBancosSinPaginar = async (req, res) => {
+const geyBancosSinPaginar = async (req, res) => {
   try {
     const { despacho } = req.params;
     const bancos = await CuentasBancariaSchema.find({ despacho, estatus: 'Activo' }).populate('banco');
@@ -144,4 +144,13 @@ export const geyBancosSinPaginar = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getCuentasBancarias,
+  createCuentasBancarias,
+  deleteCuentasBancarias,
+  getById,
+  updateCuentasBancarias,
+  geyBancosSinPaginar
 };

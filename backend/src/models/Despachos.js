@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const DespachosSchema = new Schema({
   contadorExp: {
@@ -133,4 +133,4 @@ const DespachosSchema = new Schema({
   versionKey: false
 });
 
-export default model('despachos', DespachosSchema);
+module.exports = model('despachos', DespachosSchema);

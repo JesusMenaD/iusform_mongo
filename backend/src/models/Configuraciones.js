@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const ConfiguracionesSchema = new Schema({
   RazonSocial: {
@@ -53,4 +53,4 @@ const ConfiguracionesSchema = new Schema({
   versionKey: false
 });
 
-export default model('configuraciones', ConfiguracionesSchema);
+module.exports = model('configuraciones', ConfiguracionesSchema);

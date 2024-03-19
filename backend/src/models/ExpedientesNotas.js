@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ExpedientesNotas = new Schema({
   despacho: {
@@ -40,4 +40,4 @@ const ExpedientesNotas = new Schema({
 
 ExpedientesNotas.plugin(mongoosePaginate);
 
-export default model('expedientesNotas', ExpedientesNotas);
+module.exports = model('expedientesNotas', ExpedientesNotas);

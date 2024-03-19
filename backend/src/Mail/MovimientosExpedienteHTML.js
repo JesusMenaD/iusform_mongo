@@ -1,4 +1,4 @@
-export const MovimientosExpedienteHTML = ({
+const MovimientosExpedienteHTML = ({
   nombreCliente,
   nombreExpediente,
   nombreRemitente,
@@ -158,3 +158,5 @@ export const MovimientosExpedienteHTML = ({
 
   `;
 };
+
+module.exports = { MovimientosExpedienteHTML };

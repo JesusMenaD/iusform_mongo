@@ -1,36 +1,30 @@
-import UsuarioModel from '../models/Usuarios.js';
-import TipoUsuarioModel from '../models/TipoUsuarios.js';
+const UsuarioModel = require('../models/Usuarios.js');
+const TipoUsuarioModel = require('../models/TipoUsuarios.js');
 
 const APP_URL = process.env.APP_URL;
 
-export const getModulos = async (req, res) => {
+const getModulos = async (req, res) => {
   try {
-    const { tipo, estatus = 'Activo' } = req.query;
-    const { usuario, despacho } = req.params;
+    // const { tipo, estatus = 'Activo' } = req.query;
+    const { usuario } = req.params;
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Establecer el valor por defecto para estatus
-    const query = {
-      estatus,
-      despacho
-    };
+    const findUsuario = await UsuarioModel.findById(usuario);
 
-    // Agregar tipo a la consulta si está presente
-    if (tipo) {
-      query.tipo = tipo.trim();
+    if (!findUsuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    const findUsuario = await UsuarioModel.findById(usuario);
-    const { clave } = findUsuario;
+    const { clave, tipoUsuario } = findUsuario;
 
-    const tipoUsuarioModulos = await TipoUsuarioModel.findOne(query).populate({
+    const tipoUsuarioModulos = await TipoUsuarioModel.findById(tipoUsuario).populate({
       path: 'modulos.modulo',
-      // ahora ordenar de forma ascendente campo orden
       sort: { orden: 1 },
       model: 'modulos',
+      match: { estatus: 'Activo' },
       select: 'nombre imagen enlace padre'
     });
 
@@ -78,4 +72,8 @@ export const getModulos = async (req, res) => {
     console.log(error.message, error.stack);
     res.status(404).json({ message: error.message, line_error: error.stack });
   }
+};
+
+module.exports = {
+  getModulos
 };

@@ -1,18 +1,18 @@
-import UsuariosModel from '../models/Usuarios.js';
-import TipoUsuarioModel from '../models/TipoUsuarios.js';
-import DespachoModel from '../models/Despachos.js';
-import productoModel from '../models/Productos.js';
-import SuscripcionesModel from '../models/Suscripciones.js';
-import VentasSchema from '../models/Ventas.js';
-import fs from 'fs';
-import path from 'path';
-import { validarPassword, generatePassword, encriptar, desencriptar, deleteFile } from '../config/FuntionGlobal.js';
-import { sendMail } from '../config/mail.js';
-import { RegistroUsuarioHTML } from '../Mail/RegistroUsuarioHTML.js';
+const UsuariosModel = require('../models/Usuarios.js');
+const TipoUsuarioModel = require('../models/TipoUsuarios.js');
+const DespachoModel = require('../models/Despachos.js');
+const productoModel = require('../models/Productos.js');
+const SuscripcionesModel = require('../models/Suscripciones.js');
+const VentasSchema = require('../models/Ventas.js');
+const fs = require('fs');
+const path = require('path');
+const { validarPassword, generatePassword, encriptar, desencriptar, deleteFile } = require('../config/FuntionGlobal.js');
+const { sendMail } = require('../config/mail.js');
+const { RegistroUsuarioHTML } = require('../Mail/RegistroUsuarioHTML.js');
 const APP_URL = process.env.APP_URL;
 const DESPACHO_APP = process.env.DESPACHO_APP;
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { correo, password } = req.body;
 
@@ -47,7 +47,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
   try {
     const fecha = new Date();
     const {
@@ -189,7 +189,7 @@ export const register = async (req, res) => {
   }
 };
 
-export const rememberPassword = async (req, res) => {
+const rememberPassword = async (req, res) => {
   try {
     const { correo } = req.body;
 
@@ -221,7 +221,7 @@ export const rememberPassword = async (req, res) => {
   }
 };
 
-export const actualizarUsuario = async (req, res) => {
+const actualizarUsuario = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -281,7 +281,7 @@ export const actualizarUsuario = async (req, res) => {
   }
 };
 
-export const obtenerUsuarios = async (req, res) => {
+const obtenerUsuarios = async (req, res) => {
   try {
     const { page = 1, search = '', estatus = '' } = req.query;
     const { despacho } = req.params;
@@ -340,7 +340,7 @@ export const obtenerUsuarios = async (req, res) => {
   }
 };
 
-export const createUsuarioDespacho = async (req, res) => {
+const createUsuarioDespacho = async (req, res) => {
   try {
     const { despacho } = req.params;
     const { nombre, apellidoPaterno, apellidoMaterno, telefono, email, tipoUsuario, clave } = req.body;
@@ -388,7 +388,7 @@ export const createUsuarioDespacho = async (req, res) => {
   }
 };
 
-export const obtenerUsuario = async (req, res) => {
+const obtenerUsuario = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await UsuariosModel.findById(id);
@@ -413,7 +413,7 @@ export const obtenerUsuario = async (req, res) => {
   }
 };
 
-export const updateUsuario = async (req, res) => {
+const updateUsuario = async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -448,7 +448,7 @@ export const updateUsuario = async (req, res) => {
   }
 };
 
-export const deleteUsuario = async (req, res) => {
+const deleteUsuario = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await UsuariosModel.findById(id);
@@ -465,4 +465,16 @@ export const deleteUsuario = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message, line_error: error.stack });
   }
+};
+
+module.exports = {
+  login,
+  register,
+  rememberPassword,
+  actualizarUsuario,
+  obtenerUsuarios,
+  createUsuarioDespacho,
+  obtenerUsuario,
+  updateUsuario,
+  deleteUsuario
 };

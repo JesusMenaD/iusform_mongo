@@ -1,9 +1,9 @@
-import Despacho from '../models/Despachos.js';
-import path from 'path';
-import { deleteFile } from '../config/FuntionGlobal.js';
+const Despacho = require('../models/Despachos.js');
+const path = require('path');
+const { deleteFile } = require('../config/FuntionGlobal.js');
 const APP_URL = process.env.APP_URL;
 
-export const ConfiguracionesDespacho = async (req, res) => {
+const ConfiguracionesDespacho = async (req, res) => {
   const { despacho } = req.params;
 
   if (!despacho) return res.status(404).json({ message: 'Despacho no encontrado' });
@@ -23,7 +23,7 @@ export const ConfiguracionesDespacho = async (req, res) => {
   }
 };
 
-export const actualizarDespacho = async (req, res) => {
+const actualizarDespacho = async (req, res) => {
   const { despacho } = req.params;
   const { nombre, correo, direccion, telefono, razonSocial, rfc, cRegimenFiscal, lugarExpedicion, serie, numeroCertificado, clavePrivada } = req.body;
 
@@ -83,4 +83,9 @@ export const actualizarDespacho = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  ConfiguracionesDespacho,
+  actualizarDespacho
 };

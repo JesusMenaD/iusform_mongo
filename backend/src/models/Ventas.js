@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const VentasSchema = new Schema({
   despacho: {
@@ -45,4 +45,4 @@ const VentasSchema = new Schema({
   versionKey: false
 });
 
-export default model('ventas', VentasSchema);
+module.exports = model('ventas', VentasSchema);

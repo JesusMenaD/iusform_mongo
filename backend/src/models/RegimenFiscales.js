@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const RegimenFiscales = new Schema({
   regimen: {
@@ -23,4 +23,4 @@ const RegimenFiscales = new Schema({
   versionKey: false
 });
 
-export default model('regimenFiscales', RegimenFiscales);
+module.exports = model('regimenFiscales', RegimenFiscales);

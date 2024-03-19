@@ -1,8 +1,8 @@
 
-import FoliosModel from '../models/ExpedientesFolios.js';
-import MaterialModel from '../models/Materias.js';
+const FoliosModel = require('../models/ExpedientesFolios.js');
+const MaterialModel = require('../models/Materias.js');
 
-export const getFolios = async (req, res) => {
+const getFolios = async (req, res) => {
   const { despacho } = req.params;
   const { page = 1 } = req.query;
   const options = {
@@ -29,7 +29,7 @@ export const getFolios = async (req, res) => {
   }
 };
 
-export const createFolio = async (req, res) => {
+const createFolio = async (req, res) => {
   const { despacho } = req.params;
   const { materia, clave, folio, creadoPor } = req.body;
 
@@ -50,7 +50,7 @@ export const createFolio = async (req, res) => {
   }
 };
 
-export const getMateriaNoAsignadas = async (req, res) => {
+const getMateriaNoAsignadas = async (req, res) => {
   const { despacho } = req.params;
 
   try {
@@ -70,7 +70,7 @@ export const getMateriaNoAsignadas = async (req, res) => {
   }
 };
 
-export const deleteFolio = async (req, res) => {
+const deleteFolio = async (req, res) => {
   const { id } = req.params;
   try {
     await FoliosModel.findByIdAndRemove(id);
@@ -78,4 +78,11 @@ export const deleteFolio = async (req, res) => {
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getFolios,
+  createFolio,
+  getMateriaNoAsignadas,
+  deleteFolio
 };

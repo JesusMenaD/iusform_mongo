@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import {
+const { Router } = require('express');
+const {
   createExpediente,
   getExpedientesByUsuario,
   getExpedienteById,
@@ -8,7 +8,7 @@ import {
   updateNumeroExpediente,
   updateJuicio,
   updateEtapaProcesal
-} from '../controllers/Expedientes.Controller.js';
+} = require('../controllers/Expedientes.Controller.js');
 const router = Router();
 
 // Ruta base común para el despacho y usuario
@@ -24,4 +24,4 @@ router.patch('/:despacho/:usuario/:expediente/numero', updateNumeroExpediente);
 router.patch('/:despacho/:usuario/:expediente/juicio', updateJuicio);
 router.patch('/:despacho/:usuario/:expediente/etapa', updateEtapaProcesal);
 
-export default router;
+module.exports = router;

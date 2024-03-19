@@ -1,5 +1,4 @@
-import { Schema, model } from 'mongoose';
-
+const { Schema, model } = require('mongoose');
 const EstadosSchema = new Schema({
   nombre: {
     type: String,
@@ -19,4 +18,4 @@ const EstadosSchema = new Schema({
   versionKey: false
 });
 
-export default model('estados', EstadosSchema);
+module.exports = model('estados', EstadosSchema);

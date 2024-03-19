@@ -1,6 +1,6 @@
-import EstadosSchema from '../models/Estados.js';
+const EstadosSchema = require('../models/Estados.js');
 
-export const getEstados = async (req, res) => {
+const getEstados = async (req, res) => {
   try {
     const estados = await EstadosSchema.find().sort({ nombre: 1 });
 
@@ -17,4 +17,8 @@ export const getEstados = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getEstados
 };

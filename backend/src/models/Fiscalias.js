@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const FiscaliasSchema = new Schema({
   nombre: {
@@ -24,4 +24,4 @@ const FiscaliasSchema = new Schema({
   versionKey: false
 });
 
-export default model('fiscalias', FiscaliasSchema);
+module.exports = model('fiscalias', FiscaliasSchema);

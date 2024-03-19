@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const Suscripciones = new Schema({
   despacho: {
@@ -50,4 +50,4 @@ const Suscripciones = new Schema({
   versionKey: false
 });
 
-export default model('suscripciones', Suscripciones);
+module.exports = model('suscripciones', Suscripciones);

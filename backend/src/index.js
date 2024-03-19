@@ -1,5 +1,7 @@
-import app from './app.js';
-import 'colors';
+// import app from './app.js';
+const app = require('./app');
+require('colors');
+// import 'colors';
 
 app.set('port', process.env.PORT || 3000);
 

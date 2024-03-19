@@ -1,6 +1,6 @@
-import LegislacionesModel from '../models/LegislacionesReglamentos.js';
+const LegislacionesModel = require('../models/LegislacionesReglamentos.js');
 
-export const getLegislaciones = async (req, res) => {
+const getLegislaciones = async (req, res) => {
   const { page = 1, search } = req.query;
   const options = {
     page,
@@ -22,4 +22,8 @@ export const getLegislaciones = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getLegislaciones
 };

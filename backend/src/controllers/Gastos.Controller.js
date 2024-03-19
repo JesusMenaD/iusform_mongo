@@ -1,7 +1,8 @@
-import GastosModel from '../models/Gastos.js';
-import MovimientosBancos from '../models/MovimientosBancos.js';
 
-export const getGastos = async (req, res) => {
+const GastosModel = require('../models/Gastos.js');
+const MovimientosBancos = require('../models/MovimientosBancos.js');
+
+const getGastos = async (req, res) => {
   const { despacho } = req.params;
   const { page = 1, limit = 10, estatus, search } = req.query;
 
@@ -35,7 +36,7 @@ export const getGastos = async (req, res) => {
   }
 };
 
-export const createGastos = async (req, res) => {
+const createGastos = async (req, res) => {
   const { despacho } = req.params;
 
   const {
@@ -102,7 +103,7 @@ export const createGastos = async (req, res) => {
   }
 };
 
-export const getGasto = async (req, res) => {
+const getGasto = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -113,7 +114,7 @@ export const getGasto = async (req, res) => {
   }
 };
 
-export const deleteGasto = async (req, res) => {
+const deleteGasto = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -135,7 +136,7 @@ export const deleteGasto = async (req, res) => {
   }
 };
 
-export const updateGasto = async (req, res) => {
+const updateGasto = async (req, res) => {
   const { id } = req.params;
   const {
     cuentaBancaria,
@@ -196,4 +197,12 @@ export const updateGasto = async (req, res) => {
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getGastos,
+  createGastos,
+  getGasto,
+  deleteGasto,
+  updateGasto
 };

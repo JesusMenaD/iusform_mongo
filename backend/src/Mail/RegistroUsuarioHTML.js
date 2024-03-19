@@ -1,6 +1,6 @@
 const DESPACHO_APP = process.env.DESPACHO_APP;
 
-export const RegistroUsuarioHTML = (nombre, usuario, password, url = DESPACHO_APP) => {
+const RegistroUsuarioHTML = (nombre, usuario, password, url = DESPACHO_APP) => {
   const year = new Date().getFullYear();
 
   return `
@@ -135,4 +135,8 @@ export const RegistroUsuarioHTML = (nombre, usuario, password, url = DESPACHO_AP
       </tr>
     </table>
   `;
+};
+
+module.exports = {
+  RegistroUsuarioHTML
 };

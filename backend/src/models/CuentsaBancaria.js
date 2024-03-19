@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const CuentasBancarias = new Schema({
   despacho: {
@@ -43,4 +43,4 @@ const CuentasBancarias = new Schema({
 });
 
 CuentasBancarias.plugin(mongoosePaginate);
-export default model('cuentasBancarias', CuentasBancarias);
+module.exports = model('cuentasBancarias', CuentasBancarias);

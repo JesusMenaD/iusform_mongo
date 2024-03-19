@@ -1,7 +1,5 @@
-import { Router } from 'express';
-
-import { sendWhatsapp } from '../config/FuntionGlobal.js';
-
+const { Router } = require('express');
+const { sendWhatsapp } = require('../config/FuntionGlobal.js');
 const router = Router();
 
 router.post('/', (req, res) => {
@@ -9,4 +7,4 @@ router.post('/', (req, res) => {
   sendWhatsapp({ to, body });
 });
 
-export default router;
+module.exports = router;

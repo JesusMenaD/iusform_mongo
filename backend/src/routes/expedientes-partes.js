@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { createPartes, getPartes, deletePartes, updatePartes } from '../controllers/Expedientes.Partes.Controller.js';
+const { Router } = require('express');
+const { createPartes, getPartes, deletePartes, updatePartes } = require('../controllers/Expedientes.Partes.Controller.js');
 
 const router = Router();
 
@@ -8,4 +8,4 @@ router.get('/:despacho/:expediente', getPartes);
 router.delete('/:_id', deletePartes);
 router.patch('/:_id', updatePartes);
 
-export default router;
+module.exports = router;

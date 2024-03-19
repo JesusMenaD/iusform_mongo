@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const ExpedientesAgendaUsuariosSchema = new Schema({
   despacho: {
@@ -49,4 +49,4 @@ const ExpedientesAgendaUsuariosSchema = new Schema({
   versionKey: false
 });
 
-export default model('expedientesAgendaUsuarios', ExpedientesAgendaUsuariosSchema);
+module.exports = model('expedientesAgendaUsuarios', ExpedientesAgendaUsuariosSchema);

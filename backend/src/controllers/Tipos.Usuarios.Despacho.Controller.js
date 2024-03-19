@@ -1,6 +1,6 @@
-import TipoUsuarios from '../models/TipoUsuarios.js';
+const TipoUsuarios = require('../models/TipoUsuarios.js');
 const APP_URL = process.env.APP_URL;
-export const getTipoUsuarios = async (req, res) => {
+const getTipoUsuarios = async (req, res) => {
   const { despacho } = req.params;
   const { page = 1 } = req.query;
 
@@ -39,7 +39,7 @@ export const getTipoUsuarios = async (req, res) => {
   }
 };
 
-export const getTipoUsuarioById = async (req, res) => {
+const getTipoUsuarioById = async (req, res) => {
   const { _id } = req.params;
   try {
     const tipoUsuario = await TipoUsuarios.findById(_id).populate('modulos.modulo');
@@ -49,4 +49,9 @@ export const getTipoUsuarioById = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getTipoUsuarios,
+  getTipoUsuarioById
 };

@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const BancocosSchema = new Schema({
   clave: {
@@ -13,4 +13,4 @@ const BancocosSchema = new Schema({
   versionKey: false
 });
 
-export default model('bancos', BancocosSchema);
+module.exports = model('bancos', BancocosSchema);

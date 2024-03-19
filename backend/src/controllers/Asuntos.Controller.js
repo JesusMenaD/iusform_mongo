@@ -1,6 +1,6 @@
-import AsuntosModel from '../models/Asuntos.js';
+const AsuntosModel = require('../models/Asuntos.js');
 
-export const createAsuntos = async (req, res) => {
+const createAsuntos = async (req, res) => {
   try {
     const { despacho } = req.params;
     const { nombre, descripcion } = req.body;
@@ -32,7 +32,7 @@ export const createAsuntos = async (req, res) => {
   }
 };
 
-export const getAsuntos = async (req, res) => {
+const getAsuntos = async (req, res) => {
   const { despacho } = req.params;
   const { estatus, page = 1 } = req.query;
   // El estatus es opcional, por lo que no es requerido.
@@ -61,4 +61,9 @@ export const getAsuntos = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  createAsuntos,
+  getAsuntos
 };

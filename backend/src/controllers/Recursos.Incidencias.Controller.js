@@ -1,6 +1,6 @@
-import RecursosIncidenciasModel from '../models/RecursosIncidencias.js';
+const RecursosIncidenciasModel = require('../models/RecursosIncidencias.js');
 
-export const getRecursosIncidenciasMateria = async (req, res) => {
+const getRecursosIncidenciasMateria = async (req, res) => {
   const { materia } = req.params;
   // const { tipo } = req.query;
 
@@ -23,4 +23,8 @@ export const getRecursosIncidenciasMateria = async (req, res) => {
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getRecursosIncidenciasMateria
 };

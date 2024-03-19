@@ -1,6 +1,6 @@
-import ClienteModel from '../models/Clientes.js';
+const ClienteModel = require('../models/Clientes.js');
 
-export const getClientes = async (req, res) => {
+const getClientes = async (req, res) => {
   const { despacho } = req.params;
   const { estatus, page = 1, search } = req.query;
 
@@ -42,7 +42,7 @@ export const getClientes = async (req, res) => {
   }
 };
 
-export const createCliente = async (req, res) => {
+const createCliente = async (req, res) => {
   const { despacho } = req.params;
   const { nombre, creadoPor } = req.body;
 
@@ -76,7 +76,7 @@ export const createCliente = async (req, res) => {
   }
 };
 
-export const getCliente = async (req, res) => {
+const getCliente = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -92,7 +92,7 @@ export const getCliente = async (req, res) => {
   }
 };
 
-export const updateCliente = async (req, res) => {
+const updateCliente = async (req, res) => {
   const { id } = req.params;
   const { nombre, creadoPor } = req.body;
 
@@ -120,7 +120,7 @@ export const updateCliente = async (req, res) => {
   }
 };
 
-export const deleteCliente = async (req, res) => {
+const deleteCliente = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -129,4 +129,12 @@ export const deleteCliente = async (req, res) => {
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getClientes,
+  createCliente,
+  getCliente,
+  updateCliente,
+  deleteCliente
 };

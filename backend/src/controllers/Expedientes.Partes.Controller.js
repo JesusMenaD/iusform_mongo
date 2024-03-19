@@ -1,6 +1,6 @@
-import PartesInvolucradasodel from '../models/ExpedientesPartesInvolucradas.js';
+const PartesInvolucradasodel = require('../models/ExpedientesPartesInvolucradas.js');
 
-export const createPartes = async (req, res) => {
+const createPartes = async (req, res) => {
   const { despacho, expediente } = req.params;
   const {
     tipo,
@@ -47,7 +47,7 @@ export const createPartes = async (req, res) => {
   }
 };
 
-export const getPartes = async (req, res) => {
+const getPartes = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { page = 1 } = req.query;
 
@@ -67,7 +67,7 @@ export const getPartes = async (req, res) => {
   }
 };
 
-export const deletePartes = async (req, res) => {
+const deletePartes = async (req, res) => {
   const { _id } = req.params;
 
   if (!_id) {
@@ -83,7 +83,7 @@ export const deletePartes = async (req, res) => {
   }
 };
 
-export const updatePartes = async (req, res) => {
+const updatePartes = async (req, res) => {
   const { _id } = req.params;
   const {
     tipo,
@@ -122,4 +122,11 @@ export const updatePartes = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  createPartes,
+  getPartes,
+  deletePartes,
+  updatePartes
 };

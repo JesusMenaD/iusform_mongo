@@ -1,9 +1,9 @@
-import IngresosModel from '../models//Ingresos.js';
-import ExpedientesModel from '../models/Expedientes.js';
-import ClientesModel from '../models/Clientes.js';
-import MovimientosBancos from '../models/MovimientosBancos.js';
+const IngresosModel = require('../models//Ingresos.js');
+const ExpedientesModel = require('../models/Expedientes.js');
+const ClientesModel = require('../models/Clientes.js');
+const MovimientosBancos = require('../models/MovimientosBancos.js');
 
-export const getIngresos = async (req, res) => {
+const getIngresos = async (req, res) => {
   const { despacho } = req.params;
   const { page = 1, limit = 10, estatus, search } = req.query;
 
@@ -37,7 +37,7 @@ export const getIngresos = async (req, res) => {
   }
 };
 
-export const createIngresos = async (req, res) => {
+const createIngresos = async (req, res) => {
   const { despacho } = req.params;
   const { concepto, importe, fecha, referencia, estatus, cuentaBancaria, cliente } = req.body;
 
@@ -83,7 +83,7 @@ export const createIngresos = async (req, res) => {
   }
 };
 
-export const getExpedientesSinPaginar = async (req, res) => {
+const getExpedientesSinPaginar = async (req, res) => {
   const { despacho } = req.params;
   const { cliente } = req.query;
   try {
@@ -98,7 +98,7 @@ export const getExpedientesSinPaginar = async (req, res) => {
   }
 };
 
-export const getClientes = async (req, res) => {
+const getClientes = async (req, res) => {
   const { despacho } = req.params;
   try {
     const clientes = await ClientesModel.find({ despacho, estatus: 'Activo' }, '_id nombre').sort({ nombre: 1 });
@@ -108,7 +108,7 @@ export const getClientes = async (req, res) => {
   }
 };
 
-export const deleteIngresos = async (req, res) => {
+const deleteIngresos = async (req, res) => {
   const { id } = req.params;
   try {
     const ingreso = await IngresosModel.findByIdAndRemove(id);
@@ -132,4 +132,12 @@ export const deleteIngresos = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getIngresos,
+  createIngresos,
+  getExpedientesSinPaginar,
+  getClientes,
+  deleteIngresos
 };

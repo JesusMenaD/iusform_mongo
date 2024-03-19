@@ -1,6 +1,6 @@
-import TipoUsuarioModel from '../models/TipoUsuarios.js';
+const TipoUsuarioModel = require('../models/TipoUsuarios.js');
 
-export const getTipoUsuarios = async (req, res) => {
+const getTipoUsuarios = async (req, res) => {
   const { despacho } = req.params;
   const { estatus } = req.query;
 
@@ -18,4 +18,8 @@ export const getTipoUsuarios = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getTipoUsuarios
 };

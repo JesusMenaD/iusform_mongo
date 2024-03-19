@@ -1,6 +1,6 @@
-import Juzgados from '../models/Juzgados.js';
+const Juzgados = require('../models/Juzgados.js');
 
-export const getJuzgados = async (req, res) => {
+const getJuzgados = async (req, res) => {
   try {
     const { estatus, estado, page = 1 } = req.query;
 
@@ -33,4 +33,8 @@ export const getJuzgados = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getJuzgados
 };

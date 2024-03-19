@@ -1,14 +1,14 @@
-import ModulosSchema from '../models/Modulos.js';
-import TipoUsuarioModel from '../models/TipoUsuarios.js';
-import FormaPagoSchema from '../models/FomaPago.js';
-import ProductosSchema from '../models/Productos.js';
-import EstadoSchema from '../models/Estados.js';
-import JuzgadosSchema from '../models/Juzgados.js';
-import MateriaSchema from '../models/Materias.js';
-import EtapasProcesalesSchema from '../models/EtapasProcesales.js';
-import RecursosIncidencias from '../models/RecursosIncidencias.js';
-import RegimenSchema from '../models/RegimenFiscales.js';
-import BancoSchema from '../models/Bancos.js';
+const ModulosSchema = require('../models/Modulos.js');
+const TipoUsuarioModel = require('../models/TipoUsuarios.js');
+const FormaPagoSchema = require('../models/FomaPago.js');
+const ProductosSchema = require('../models/Productos.js');
+const EstadoSchema = require('../models/Estados.js');
+const JuzgadosSchema = require('../models/Juzgados.js');
+const MateriaSchema = require('../models/Materias.js');
+const EtapasProcesalesSchema = require('../models/EtapasProcesales.js');
+const RecursosIncidencias = require('../models/RecursosIncidencias.js');
+const RegimenSchema = require('../models/RegimenFiscales.js');
+const BancoSchema = require('../models/Bancos.js');
 
 const generateModules = async () => {
   const count = await ModulosSchema.countDocuments();

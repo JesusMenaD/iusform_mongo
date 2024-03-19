@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const DeclaracionesFiscales = new Schema({
   despacho: {
@@ -53,4 +53,4 @@ const DeclaracionesFiscales = new Schema({
 
 DeclaracionesFiscales.plugin(mongoosePaginate);
 
-export default model('declaracionesFiscales', DeclaracionesFiscales);
+module.exports = model('declaracionesFiscales', DeclaracionesFiscales);

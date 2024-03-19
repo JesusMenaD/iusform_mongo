@@ -1,9 +1,9 @@
-import DeclaracionesFiscales from '../models/DeclaracionesFiscales.js';
-import fs from 'fs';
-import path from 'path';
+const DeclaracionesFiscales = require('../models/DeclaracionesFiscales.js');
+const fs = require('fs');
+const path = require('path');
 const APP_URL = process.env.APP_URL;
 
-export const getDeclaracionFiscal = async (req, res) => {
+const getDeclaracionFiscal = async (req, res) => {
   const { despacho } = req.params;
   const { estatus, page = 1, search } = req.query;
 
@@ -52,7 +52,7 @@ export const getDeclaracionFiscal = async (req, res) => {
   }
 };
 
-export const creteDeclaracionFiscal = async (req, res) => {
+const creteDeclaracionFiscal = async (req, res) => {
   const { despacho } = req.params;
   const { nombre, tipo, creadoPor, estatus = 'Pendiente' } = req.body;
 
@@ -104,7 +104,7 @@ export const creteDeclaracionFiscal = async (req, res) => {
   }
 };
 
-export const deleteDeclaracionFiscal = async (req, res) => {
+const deleteDeclaracionFiscal = async (req, res) => {
   const { id } = req.params;
   try {
     const declaracion = await DeclaracionesFiscales.findByIdAndDelete(id);
@@ -117,7 +117,7 @@ export const deleteDeclaracionFiscal = async (req, res) => {
   }
 };
 
-export const getDeclaracionFiscalById = async (req, res) => {
+const getDeclaracionFiscalById = async (req, res) => {
   const { id } = req.params;
   try {
     const declaracion = await DeclaracionesFiscales.findById(id);
@@ -130,7 +130,7 @@ export const getDeclaracionFiscalById = async (req, res) => {
   }
 };
 
-export const updateDeclaracionFiscal = async (req, res) => {
+const updateDeclaracionFiscal = async (req, res) => {
   const { id } = req.params;
   const { nombre, tipo, creadoPor, estatus = 'Pendiente' } = req.body;
   const archivo = req?.file ?? null;
@@ -174,4 +174,12 @@ export const updateDeclaracionFiscal = async (req, res) => {
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getDeclaracionFiscal,
+  creteDeclaracionFiscal,
+  deleteDeclaracionFiscal,
+  getDeclaracionFiscalById,
+  updateDeclaracionFiscal
 };

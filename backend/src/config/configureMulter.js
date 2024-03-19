@@ -1,11 +1,11 @@
-import multer from 'multer';
-import path from 'path';
-import { mkdir } from 'fs';
-import { promisify } from 'util';
+const multer = require('multer');
+const path = require('path');
+const { mkdir } = require('fs');
+const { promisify } = require('util');
 
 const mkdirAsync = promisify(mkdir);
 
-export const configureMulterSingle = (fieldName = 'image', destinationFolder = '') => {
+const configureMulterSingle = (fieldName = 'image', destinationFolder = '') => {
   const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
       const folderPath = path.join('src/uploads', destinationFolder);
@@ -26,7 +26,7 @@ export const configureMulterSingle = (fieldName = 'image', destinationFolder = '
   return multer({ storage }).single(fieldName);
 };
 
-export const configureMulterArray = (fieldName = 'documents', destinationFolder = '') => {
+const configureMulterArray = (fieldName = 'documents', destinationFolder = '') => {
   const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
       const folderPath = path.join('src/uploads', destinationFolder);
@@ -47,7 +47,7 @@ export const configureMulterArray = (fieldName = 'documents', destinationFolder 
   return multer({ storage }).array(fieldName, 15);
 };
 
-export const configureMulterMixed = (destinationFolder = '', names = []) => {
+const configureMulterMixed = (destinationFolder = '', names = []) => {
   const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
       const folderPath = path.join('src/uploads', destinationFolder);
@@ -68,4 +68,10 @@ export const configureMulterMixed = (destinationFolder = '', names = []) => {
   return multer({
     storage
   }).fields(names.map(name => ({ name, maxCount: 1 })));
+};
+
+module.exports = {
+  configureMulterSingle,
+  configureMulterArray,
+  configureMulterMixed
 };

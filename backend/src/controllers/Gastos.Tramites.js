@@ -1,9 +1,9 @@
-import ExpedientesGastos from '../models/ExpedientesGastos.js';
-import fs from 'fs';
-import path from 'path';
+const ExpedientesGastos = require('../models/ExpedientesGastos.js');
+const fs = require('fs');
+const path = require('path');
 const APP_URL = process.env.APP_URL;
 
-export const getGastosTramites = async (req, res) => {
+const getGastosTramites = async (req, res) => {
   const { despacho } = req.params;
   const { search, estatus, expediente, fechaInicio, fechaFinal, page } = req.query;
 
@@ -56,4 +56,8 @@ export const getGastosTramites = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getGastosTramites
 };

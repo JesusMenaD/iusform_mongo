@@ -1,5 +1,5 @@
-import { Schema, model } from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const EtapasProcesalesSchema = new Schema({
   nombre: {
@@ -29,4 +29,4 @@ const EtapasProcesalesSchema = new Schema({
 
 EtapasProcesalesSchema.plugin(mongoosePaginate);
 
-export default model('etapasProcesales', EtapasProcesalesSchema);
+module.exports = model('etapasProcesales', EtapasProcesalesSchema);

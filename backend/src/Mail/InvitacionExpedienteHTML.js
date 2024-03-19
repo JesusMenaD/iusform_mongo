@@ -1,4 +1,4 @@
-export const InvitacionExpedienteHTML = ({
+const InvitacionExpedienteHTML = ({
   nombreDestinatario,
   nombreExpediente,
   enlaceExpediente
@@ -144,4 +144,8 @@ export const InvitacionExpedienteHTML = ({
     </html>
 
   `;
+};
+
+module.exports = {
+  InvitacionExpedienteHTML
 };

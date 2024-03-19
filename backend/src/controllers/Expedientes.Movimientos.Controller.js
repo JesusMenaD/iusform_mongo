@@ -1,6 +1,6 @@
-import ExpedientesMovimientosModel from '../models/ExpedientesMovimientos.js';
+const ExpedientesMovimientosModel = require('../models/ExpedientesMovimientos.js');
 
-export const getMovimientosExpediente = async (req, res) => {
+const getMovimientosExpediente = async (req, res) => {
   const { despacho, expediente } = req.params;
   const { page = 1 } = req.query;
 
@@ -30,4 +30,8 @@ export const getMovimientosExpediente = async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getMovimientosExpediente
 };

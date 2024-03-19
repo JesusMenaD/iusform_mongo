@@ -1,6 +1,6 @@
-import RegimenFiscal from '../models/RegimenFiscales.js';
+const RegimenFiscal = require('../models/RegimenFiscales.js');
 
-export const getRegimenFiscal = async (req, res) => {
+const getRegimenFiscal = async (req, res) => {
   try {
     const regimenFiscal = await RegimenFiscal.find();
 
@@ -30,4 +30,8 @@ export const getRegimenFiscal = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getRegimenFiscal
 };
