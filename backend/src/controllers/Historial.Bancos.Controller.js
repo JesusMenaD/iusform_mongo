@@ -8,8 +8,8 @@ const getHistorialBancos = async (req, res) => {
     page,
     limit: 20,
     sort: {
-      estatus: 1,
-      fecha: 1
+      fecha: -1,
+      estatus: 1
     },
     populate: [{
       path: 'cuentaBancaria',

@@ -79,6 +79,7 @@ const ConfiguracionesDespacho = () => {
       formData.append('numeroCertificado', numeroCertificado)
       formData.append('clavePrivada', clavePrivada)
       formData.append('logo', logo)
+      formData.append('estado', estado)
 
       const { data } = await apiAuth({ 'Content-Type': 'multipart/form-data' }).put(`/despacho/${usuarioContext?.despacho?._id}`, formData)
 
@@ -128,6 +129,8 @@ const ConfiguracionesDespacho = () => {
         setNumeroCertificado(despacho.numeroCertificado)
         setClavePrivada(despacho.clavePrivada)
         setLoader(false)
+        setEstado(despacho.estado)
+        console.log(despacho)
       } catch (error) {
         console.log(error)
       } finally {
@@ -143,7 +146,17 @@ const ConfiguracionesDespacho = () => {
     }
 
     getRegimenFiscal()
+
+    const getEstados = async () => {
+      const url = '/estados'
+      const { data } = await apiAuth().get(url)
+      setEstados(data)
+    }
+    getEstados()
   }, [usuarioContext])
+
+  const [estados, setEstados] = useState([])
+  const [estado, setEstado] = useState('')
 
   const sx = { mb: 4 }
   return (
@@ -239,6 +252,23 @@ const ConfiguracionesDespacho = () => {
             value={rfc}
             onChange={(e) => setRfc(e.target.value)}
           />
+
+          <FormControl fullWidth sx={sx}>
+            <InputLabel id="estados">Estados</InputLabel>
+            <Select
+              labelId="estados"
+              value={estado}
+              label="Estados"
+              onChange={(e) => setEstado(e.target.value)}
+            >
+              {/* <MenuItem value=''>Selecciona un Estado</MenuItem> */}
+              {estados.map((item) => (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <FormControl fullWidth sx={sx}>
             <InputLabel id="regimen-fiscal">Regimen Fiscal</InputLabel>

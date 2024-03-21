@@ -58,6 +58,12 @@ import { Gastos, CreateGastos, EditGastos } from '../views/gastos'
 // * Ingresos
 import { Ingresos, CreateIngresos } from '../views/ingresos_p/index.js'
 
+// * shop
+import { Producto } from '../views/shop'
+
+// * Pago exitoso
+import PagoExitoso from '../components/PagoExitoso'
+
 const Router = () => {
   const [usuario] = useContext(UsuarioContext)
 
@@ -74,9 +80,11 @@ const Router = () => {
 
           {clave !== null && (
             <Route element={<AuthLayout titleDespacho={usuario?.despacho?.nombre} logo={usuario?.despacho?.logo} />}>
-              <Route path={'/shop'} element={<h1>Shop</h1>} />
+              <Route path='/pago-exitoso' element={<PagoExitoso usuario={usuario} />} />
+              <Route path={'/shop'} element={<Producto usuario={usuario} />} />
+              <Route path={'/shop/:_id'} element={<Producto usuario={usuario} />} />
               <Route path={`/${clave}`} element={<Home />} />
-              <Route path={`/${clave}/dashboard`} element={<Home />} />
+              <Route path={`/${clave}/dashboard`} element={<Expedientes />} />
               <Route path={`/${clave}/perfil/editar`} element={<EditarPerfil />} />
               <Route path={`/${clave}/expedientes`} element={<Expedientes />} />
               <Route path={`/${clave}/expedientes/crear`} element={<CreateExpedientes usuarioC={usuario} />} />

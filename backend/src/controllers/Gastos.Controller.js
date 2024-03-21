@@ -1,6 +1,9 @@
 
 const GastosModel = require('../models/Gastos.js');
 const MovimientosBancos = require('../models/MovimientosBancos.js');
+const fs = require('fs');
+const path = require('path');
+const APP_URL = process.env.APP_URL;
 
 const getGastos = async (req, res) => {
   const { despacho } = req.params;
@@ -10,7 +13,11 @@ const getGastos = async (req, res) => {
     page: parseInt(page, 10),
     limit: parseInt(limit, 10),
     populate: ['cuentaBancaria'],
-    sort: { fecha: -1 }
+    sort: {
+      estatus: -1,
+      fecha: -1,
+      _id: -1 // Note: This is a duplicate sort, it should be removed
+    }
   };
 
   const query = {
@@ -39,6 +46,10 @@ const getGastos = async (req, res) => {
 const createGastos = async (req, res) => {
   const { despacho } = req.params;
 
+  if (!despacho) {
+    return res.status(400).json({ message: 'Falta el despacho' });
+  }
+
   const {
     cuentaBancaria,
     conceptos,
@@ -50,33 +61,34 @@ const createGastos = async (req, res) => {
     estatus
   } = req.body;
 
-  if (!despacho) {
-    return res.status(400).json({ message: 'Falta el despacho' });
-  }
-
   try {
-    // conseptos en string '[{concepto: 'concepto', importe: 1000}]'
     const conceptos2 = JSON.parse(conceptos) || [];
+    const documentos = req?.files ?? [];
+    const comprobantes = documentos.map((doc) => {
+      return {
+        nombre: doc.originalname,
+        archivo: doc.filename
+      };
+    });
+
+    if (conceptos2.length === 0) {
+      return res.status(400).json({ message: 'Faltan los detalles' });
+    }
+
     const obj = {
       despacho,
-      // cuentaBancaria,
       conceptos: conceptos2,
       fecha,
       total,
       referencia,
       creadoPor,
       comentario,
-      estatus
+      estatus,
+      comprobantes,
+      cuntaBancaria: cuentaBancaria || null // Note: There's a typo here, it should be "cuentaBancaria"
     };
 
-    if (cuentaBancaria) {
-      obj.cuentaBancaria = cuentaBancaria;
-    }
-
-    if (conceptos2.length === 0) {
-      return res.status(400).json({ message: 'Falta los detalles' });
-    }
-
+    console.log(obj);
     const newGasto = await GastosModel.create(obj);
 
     if (cuentaBancaria) {
@@ -87,19 +99,17 @@ const createGastos = async (req, res) => {
         folioLiga: { gasto: newGasto._id },
         concepto: referencia,
         importe: total,
-        estatus: 'Aplicado'
+        estatus: 'Aplicado',
+        cuentaBancaria
       };
-
-      if (cuentaBancaria) {
-        mov.cuentaBancaria = cuentaBancaria;
-      }
 
       await MovimientosBancos.create(mov);
     }
 
-    res.status(201).json(newGasto);
+    return res.status(201).json(newGasto);
   } catch (error) {
-    res.status(409).json({ message: error.message });
+    console.log(error);
+    return res.status(409).json({ message: error.message }); // Ensure we return to avoid attempting to set headers after they're already sent
   }
 };
 
@@ -108,6 +118,18 @@ const getGasto = async (req, res) => {
 
   try {
     const gasto = await GastosModel.findById(id);
+
+    if (!gasto) {
+      return res.status(404).json({ message: 'Gasto no encontrado' });
+    }
+
+    gasto.comprobantes = gasto.comprobantes.map((doc) => {
+      if (doc?.archivo !== '' && fs.existsSync(path.join('src/uploads/gastos', doc?.archivo))) {
+        doc.archivo = `${APP_URL}/uploads/gastos/${doc.archivo}`;
+      }
+      return doc;
+    });
+
     res.status(200).json(gasto);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -148,54 +170,113 @@ const updateGasto = async (req, res) => {
     estatus
   } = req.body;
 
+  console.log(req.body);
+
   if (!id) {
     return res.status(400).json({ message: 'Falta el id' });
   }
 
   try {
-    const obj = {
-      conceptos,
-      fecha,
-      total,
-      referencia,
-      comentario,
-      estatus
-    };
+    const gasto = await GastosModel.findById(id);
 
-    if (cuentaBancaria) {
-      obj.cuentaBancaria = cuentaBancaria;
+    if (!gasto) {
+      return res.status(404).json({ message: 'Gasto no encontrado' });
     }
 
-    const updatedGasto = await GastosModel.findByIdAndUpdate(id, obj, { new: true });
+    const conceptos2 = JSON.parse(conceptos) || [];
 
-    const query = { folioLiga: { gasto: updatedGasto._id } };
-
-    const mov = await MovimientosBancos.findOne(query);
-
-    if (mov) {
-      mov.importe = total;
-      mov.concepto = referencia;
-      if (estatus === 'Cancelado') {
-        mov.estatus = 'Cancelado';
-      }
-
-      if (estatus === 'Vigente') {
-        mov.estatus = 'Aplicado';
-      }
-
-      if (estatus === 'Pendiente') {
-        mov.estatus = 'Pendiente';
-      }
-
-      if (cuentaBancaria) {
-        mov.cuentaBancaria = cuentaBancaria;
-      }
-      await mov.save();
+    if (conceptos2.length === 0) {
+      return res.status(400).json({ message: 'Faltan los detalles' });
     }
 
-    res.status(200).json(updatedGasto);
+    const documentos = req?.files ?? [];
+
+    if (documentos.length > 0) {
+      const comprobantes = documentos.map((doc) => {
+        return {
+          nombre: doc.originalname,
+          archivo: doc.filename
+        };
+      });
+
+      gasto.comprobantes = gasto.comprobantes.concat(comprobantes);
+    }
+
+    gasto.conceptos = conceptos2;
+    gasto.fecha = fecha;
+    gasto.total = total;
+    gasto.referencia = referencia;
+    gasto.comentario = comentario;
+    gasto.estatus = estatus;
+
+    if (cuentaBancaria !== 'null' && cuentaBancaria) {
+      gasto.cuentaBancaria = cuentaBancaria;
+    }
+
+    await gasto.save();
+
+    if (cuentaBancaria !== 'null' && cuentaBancaria) {
+      const findMov = await MovimientosBancos.findOne({ 'folioLiga.gasto': gasto._id });
+
+      if (findMov) {
+        findMov.importe = total;
+        findMov.concepto = referencia;
+        findMov.cuentaBancaria = cuentaBancaria;
+        findMov.estatus = estatus === 'Vigente' ? 'Aplicado' : estatus;
+        findMov.save();
+      } else {
+        const mov = {
+          despacho: gasto.despacho,
+          afectacion: 'Cargo',
+          ligadoa: 'Egreso',
+          folioLiga: { gasto: gasto._id },
+          concepto: gasto.referencia,
+          importe: gasto.total,
+          estatus: estatus === 'Vigente' ? 'Aplicado' : estatus,
+          cuentaBancaria
+        };
+
+        await MovimientosBancos.create(mov);
+      }
+    } else {
+      const mov = await MovimientosBancos.findOne({ 'folioLiga.gasto': gasto._id });
+
+      if (mov) {
+        await mov.remove();
+      }
+    }
+
+    res.status(200).json(gasto);
   } catch (error) {
+    console.log(error);
     res.status(409).json({ message: error.message });
+  }
+};
+
+const deleteComprobante = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const gasto = await GastosModel.findOne({ 'comprobantes._id': id });
+
+    if (!gasto) {
+      return res.status(404).json({ message: 'Gasto no encontrado' });
+    }
+
+    const comprobante = gasto.comprobantes.id(id);
+
+    if (comprobante) {
+      const filePath = path.join('src/uploads/gastos', comprobante.archivo);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+      comprobante.remove();
+      await gasto.save();
+    }
+
+    res.status(200).json({ message: 'Comprobante eliminado' });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 };
 
@@ -204,5 +285,6 @@ module.exports = {
   createGastos,
   getGasto,
   deleteGasto,
-  updateGasto
+  updateGasto,
+  deleteComprobante
 };

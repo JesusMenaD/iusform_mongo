@@ -4,6 +4,7 @@ const DespachoModel = require('../models/Despachos.js');
 const productoModel = require('../models/Productos.js');
 const SuscripcionesModel = require('../models/Suscripciones.js');
 const VentasSchema = require('../models/Ventas.js');
+
 const fs = require('fs');
 const path = require('path');
 const { validarPassword, generatePassword, encriptar, desencriptar, deleteFile } = require('../config/FuntionGlobal.js');
@@ -380,7 +381,7 @@ const createUsuarioDespacho = async (req, res) => {
     const userSave = await UsuariosModel.create(objUser);
 
     // enviar correo con la contraseña
-    const htmlRegistro = RegistroUsuarioHTML(nombre, email, passwordSin, `${DESPACHO_APP}/login`);
+    const htmlRegistro = RegistroUsuarioHTML(nombre, email.trim(), passwordSin, `${DESPACHO_APP}/login`);
     sendMail(htmlRegistro, 'Registro de usuario', email);
     res.status(201).json({ message: 'Usuario creado', data: userSave });
   } catch (error) {
@@ -452,18 +453,57 @@ const deleteUsuario = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await UsuariosModel.findById(id);
+
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
-    if (user.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', user.foto))) {
-      const folderPath = path.join('src/uploads/usuarios', user.foto);
-      deleteFile(folderPath);
-    }
 
-    await UsuariosModel.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Usuario eliminado' });
+    user.estatus = 'Inactivo';
+    await user.save();
+    // if (!user) {
+    //   return res.status(404).json({ message: 'Usuario no encontrado' });
+    // }
+    // if (user.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', user.foto))) {
+    //   const folderPath = path.join('src/uploads/usuarios', user.foto);
+    //   deleteFile(folderPath);
+    // }
+
+    // await UsuariosModel.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Se modifico el estatus del usuario' });
   } catch (error) {
     res.status(404).json({ message: error.message, line_error: error.stack });
+  }
+};
+
+const cargaUsuario = async (req, res) => {
+  try {
+    const { usuario } = req.params;
+
+    if (!usuario) {
+      return res.status(400).json({ message: 'Falta el usuario' });
+    }
+
+    const userFind = await UsuariosModel.findOne({ _id: usuario, estatus: 'Activo' }).populate('despacho');
+
+    if (!userFind) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    userFind.password = desencriptar(userFind.password);
+
+    if (userFind.foto !== '' && fs.existsSync(path.join('src/uploads/usuarios', userFind.foto))) {
+      userFind.foto = `${APP_URL}/uploads/usuarios/${userFind.foto}`;
+    } else {
+      userFind.foto = `${APP_URL}/uploads/default/icono_usuario_100x100_04.jpg`;
+    }
+
+    if (userFind.despacho && userFind.despacho.logo) {
+      userFind.despacho.logo = `${APP_URL}/uploads/despachos/${userFind.despacho.logo}`;
+    }
+
+    res.status(200).json({ message: 'Usuario logeado', data: userFind });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 };
 
@@ -476,5 +516,6 @@ module.exports = {
   createUsuarioDespacho,
   obtenerUsuario,
   updateUsuario,
-  deleteUsuario
+  deleteUsuario,
+  cargaUsuario
 };

@@ -22,17 +22,24 @@ const VentasSchema = new Schema({
   },
   fecha_pago: {
     type: Date,
-    required: true
+    required: false
   },
   formaPago: {
     type: String,
     required: false,
     default: ''
   },
-  referencia: {
+  referencia: { // order conekta
     type: String,
     required: false,
-    default: ''
+    default: '',
+    index: true
+  },
+  tipoReferencia: {
+    type: String,
+    required: false,
+    enum: ['Conekta', 'Paypal', 'Oxxo', 'Tarjeta', 'Efectivo']
+
   },
   estatus: {
     type: String,

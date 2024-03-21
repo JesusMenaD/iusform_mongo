@@ -44,13 +44,6 @@ const Pautas = ({ despacho, usuario, _id, cargas = 0, permisos = null, clave }) 
   }
 
   const columns = [
-    // {
-    //   id: 'usuario.foto',
-    //   label: 'Foto',
-    //   render: (row) => {
-    //     return <Avatar alt={row.usuario.nombre} src={row.usuario.foto} />
-    //   }
-    // },
     {
       id: 'creadoPor.nombre',
       label: 'Creado por',

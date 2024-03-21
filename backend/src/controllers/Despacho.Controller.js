@@ -25,7 +25,7 @@ const ConfiguracionesDespacho = async (req, res) => {
 
 const actualizarDespacho = async (req, res) => {
   const { despacho } = req.params;
-  const { nombre, correo, direccion, telefono, razonSocial, rfc, cRegimenFiscal, lugarExpedicion, serie, numeroCertificado, clavePrivada } = req.body;
+  const { nombre, correo, direccion, telefono, razonSocial, rfc, cRegimenFiscal, lugarExpedicion, serie, numeroCertificado, clavePrivada, estado } = req.body;
 
   if (!despacho) return res.status(404).json({ message: 'Despacho no encontrado' });
 
@@ -49,7 +49,8 @@ const actualizarDespacho = async (req, res) => {
       lugarExpedicion,
       serie,
       numeroCertificado,
-      clavePrivada
+      clavePrivada,
+      estado
     }, { new: true });
 
     if (logo !== null || certificado !== null || llave !== null) {
@@ -80,6 +81,30 @@ const actualizarDespacho = async (req, res) => {
       despacho: updateDespacho,
       message: 'Despacho actualizado con éxito'
     });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+const planActual = async (req, res) => {
+  const { despacho } = req.params;
+
+  if (!despacho) return res.status(404).json({ message: 'Despacho no encontrado' });
+
+  try {
+    const findDespacho = await Despacho.findById(despacho);
+
+    if (!findDespacho) return res.status(404).json({ message: 'Despacho no encontrado' });
+
+    const { vigencia } = findDespacho;
+
+    const fechaActual = new Date();
+
+    const alerta = {
+      planActual: '',
+      diasRestantes: 0,
+      fechaVigencia: ''
+    };
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

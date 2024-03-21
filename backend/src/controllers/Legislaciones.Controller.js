@@ -1,19 +1,26 @@
 const LegislacionesModel = require('../models/LegislacionesReglamentos.js');
 
 const getLegislaciones = async (req, res) => {
-  const { page = 1, search } = req.query;
+  const { page = 1, search, estado } = req.query;
   const options = {
     page,
     limit: 20,
-    sort: { fecha: -1 }
+    sort: { nombre: 1 },
+    populate: 'estado'
   };
 
-  const query = {};
+  const query = {
+    estatus: 'Activo'
+  };
 
   if (search) {
     query.$or = [
       { nombre: { $regex: search, $options: 'i' } }
     ];
+  }
+
+  if (estado) {
+    query.estado = estado;
   }
 
   try {

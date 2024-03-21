@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { actualizarUsuario, obtenerUsuarios, createUsuarioDespacho, obtenerUsuario, updateUsuario, deleteUsuario } = require('../controllers/Usuarios.Controller.js');
+const { actualizarUsuario, obtenerUsuarios, createUsuarioDespacho, obtenerUsuario, updateUsuario, deleteUsuario, cargaUsuario } = require('../controllers/Usuarios.Controller.js');
 const { configureMulterSingle } = require('../config/configureMulter.js');
 
 const router = Router();
@@ -11,5 +11,6 @@ router.post('/:despacho', createUsuarioDespacho);
 router.get('/:id/by-id', obtenerUsuario);
 router.patch('/:id', updateUsuario);
 router.delete('/:id', deleteUsuario);
+router.get('/carga/:usuario', cargaUsuario);
 
 module.exports = router;

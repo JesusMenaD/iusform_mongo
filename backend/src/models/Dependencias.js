@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const DependenciasSchema = new Schema({
   nombre: {
@@ -7,7 +8,13 @@ const DependenciasSchema = new Schema({
   },
   direccion: {
     type: String,
-    required: true
+    required: false,
+    default: ''
+  },
+  liga: {
+    type: String,
+    required: false,
+    default: ''
   },
   estado: {
     type: Schema.Types.ObjectId,
@@ -27,4 +34,5 @@ const DependenciasSchema = new Schema({
   versionKey: false
 });
 
+DependenciasSchema.plugin(mongoosePaginate);
 module.exports = model('dependencias', DependenciasSchema);

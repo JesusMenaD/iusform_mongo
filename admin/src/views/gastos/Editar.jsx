@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
+import { Dropzone, FileMosaic } from '@files-ui/react'
 import {
   TextField, Paper, Button, Box, Typography, FormControl,
   InputLabel, Select, MenuItem, Dialog, DialogTitle, DialogContent,
@@ -42,6 +43,60 @@ const EditarGastos = ({ usuarioC = null }) => {
       )
     }
   ]
+
+  const columsComprobantes = [
+    {
+      id: 'archivo',
+      label: 'Adjunto',
+      render: (row) => (
+        //  mostrar si son images
+        row.nombre.includes('.pdf') || row.nombre.includes('.png') || row.nombre.includes('.jpg') || row.nombre.includes('.jpeg')
+          ? <img
+            src={`${row.archivo}`}
+            alt={row.nombre}
+            style={{ width: 100 }}
+          />
+          : null
+      )
+    },
+    {
+      id: 'nombre',
+      label: 'Nombre',
+      render: (row) => (
+        <a
+          href={`${row.archivo}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {row.nombre}
+        </a>
+      )
+    },
+    {
+      id: 'acciones',
+      label: 'Acciones',
+      render: (row, index) => (
+        <Tooltip title="Eliminar">
+          <IconButton
+            color='secondary'
+            onClick={() => eliminarComprobante(row)}
+          >
+            <Delete size={20} />
+          </IconButton>
+        </Tooltip>
+      )
+    }
+  ]
+
+  const eliminarComprobante = (row) => {
+    const { _id } = row
+
+    const url = `/gastos/comprobante/${_id}`
+    apiAuth().delete(url)
+    const nuevosComprobantes = comprobantes.filter((comprobante) => comprobante !== row)
+    setComprobantes(nuevosComprobantes)
+  }
+
   const navigate = useNavigate()
   const [loadingGlobal, setLoadingGlobal] = useState(false)
   const [detalles, setDetalles] = useState([])
@@ -52,6 +107,7 @@ const EditarGastos = ({ usuarioC = null }) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [conceptoTemp, setConceptoTemp] = useState('')
   const [importeTemp, setImporteTemp] = useState('')
+  const [comprobantes, setComprobantes] = useState([])
 
   useEffect(() => {
     // Calcula el total de gastos cada vez que los detalles cambian.
@@ -76,22 +132,41 @@ const EditarGastos = ({ usuarioC = null }) => {
     try {
       e.preventDefault()
 
+      // const url = `/gastos/${_id}`
+
+      // const data = {
+      //   total,
+      //   referencia,
+      //   creadoPor: usuarioC._id,
+      //   estatus,
+      //   conceptos: detalles,
+      //   cuentaBancaria: cuenta,
+      //   fecha,
+      //   comentario: observaciones
+      // }
+
+      // await apiAuth({
+      //   'Content-Type': 'application/json'
+      // }).patch(url, data)
+
+      // navigate(`/${usuarioC?.clave}/gastos`)
       const url = `/gastos/${_id}`
 
-      const data = {
-        total,
-        referencia,
-        creadoPor: usuarioC._id,
-        estatus,
-        conceptos: detalles,
-        cuentaBancaria: cuenta,
-        fecha,
-        comentario: observaciones
-      }
+      const formData = new FormData()
 
-      await apiAuth({
-        'Content-Type': 'application/json'
-      }).patch(url, data)
+      formData.append('total', total)
+      formData.append('referencia', referencia)
+      formData.append('creadoPor', usuarioC._id)
+      formData.append('estatus', estatus)
+      formData.append('conceptos', JSON.stringify(detalles))
+      formData.append('cuentaBancaria', cuenta || null)
+      formData.append('fecha', fecha)
+      formData.append('comentario', observaciones)
+      files.forEach((file) => {
+        formData.append('comprobantes', file.file)
+      })
+
+      await apiAuth({ 'Content-Type': 'multipart/form-data' }).patch(url, formData)
 
       navigate(`/${usuarioC?.clave}/gastos`)
     } catch (error) {
@@ -112,6 +187,10 @@ const EditarGastos = ({ usuarioC = null }) => {
   const [cuenta, setCuenta] = useState('')
   const [cuentas, setCuentas] = useState([])
   const [estatus, setEstatus] = useState('Vigente')
+  const [files, setFiles] = useState([])
+  const updateFiles = (files) => {
+    setFiles(files)
+  }
 
   useEffect(() => {
     const fetchCuentas = async () => {
@@ -130,6 +209,7 @@ const EditarGastos = ({ usuarioC = null }) => {
       setTotal(data.total)
       setCuenta(data.cuentaBancaria)
       setEstatus(data.estatus)
+      setComprobantes(data.comprobantes)
     }
 
     fetchCuentas()
@@ -178,10 +258,32 @@ const EditarGastos = ({ usuarioC = null }) => {
           />
           <Typography variant="h6" sx={{ mt: 2, mb: 3 }}>Total: {new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(total)}</Typography>
 
+          <Dropzone
+            style={{ height: 100, width: '100%', marginBottom: 20 }}
+            onChange={updateFiles}
+            value={files}
+            label="Arrastra tus comprobantes aquí o haz clic para seleccionarlos."
+            multiple
+            subtitle='O selecciona tus archivos desde tu computadora'
+            accept='image/*, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt, .zip'
+            // color='#f2f2f2'
+            localization={'ES-es'}
+            max={5}
+          >
+            {files.map((file, index) => (
+              <FileMosaic key={index} {...file} preview />
+            ))}
+          </Dropzone>
+
+          <TableIUS
+            columns={columsComprobantes}
+            rows={comprobantes}
+          />
+
           <Alert severity='info' sx={{
             mb: 2
           }}>
-            Si no selecciona una cuenta, el movimiento se guardará sin ligar a una cuenta
+            Seleccione una cuenta si quiere hacer un registro en bancos
           </Alert>
 
           {

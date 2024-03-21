@@ -24,6 +24,18 @@ const GastosSchema = new Schema({
       }
     }
   ],
+  comprobantes: [
+    {
+      nombre: {
+        type: String,
+        required: true
+      },
+      archivo: {
+        type: String,
+        required: true
+      }
+    }
+  ],
   fecha: {
     type: Date,
     required: false,
@@ -59,4 +71,5 @@ const GastosSchema = new Schema({
 });
 
 GastosSchema.plugin(mongoosePaginate);
+
 module.exports = model('gastos', GastosSchema);

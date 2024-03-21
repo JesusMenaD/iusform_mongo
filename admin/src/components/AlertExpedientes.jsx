@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
-import { Alert, Collapse, AlertTitle, Typography, IconButton, Paper } from '@mui/material'
+import { Alert, Collapse, AlertTitle, Typography, IconButton, Paper, Button } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-
+import { Link } from 'react-router-dom'
 const AlertExpedientes = ({ despacho }) => {
   const [open, setOpen] = useState(true)
 
@@ -56,11 +56,29 @@ const AlertExpedientes = ({ despacho }) => {
           <p>Expedientes restantes: {expedientesRestantes}
           </p>
           {diasRestantes < 10 && (
-            <Typography variant="h6" color="primary.main" >
-              {diasRestantes} días restantes
-            </Typography>
-          )}
 
+            diasRestantes > 1
+              ? (<Typography variant="h6" color="primary.main" >
+                {diasRestantes} días restantes
+              </Typography>)
+              : (<Typography variant="h6" color="error" >
+                {
+                  diasRestantes > 0
+                    ? `${diasRestantes} días restantes`
+                    : <>
+                      <Button
+                        variant='outlined'
+                        title='Actualizar plan'
+                        to='/shop'
+                        component={Link}
+                      >
+                        Actualizar plan
+
+                      </Button>
+                    </>
+                }
+              </Typography>)
+          )}
         </Alert>
       </Collapse>
     </Paper>

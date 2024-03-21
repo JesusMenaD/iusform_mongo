@@ -1,6 +1,5 @@
 const UsuarioModel = require('../models/Usuarios.js');
 const TipoUsuarioModel = require('../models/TipoUsuarios.js');
-
 const APP_URL = process.env.APP_URL;
 
 const getModulos = async (req, res) => {
@@ -24,14 +23,15 @@ const getModulos = async (req, res) => {
       path: 'modulos.modulo',
       sort: { orden: 1 },
       model: 'modulos',
-      match: { estatus: 'Activo' },
-      select: 'nombre imagen enlace padre'
+      // match: { estatus: 'Activo' },
+      select: 'nombre imagen enlace padre estatus'
     });
 
+    // return res.status(200).json({ data: tipoUsuarioModulos.modulos });
+
     const data = tipoUsuarioModulos.modulos.map((modulo) => {
-      if (modulo.modulo === null) {
-        return null;
-      }
+      if (modulo === null || modulo?.modulo === null || modulo?.modulo?.estatus === 'Inactivo') return null;
+
       return {
         _id: modulo.modulo._id,
         nombre: modulo.modulo.nombre,

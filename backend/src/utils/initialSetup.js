@@ -9,6 +9,11 @@ const EtapasProcesalesSchema = require('../models/EtapasProcesales.js');
 const RecursosIncidencias = require('../models/RecursosIncidencias.js');
 const RegimenSchema = require('../models/RegimenFiscales.js');
 const BancoSchema = require('../models/Bancos.js');
+const documentqacionJson = require('./documentacion.json');
+const DocumentacionModel = require('../models/LegislacionesReglamentos.js');
+const FiscaliaSchema = require('../models/Fiscalias.js');
+const DependenciaSchema = require('../models/Dependencias.js');
+// const fs = require('fs');
 
 const generateModules = async () => {
   const count = await ModulosSchema.countDocuments();
@@ -3363,6 +3368,2572 @@ const generateBancos = async () => {
     console.error('Error al crear bancos'.red, error);
   }
 };
+
+const estados = [
+  {
+    id: '65d3c9132141bccfaefbd2b4',
+    nombre: 'Baja California',
+    clave: 'BCN',
+    pais: 'MEX',
+    estado: '2'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c6',
+    nombre: 'Oaxaca',
+    clave: 'OAX',
+    pais: 'MEX',
+    estado: '20'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c0',
+    nombre: 'Jalisco',
+    clave: 'JAL',
+    pais: 'MEX',
+    estado: '14'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2b6',
+    nombre: 'Campeche',
+    clave: 'CAM',
+    pais: 'MEX',
+    estado: '4'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c9',
+    nombre: 'Quintana Roo',
+    clave: 'ROO',
+    pais: 'MEX',
+    estado: '23'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2be',
+    nombre: 'Guerrero',
+    clave: 'GRO',
+    pais: 'MEX',
+    estado: '12'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2bf',
+    nombre: 'Hidalgo',
+    clave: 'HID',
+    pais: 'MEX',
+    estado: '13'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c3',
+    nombre: 'Morelos',
+    clave: 'MOR',
+    pais: 'MEX',
+    estado: '17'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2bc',
+    nombre: 'Durango',
+    clave: 'DUR',
+    pais: 'MEX',
+    estado: '10'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c5',
+    nombre: 'Nuevo León',
+    clave: 'NLE',
+    pais: 'MEX',
+    estado: '19'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c1',
+    nombre: 'Estado de México',
+    clave: 'MEX',
+    pais: 'MEX',
+    estado: '15'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2bb',
+    nombre: 'Ciudad de México',
+    clave: 'DIF',
+    pais: 'MEX',
+    estado: '9'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2cd',
+    nombre: 'Tabasco',
+    clave: 'TAB',
+    pais: 'MEX',
+    estado: '27'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2ca',
+    nombre: 'San Luis Potosí',
+    clave: 'SLP',
+    pais: 'MEX',
+    estado: '24'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2d1',
+    nombre: 'Yucatán',
+    clave: 'YUC',
+    pais: 'MEX',
+    estado: '31'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2cc',
+    nombre: 'Sonora',
+    clave: 'SON',
+    pais: 'MEX',
+    estado: '26'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c4',
+    nombre: 'Nayarit',
+    clave: 'NAY',
+    pais: 'MEX',
+    estado: '18'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2cb',
+    nombre: 'Sinaloa',
+    clave: 'SIN',
+    pais: 'MEX',
+    estado: '25'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c7',
+    nombre: 'Puebla',
+    clave: 'PUE',
+    pais: 'MEX',
+    estado: '21'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2d0',
+    nombre: 'Veracruz',
+    clave: 'VER',
+    pais: 'MEX',
+    estado: '30'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2b8',
+    nombre: 'Chihuahua',
+    clave: 'CHH',
+    pais: 'MEX',
+    estado: '6'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2b5',
+    nombre: 'Baja California Sur',
+    clave: 'BCS',
+    pais: 'MEX',
+    estado: '3'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2b7',
+    nombre: 'Chiapas',
+    clave: 'CHP',
+    pais: 'MEX',
+    estado: '5'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2b3',
+    nombre: 'Aguascalientes',
+    clave: 'AGU',
+    pais: 'MEX',
+    estado: '1'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c2',
+    nombre: 'Michoacán',
+    clave: 'MIC',
+    pais: 'MEX',
+    estado: '16'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2c8',
+    nombre: 'Querétaro',
+    clave: 'QUE',
+    pais: 'MEX',
+    estado: '22'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2bd',
+    nombre: 'Guanajuato',
+    clave: 'GUA',
+    pais: 'MEX',
+    estado: '11'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2cf',
+    nombre: 'Tlaxcala',
+    clave: 'TLA',
+    pais: 'MEX',
+    estado: '29'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2ba',
+    nombre: 'Colima',
+    clave: 'COL',
+    pais: 'MEX',
+    estado: '8'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2b9',
+    nombre: 'Coahuila',
+    clave: 'COA',
+    pais: 'MEX',
+    estado: '7'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2ce',
+    nombre: 'Tamaulipas',
+    clave: 'TAM',
+    pais: 'MEX',
+    estado: '28'
+  },
+  {
+    id: '65d3c9132141bccfaefbd2d2',
+    nombre: 'Zacatecas',
+    clave: 'ZAC',
+    pais: 'MEX',
+    estado: '32'
+  }
+];
+
+const generateDocumentacion = async () => {
+  const count = await DocumentacionModel.countDocuments();
+  if (count > 0) return;
+
+  try {
+    const documentacion = documentqacionJson.map((doc) => {
+      return {
+        nombre: doc.nombre.replace(/\r\n/g, ''),
+        enlace: doc.liga.replace(/\r\n/g, ''),
+        estado: encontrarEstado(doc, estados),
+        estatus: 'Activo'
+      };
+    }).filter((doc) => doc.estado !== null);
+
+    // console.log('Documentacion', documentacion.length);
+
+    await DocumentacionModel.insertMany(documentacion);
+  } catch (error) {
+    console.error('Error al crear documentacion'.red, error);
+  }
+};
+
+const encontrarEstado = (doc, estados) => {
+  for (const estado of estados) {
+    if (estado.estado === doc.id_estado) {
+      return estado.id;
+    }
+  }
+  return null;
+};
+
+const generateFiscalias = async () => {
+  const count = await FiscaliaSchema.countDocuments();
+  if (count > 0) return;
+
+  try {
+    const fiscalia = [
+      {
+        id_fiscalia: '1',
+        nombre: 'Fiscalía General del Estado de Aguascalientes',
+        liga: 'https://www.fiscalia-aguascalientes.gob.mx/',
+        direccion: 'Av Héroe de Nacozari 201, Barrio de la Purísima, 20259 Aguascalientes, Ags.',
+        id_estado: '1',
+        telefonos: '4494782800',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '2',
+        nombre: 'Fiscalía General del Estado de Baja California',
+        liga: 'http://www.fgebc.gob.mx/',
+        direccion: 'Calz. de los Presidentes 1199, Río Nuevo, 21120 Mexicali, B.C.',
+        id_estado: '2',
+        telefonos: '6869044100',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '3',
+        nombre: 'FISCALIA GENERAL DEL ESTADO DE BAJA CALIFORNIA SUR',
+        liga: 'http://www.pgjebcs.gob.mx/',
+        direccion: 'Luis Donaldo Colosio s/n, Emiliano Zapata, 23070 La Paz, B.C.S.',
+        id_estado: '3',
+        telefonos: '01 612 122 2230',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '4',
+        nombre: 'Fiscalía General del Estado',
+        liga: 'http://www.fgecam.campeche.gob.mx/',
+        direccion: 'Av López Portillo s/n, Sascalum, 24095 San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9818119400',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '5',
+        nombre: 'Fiscalía General del Estado de Chiapas',
+        liga: 'http://www.fge.chiapas.gob.mx/',
+        direccion: 'Libramiento Norte y Rosa Oriente 2010, El Bosque, 29049 Tuxtla Gutiérrez, Chis.',
+        id_estado: '5',
+        telefonos: '9616172300',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '6',
+        nombre: 'Fiscalía General del Estado de Chihuahua',
+        liga: 'http://fiscalia.chihuahua.gob.mx/',
+        direccion: 'Av. Paseo Bolívar 712, Bolívar, Zona Centro, 31000 Chihuahua, Chih.',
+        id_estado: '6',
+        telefonos: '6144293300',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '7',
+        nombre: 'Fiscalía General del Estado de Coahuila de Zaragoza',
+        liga: 'http://www.fiscaliageneralcoahuila.gob.mx/',
+        direccion: 'Humberto Castilla Salas 600, Nuevo Centro Metropolitano de Saltillo, 25050 Saltillo, Coah.',
+        id_estado: '7',
+        telefonos: '8444380700',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '8',
+        nombre: 'Fiscalía General del Estado',
+        liga: 'http://www.fgecolima.mx/fge_localizamp.php',
+        direccion: 'Lib. Ote. Ejército Mexicano #200, Col de los Trabajadores, 28067 Colima, Col.',
+        id_estado: '8',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '9',
+        nombre: 'Fiscalía General de la República Delegación Ciudad de Mexico',
+        liga: 'https://www.fgjcdmx.gob.mx/',
+        direccion: 'C. Dr. Lucio 135, Doctores, Cuauhtémoc, 06720 Ciudad de México, CDMX',
+        id_estado: '9',
+        telefonos: '5553463607',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '10',
+        nombre: 'Fiscalia General Del Estado De Durango',
+        liga: 'http://fiscalia.durango.gob.mx/',
+        direccion: 'Km 7.5, Durango - Torreon, Cd Industrial, 34208 Durango',
+        id_estado: '10',
+        telefonos: '6181373730',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '11',
+        nombre: 'Fiscalía General del Estado de Guanajuato',
+        liga: 'https://portal.fgeguanajuato.gob.mx/PortalWebEstatal/Inicio/Formularios/index.aspx',
+        direccion: 'Carr. Marfil / San José de Cervera No.140, 36250 San José de Cervera, Gto.',
+        id_estado: '11',
+        telefonos: '4737352100',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '12',
+        nombre: 'Fiscalía General del Estado',
+        liga: 'https://fiscaliaguerrero.gob.mx/',
+        direccion: 'René Juárez Cisneros S/N, El Potrerito, 39098 Chilpancingo de los Bravo, Gro.',
+        id_estado: '12',
+        telefonos: '7474942999',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '13',
+        nombre: 'Procuraduría General de Justicia del Estado de Hidalgo',
+        liga: 'http://procuraduria.hidalgo.gob.mx/',
+        direccion: 'Carretera México Pachuca km 84.5, Centro Cívico, Centro Cívico, 42083 Pachuca de Soto, Hgo.',
+        id_estado: '13',
+        telefonos: '7717179000',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '14',
+        nombre: 'Fiscalía Estatal',
+        liga: 'http://fge.jalisco.gob.mx/',
+        direccion: 'Nº 2550, C. 14, Colón Industrial, 44940 Guadalajara, Jal.',
+        id_estado: '14',
+        telefonos: '3338376000',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '15',
+        nombre: 'Fiscalía General de Justicia del Estado de México',
+        liga: 'http://fgjem.edomex.gob.mx/',
+        direccion: 'Av. J. M. Morelos Y P. 4 Ote. 1300, San Sebastián, 50150 Toluca de Lerdo, Méx.',
+        id_estado: '15',
+        telefonos: '7222261600',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '16',
+        nombre: 'Fiscalía General del Estado de Michoacán',
+        liga: 'http://fiscaliamichoacan.gob.mx/',
+        direccion: 'Perif. Paseo de la República #5000, Sentimientos de la Nación, 58170 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '4433223600',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '17',
+        nombre: 'Fiscalía General del Estado de Morelos',
+        liga: 'https://www.fiscaliamorelos.gob.mx/',
+        direccion: 'Blvd. Apatlaco 165, Campo Del Rayo, 62590 Temixco, Mor.',
+        id_estado: '17',
+        telefonos: '7773291500',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '18',
+        nombre: 'Fiscalía General Del Estado De Nayarit.',
+        liga: 'http://www.fiscaliageneral.nayarit.gob.mx/',
+        direccion: 'Av. Tecnológico 3200, Microindustria, 63173 Tepic, Nay.',
+        id_estado: '18',
+        telefonos: '3111296000',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '19',
+        nombre: 'Fiscalía General de Justicia del Estado de Nuevo León',
+        liga: 'https://fiscalianl.gob.mx/',
+        direccion: 'C. San Luis Potosí 301, Independencia, 64720 Monterrey, N.L.',
+        id_estado: '19',
+        telefonos: '8120204000',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '20',
+        nombre: 'Fiscalía General del Estado de Oaxaca',
+        liga: 'http://fge.oaxaca.gob.mx/',
+        direccion: 'Carr. Cdad. Judicial, 71295 Reyes Mantecón, Oax.',
+        id_estado: '20',
+        telefonos: '9511624083',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '21',
+        nombre: 'Fiscalía General del Estado (FGE) - Puebla',
+        liga: 'http://fiscalia.puebla.gob.mx/',
+        direccion: 'Blvd. Héroes del 5 de Mayo 31 Oriente-s/n, Ladrillera de Benítez, 72534 Heroica Puebla de Zaragoza, Pue.',
+        id_estado: '21',
+        telefonos: '2222117900',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '22',
+        nombre: 'Fiscalía General del Estado de Querétaro',
+        liga: 'http://www.fiscaliageneralqro.gob.mx/',
+        direccion: 'Autopista México - Querétaro 2060, Centro Sur, 76090 Santiago de Querétaro, Qro.',
+        id_estado: '22',
+        telefonos: '4422387600',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '23',
+        nombre: 'Fiscalia General del Estado de Quintana Roo',
+        liga: 'https://www.fgeqroo.gob.mx/',
+        direccion: 'V. Xcaret esquina Kabah Lote 13, Supermanzana 21, 77500 Cancún, Q.R.',
+        id_estado: '23',
+        telefonos: '9988817150',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '24',
+        nombre: 'Fiscalía General del Estado de San Luis Potosí',
+        liga: 'http://www.fiscaliaslp.gob.mx/',
+        direccion: 'Eje Vial Ponciano Arriaga 100, Zona Centro, 78000 San Luis Potosí, S.L.P.',
+        id_estado: '24',
+        telefonos: '4448122624',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '25',
+        nombre: 'Fiscalia General del Estado de Sinaloa',
+        liga: 'http://fiscaliasinaloa.mx/',
+        direccion: 'Río Culiacan s/n, Tellería, 82017 Mazatlán, Sin.',
+        id_estado: '25',
+        telefonos: '6699820020',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '26',
+        nombre: 'Fiscalía General de Justicia Del Estado De Sonora',
+        liga: 'http://fiscalia.sonora.gob.mx/',
+        direccion: 'Blvd. Rosales y, Del Canal S/N, Centro, 83000 Hermosillo, Son.',
+        id_estado: '26',
+        telefonos: '5588031957',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '27',
+        nombre: 'Fiscalía General del Estado de Tabasco',
+        liga: 'https://tabasco.gob.mx/fiscalia-general-del-estado-de-tabasco',
+        direccion: 'Prol. P.º Usumacinta 802, Gil y Saenz, 86000 Villahermosa, Tab.',
+        id_estado: '27',
+        telefonos: '9933136550',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '28',
+        nombre: 'Fiscalía General de Justicia de Tamaulipas',
+        liga: 'https://www.fgjtam.gob.mx/',
+        direccion: 'Edificio Concorde, Segundo Piso, Altamira No. 611, Zona Centro, Tampico, Tamps.',
+        id_estado: '28',
+        telefonos: '8332293831',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '29',
+        nombre: 'Procuraduría General de Justicia del Estado (PGJE) - Tlaxcala',
+        liga: 'https://pgjtlaxcala.gob.mx/',
+        direccion: 'Liramiento Poniente Sn, La Loma Xicohtencatl, Col. Unitlax, 90000 Tlaxcala de Xicohténcatl, Tlax.',
+        id_estado: '29',
+        telefonos: '2464650500',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '30',
+        nombre: 'Fiscalia General del Estado de Veracruz',
+        liga: 'https://fiscaliaveracruz.gob.mx/',
+        direccion: 'Blvrd Fidel Velázquez S/N, Tecnológico, 91870 de, Ver.',
+        id_estado: '30',
+        telefonos: '2222112301',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '31',
+        nombre: 'Fiscalia General Del Estado Yucatán',
+        liga: 'http://www.fge.yucatan.gob.mx/',
+        direccion: 'Km. 46.5, Periférico Poniente Polígon Susulá - Caucel Planking, Catastral, 20832 Mérida, Yuc.',
+        id_estado: '31',
+        telefonos: '9999303250',
+        estatus: 'activa'
+      },
+      {
+        id_fiscalia: '32',
+        nombre: 'Fiscalía General de Justicia del Estado de Zacatecas',
+        liga: 'https://www.fiscaliazacatecas.gob.mx/',
+        direccion: 'Avenida Circuito Zacatecas No. 401 Col. Ciudad Gobierno, 98160 Zacatecas, Zac.',
+        id_estado: '32',
+        telefonos: '4929256050',
+        estatus: 'activa'
+      }
+    ];
+
+    const fiscaliasEstado = fiscalia.map((f) => {
+      return {
+        nombre: f.nombre,
+        direccion: f.direccion,
+        liga: f.liga,
+        estado: encontrarEstado(f, estados),
+        estatus: 'Activo'
+      };
+    }).filter((f) => f.estado !== null);
+
+    await FiscaliaSchema.insertMany(fiscaliasEstado);
+  } catch (error) {
+    console.error('Error al crear fiscalias'.red, error);
+  }
+};
+
+const createDependencias = async () => {
+  const count = await DependenciaSchema.countDocuments();
+  if (count > 0) return;
+
+  try {
+    const dependencias = [
+      {
+        id_dependencia: '1',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado Municipal Secretaría Particular',
+        liga: '',
+        direccion: 'Plaza Principal 4, Centro, 98700 Aguascalientes, Ags.',
+        id_estado: '1',
+        telefonos: '4589440087',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '2',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Salud del Estado de Aguascalientes',
+        liga: 'https:\/\/www.issea.gob.mx\/',
+        direccion: 'Margil de Jesús 1501, Las Arboledas, 20020 Aguascalientes, Ags.',
+        id_estado: '1',
+        telefonos: '4499107900',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '3',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Finanzas',
+        liga: 'https:\/\/www.aguascalientes.gob.mx\/sefi\/',
+        direccion: 'Av. de la Convención de 1914 Ote. 102, Col del Trabajo, 20180 Aguascalientes, Ags.',
+        id_estado: '1',
+        telefonos: '4499102525',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '4',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Economía Social y Turismo Municipal',
+        liga: 'http:\/\/www.ags.gob.mx\/turismo',
+        direccion: 'Antonio Acevedo Escobedo 133, Zona Centro, 20000 Aguascalientes, Ags.',
+        id_estado: '1',
+        telefonos: '4499101030',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '5',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Administración',
+        liga: 'http:\/\/www.aguascalientes.gob.mx\/sae',
+        direccion: 'Av. de la Convención de 1914 Ote. 104, Col del Trabajo, 20180 Aguascalientes, Ags.',
+        id_estado: '1',
+        telefonos: '4499102500',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '6',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Servicios Públicos Municipales de Aguascalientes',
+        liga: '',
+        direccion: 'Silvestre Gómez, Primo Verdad, 20130 Aguascalientes, Ags.',
+        id_estado: '1',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '7',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Baja California',
+        liga: 'https:\/\/www.gob.mx\/sct\/',
+        direccion: 'Ayuntamiento de Ensenada, No. 1600, Carretera. Transpeninsular 6500A, Ex-Ejido Chapultepec, 22880 Ensenada, B.C.',
+        id_estado: '2',
+        telefonos: '6461723000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '8',
+        tipo: 'Dependencia',
+        nombre: 'SCT Secretaría de Comunicaciones y Transportes',
+        liga: 'https:\/\/www.gob.mx\/sct\/',
+        direccion: 'C. Dieciséis 1071, Buena Vista, Libertad, 22400 Tijuana, B.C.',
+        id_estado: '2',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '9',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Finanzas del Gobierno del Estado de Baja California Sur',
+        liga: '',
+        direccion: 'Avenida Ignacio Allende SN, Ciudad Insurgentes, 23700 Comondú, B.C.',
+        id_estado: '2',
+        telefonos: '6131310109',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '10',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Turismo de Baja California',
+        liga: 'http:\/\/www.bajacalifornia.gob.mx\/secture\/',
+        direccion: 'Baja California Center, Escénica Tijuana-Ensenada 1029, Ejido Mazatlán, 22170 Playas de Rosarito, B.C.',
+        id_estado: '2',
+        telefonos: '6646242020',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '11',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria Seguridad Pública',
+        liga: '',
+        direccion: 'Calle Bahía de Los Ángeles Sn, Baja California, 21250 Mexicali, B.C.',
+        id_estado: '2',
+        telefonos: '6865532120',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '12',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Bienestar del Estado de Baja California',
+        liga: 'https:\/\/www.bajacalifornia.gob.mx\/Secretarias\/Secretaria_Bienestar',
+        direccion: 'Calz Independencia 994, Centro Cívico, 21000 Mexicali, B.C.',
+        id_estado: '2',
+        telefonos: '6865580809',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '13',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría General de Gobierno del Estado',
+        liga: '',
+        direccion: 'Isabel La Católica SN, Centro, 23000 La Paz, B.C.S.',
+        id_estado: '3',
+        telefonos: '6121239424',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '14',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Seguridad Pública del Estado de Baja California Sur',
+        liga: '',
+        direccion: 'Emiliano Zapata, 23070 La Paz, B.C.S.',
+        id_estado: '3',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '15',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Salud del Estado de Baja California Sur',
+        liga: '',
+        direccion: 'Revolución de 1910 822, Estherito, 23020 La Paz, B.C.S.',
+        id_estado: '3',
+        telefonos: '6121751100',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '16',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Finanzas del Gobierno del Estado de Baja california Sur',
+        liga: '',
+        direccion: 'Av. de la Juventud Sn, Downtown, Mariano Matamoros, 23468 Cabo San Lucas, B.C.S.',
+        id_estado: '3',
+        telefonos: '6241050781',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '17',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Economía',
+        liga: '',
+        direccion: 'Politécnico Nacional 325, Playa Palo de Sta Rita, 23096 La Paz, B.C.S.',
+        id_estado: '3',
+        telefonos: '6121221117',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '18',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría del Trabajo y Previsión Social - STPS',
+        liga: '',
+        direccion: 'Ignacio Allende 1486, Perla, 23040 La Paz, B.C.S.',
+        id_estado: '3',
+        telefonos: '526121224248',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '19',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Educación Pública Unidad de Jefes de Enseñanza de Educación Secundaria Técnica',
+        liga: '',
+        direccion: 'Jalisco 1420, Las Garzas, 23079 La Paz, B.C.S.',
+        id_estado: '3',
+        telefonos: '6121234281',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '20',
+        tipo: 'Dependencia',
+        nombre: 'SEGOB Campeche',
+        liga: 'http:\/\/segobcampeche.gob.mx\/',
+        direccion: '24000, Calle 8 203A, Zona Centro, San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9818119200',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '21',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Protección y Seguridad Ciudadana Estado de Campeche',
+        liga: 'http:\/\/www.spsc.campeche.gob.mx\/',
+        direccion: 'Av. Lázaro Cárdenas por, Av. López Portillo, Los Laureles, 24096 San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9818119110',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '22',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Turismo Campeche',
+        liga: '',
+        direccion: 'Av. Adolfo Ruiz Cortínez 111, Área Ah, 24014 San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9811273300',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '23',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de la Contraloría',
+        liga: 'http:\/\/www.contraloria.campeche.gob.mx\/',
+        direccion: 'C. 63 Nº13, Zona Centro, 24000 San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9818114002',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '24',
+        tipo: 'Dependencia',
+        nombre: 'SEP Delegación Federal Campeche',
+        liga: 'http:\/\/www.sep.gob.mx\/',
+        direccion: 'Av. Casa de Justicia, Fracciorama 2000, 24090 San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9811699494',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '25',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Agricultura y Recursos Hidráulicos',
+        liga: ' ',
+        direccion: 'Av. Gobernadores 291, Barrio de Sta. Ana, 24060 San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9818164735',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '26',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación Cultura y El Deporte',
+        liga: '',
+        direccion: 'Av. Maestros Campechanos SN, Sascalum, 24095 San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9818112402',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '27',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Modernización Administrativa e Innovación Gubernamental',
+        liga: 'http:\/\/www.seplan.campeche.gob.mx\/',
+        direccion: 'Avenida Ruiz Cortínez 112, Barrio de San Román, 24040 San Francisco de Campeche, Camp.',
+        id_estado: '4',
+        telefonos: '9818110864',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '28',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria General de Gobierno',
+        liga: 'https:\/\/www.sgg.chiapas.gob.mx\/',
+        direccion: 'Central Norte s\/n, Centro, 29000 Tuxtla Gutiérrez, CAMP',
+        id_estado: '5',
+        telefonos: '9616129047',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '29',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Hacienda del estado de Chiapas',
+        liga: 'http:\/\/www.haciendachiapas.gob.mx\/',
+        direccion: 'Andrés Serra Rojas 1090, Paso Limón, 29040 Tuxtla Gutiérrez, Chis.',
+        id_estado: '5',
+        telefonos: '9616914040',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '30',
+        tipo: 'Dependencia',
+        nombre: 'Subsecretaría de Ingresos de la Secretaría de Hacienda del estado de Chiapas',
+        liga: 'http:\/\/www.ingresos.haciendachiapas.gob.mx\/',
+        direccion: 'Boulevard Andrés Serra Rojas No. 1090, Torre Chiapas, Piso 6, Col. El Retiro C.P., Satélite Loma Larga, 29045 Tuxtla Gutiérrez, Chis.',
+        id_estado: '5',
+        telefonos: '9616914043',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '31',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de la Función Pública de Estado de Chiapas',
+        liga: '',
+        direccion: 'Central 100, Terán, 29000 Tuxtla Gutiérrez, Chis.',
+        id_estado: '5',
+        telefonos: '9616136697',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '32',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de la Honestidad y Función Pública del estado de Chiapas',
+        liga: '',
+        direccion: 'Boulevard. Belisario Domínguez 1713, Villas Montes Azules, 29000 Tuxtla Gutiérrez, Chis.',
+        id_estado: '5',
+        telefonos: '9616187530',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '33',
+        tipo: 'Dependencia',
+        nombre: 'Coordinación de Asesores de la Secretaría General de Gobierno del Estado de Chiapas',
+        liga: '',
+        direccion: 'Av. Central Ote. SN, Centro, 29000 Tuxtla Gutiérrez, Chis.',
+        id_estado: '5',
+        telefonos: '9616132053',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '34',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Chihuahua',
+        liga: '',
+        direccion: 'Santa Rosa, 31050 Chihuahua, Chih.',
+        id_estado: '6',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '35',
+        tipo: 'Dependencia',
+        nombre: 'Obras Públicas del Gobierno del Estado',
+        liga: 'http:\/\/www.chihuahua.gob.mx\/',
+        direccion: 'Joaquín Terrazas 300, Santa Rosa, 31050 Chihuahua, Chih.',
+        id_estado: '6',
+        telefonos: '6144397878',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '36',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Hacienda, Gobierno del Estado',
+        liga: '',
+        direccion: 'Zona Centro, 31000 Chihuahua, Chih.',
+        id_estado: '6',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '37',
+        tipo: 'Dependencia',
+        nombre: 'Dirección de Ecología de la Secretaría de Desarrollo Urbano y Ecología de Gobierno del Estado de Chihuahua',
+        liga: 'https:\/\/chihuahua.gob.mx\/sedue',
+        direccion: 'Av. Benito Juárez 1108, Zona Centro, 31000 Chihuahua, Chih.',
+        id_estado: '6',
+        telefonos: '6144293300',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '38',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno Estado Chihuahua Secretaría de Educación y Cultura',
+        liga: '',
+        direccion: 'José Esteban Coronado 2701, Obrera, 31350 Chihuahua, Chih.',
+        id_estado: '6',
+        telefonos: '6144293300',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '39',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Comunicaciones y Obras Públicas',
+        liga: 'http:\/\/transparencia.chihuahua.gob.mx\/',
+        direccion: 'Beethoven 4000, Herradura la Salle, 31206 Chihuahua, Chih.',
+        id_estado: '6',
+        telefonos: '6144113084',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '40',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobierno',
+        liga: 'http:\/\/sgob.sfpcoahuila.gob.mx\/',
+        direccion: 'Palacio de Gobierno, Miguel Hidalgo y Juárez S\/N-2° Piso, Zona Centro, 25000 Saltillo, Coah.',
+        id_estado: '7',
+        telefonos: '8444118529',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '41',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Fiscalización y Rendición de Cuentas',
+        liga: 'https:\/\/www.sefircoahuila.gob.mx\/',
+        direccion: 'Periferico Luis Echeverría S\/N, Nuevo Centro Metropolitano de Saltillo, 25020 Saltillo, Coah.',
+        id_estado: '7',
+        telefonos: '8449869800',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '42',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria De Seguridad Pública del Estado de Coahuila',
+        liga: '',
+        direccion: 'Periferico Luis Echeverría 5402-1, Nuevo Centro Metropolitano de Saltillo, 25022 Saltillo, Coah.',
+        id_estado: '7',
+        telefonos: '8444389800',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '43',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Cultura del Gobierno de Coahuila',
+        liga: '',
+        direccion: 'Juárez Hidalgo 435, Zona Centro, 25000 Saltillo, Coah.',
+        id_estado: '7',
+        telefonos: '8444100033',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '44',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado Secretaría de Administración',
+        liga: '',
+        direccion: 'Centro, Dr. Miguel Galindo 517, Fátima, 72000 Colima, Col.',
+        id_estado: '8',
+        telefonos: '3123123991',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '45',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación Colima',
+        liga: 'http:\/\/www.secolima.gob.mx\/',
+        direccion: 'Av. Gonzalo de Sandoval 760, Las Víboras, 28040 Colima, Col.',
+        id_estado: '8',
+        telefonos: '3123161500',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '46',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de rentas del gobierno del estado de colima',
+        liga: '',
+        direccion: 'Complejo administrativo, La Atrevida, 28000 Colima, Col.',
+        id_estado: '8',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '47',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Seguridad Pública del Estado de Colima',
+        liga: '',
+        direccion: 'Calzada Pedro A. Galván Norte 502, Centro, 28000 Colima, Col.',
+        id_estado: '8',
+        telefonos: '3123145578',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '48',
+        tipo: 'Dependencia',
+        nombre: 'SEIDUM Secretaría de Infraestructura, Desarrollo Urbano y Movilidad',
+        liga: 'https:\/\/www.col.gob.mx\/desarrollourbano',
+        direccion: 'Boulevard Camino Real 435, José María Morelos, 28017 Colima, Col.',
+        id_estado: '8',
+        telefonos: '3123130150',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '49',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria del Trabajo y Previsión Social del Gobierno del Estado de Colima',
+        liga: '',
+        direccion: 'Complejo Administrativo del Gobierno del Estado de Colima 3er. Anillo Periférico Esq. Ejército Mexicano S\/N. Colonia el Diezmo Código Postal 28010, Col.',
+        id_estado: '8',
+        telefonos: '3162000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '50',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría General de Gobierno',
+        liga: 'http:\/\/secretariageneral.durango.gob.mx\/',
+        direccion: '34240 Durango, Dgo.',
+        id_estado: '10',
+        telefonos: '6181379541',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '51',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Contraloría',
+        liga: 'https:\/\/contraloria.durango.gob.mx\/',
+        direccion: 'C. Pino Suárez 1000, Zona Centro, 34000 Durango, Dgo.',
+        id_estado: '10',
+        telefonos: '6181377200',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '52',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Educación del Estado de Durango',
+        liga: 'http:\/\/educacion.durango.gob.mx\/',
+        direccion: 'Boulevard. Domingo Arrieta 1700, Gral. Domingo Arrieta, 34180 Durango, Dgo.',
+        id_estado: '10',
+        telefonos: '6181376251',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '53',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Bienestar Social del Estado de Durango',
+        liga: 'http:\/\/bienestarsocial.durango.gob.mx\/',
+        direccion: 'Boulevard. Domingo Arrieta 200, Gral. Domingo Arrieta, 34180 Durango, Dgo.',
+        id_estado: '10',
+        telefonos: '6181379492',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '54',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Agricultura y Desarrollo Rural',
+        liga: 'http:\/\/www.sagdr.gob.mx\/',
+        direccion: 'Boulevard. Francisco Villa 5025, Cd Industrial, 34208 Durango, Dgo.',
+        id_estado: '10',
+        telefonos: '6188291800',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '55',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría del Gobierno del Estado de México',
+        liga: 'https:\/\/sgg.edomex.gob.mx\/',
+        direccion: 'Valentín Gómez Farías 402, Francisco Murguía, 50040 Toluca de Lerdo, Méx.',
+        id_estado: '15',
+        telefonos: '7221671921',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '56',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Finanzas',
+        liga: 'http:\/\/www.edomex.gob.mx\/',
+        direccion: 'Calle Sebastián Lerdo de Tejada 300, Centro, 50000 Toluca de Lerdo, Méx.',
+        id_estado: '15',
+        telefonos: '7222760040',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '57',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Desarrollo Social Estado de México',
+        liga: 'http:\/\/sedesem.edomex.gob.mx\/',
+        direccion: 'Carretera Toluca - México 2077, Delegación Sta. Ana Tlapaltitlán, 50160 Santa Ana Tlapaltitlán, Méx.',
+        id_estado: '15',
+        telefonos: '7222260182',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '58',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría del Trabajo',
+        liga: 'https:\/\/strabajo.edomex.gob.mx\/',
+        direccion: 'Calle Rafael M. Hidalgo 301, Cuauhtémoc, 50130 Toluca de Lerdo, Méx.',
+        id_estado: '15',
+        telefonos: '7222760900',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '59',
+        tipo: 'Dependencia',
+        nombre: 'SECAMPO Secretaría del Campo EdoMéx',
+        liga: 'https:\/\/secampo.edomex.gob.mx\/',
+        direccion: 'Conjunto SEDAGRO Rancho San Lorenzo S\/N, San Lorenzo Coacalco, 52140 San Lorenzo Coacalco, Méx.',
+        id_estado: '15',
+        telefonos: '7222756400',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '60',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría De Movilidad',
+        liga: 'http:\/\/smovilidad.edomex.gob.mx\/',
+        direccion: 'Av. Vía Gustavo Baz 2160, La Loma, 54060 Tlalnepantla, Méx.',
+        id_estado: '15',
+        telefonos: '5553668200',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '61',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de las Mujeres, Gobierno del Estado de México',
+        liga: 'http:\/\/semujeres.edomex.gob.mx\/',
+        direccion: 'Av. Miguel Hidalgo Ote. 1031, Barrio de San Bernardino, 50080 Toluca de Lerdo, Méx.',
+        id_estado: '15',
+        telefonos: '7229342700',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '62',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria General De Gobierno',
+        liga: 'https:\/\/sgg.jalisco.gob.mx\/',
+        direccion: 'Juan de La Barrera 1357, La Guadalupana, 44220 Guadalajara, Jal.',
+        id_estado: '11',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '63',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Administración',
+        liga: 'https:\/\/administracion.jalisco.gob.mx\/',
+        direccion: 'Av. Fray Antonio Alcalde 1221, Miraflores, 44266 Guadalajara, Jal.',
+        id_estado: '11',
+        telefonos: '3336681804',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '64',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Servicios Públicos Municipales de Guadalajara',
+        liga: '',
+        direccion: 'C. Ignacio Zaragoza 39, Zona Centro, 44200 Guadalajara, Jal.',
+        id_estado: '11',
+        telefonos: '3336157895',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '65',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Desarrollo Urbano Guadalajara',
+        liga: 'https:\/\/info.jalisco.gob.mx\/area\/direccion-de-desarrollo-urbano',
+        direccion: 'Fray Antonio Alcalde 1221, Observatorio, Guadalajara, Jal.',
+        id_estado: '11',
+        telefonos: '3338192300',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '66',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de la Hacienda Publica',
+        liga: 'https:\/\/hacienda.jalisco.gob.mx\/',
+        direccion: 'C. Pedro Moreno 281, Zona Centro, 44100 Guadalajara, Jal.',
+        id_estado: '11',
+        telefonos: '3330301700',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '67',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Seguridad',
+        liga: '',
+        direccion: 'C. Ignacio Herrera y Cairo, 44200 Guadalajara, Jal.',
+        id_estado: '11',
+        telefonos: '3330307900',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '68',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Fianzas del Gobierno del Estado',
+        liga: '',
+        direccion: 'Libertad 56, Centro, 46100 Villa Guerrero, Gro.',
+        id_estado: '12',
+        telefonos: '4379645121',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '69',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación Guerrero',
+        liga: 'https:\/\/www.guerrero.gob.mx\/dependencia\/sector-central\/secretaria-de-educacion-guerrero\/',
+        direccion: 'Acapulco 7, Unidad Guerrerense, 39043 Chilpancingo de los Bravo, Gro.',
+        id_estado: '12',
+        telefonos: '7474721300',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '70',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Salud Guerrero',
+        liga: '',
+        direccion: 'Primer Congreso de Anáhuac Sn, Burócratas, 39000 Chilpancingo de los Bravo, Gro.',
+        id_estado: '12',
+        telefonos: '7474714795',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '71',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Finanzas y Administración de Guerrero',
+        liga: '',
+        direccion: 'Boulevard Rene Juárez Cisneros 62m Col. Cd. de los servicios, 39074 Chilpancingo de los Bravo, Gro.',
+        id_estado: '12',
+        telefonos: '7474719700',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '72',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Cultura de Guerrero',
+        liga: '',
+        direccion: 'Plaza Cívica Primer Congreso de Anáhuac Sn, Centro, 39000 Chilpancingo de los Bravo, Gro.',
+        id_estado: '12',
+        telefonos: '7474727795',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '73',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Planeación y Desarrollo Regional de Guerrero',
+        liga: 'https:\/\/www.guerrero.gob.mx\/dependencia\/sector-central\/secretaria-de-planeacion-y-desarrollo-regional\/',
+        direccion: 'Presa Topiltepec 9, Agua Potable y Alcantarillado, 39070 Chilpancingo de los Bravo, Gro.',
+        id_estado: '12',
+        telefonos: '7473561312',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '74',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobierno del Estado de Hidalgo',
+        liga: '',
+        direccion: 'Palacio de Gobierno, Plaza Benito Juárez, 2da P S\/N, Centro, Pachuca de Soto, Hgo.',
+        id_estado: '13',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '75',
+        tipo: 'Dependencia',
+        nombre: 'Órgano interno de control de la secretaría de salud de hidalgo',
+        liga: '',
+        direccion: 'Boulevard. Valle de San Javier 110, Valle de San Javier, 42086 Pachuca de Soto, Hgo.',
+        id_estado: '13',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '76',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría De Seguridad Pública De Hidalgo',
+        liga: 'https:\/\/s-seguridad.hidalgo.gob.mx\/',
+        direccion: 'sobre Carretera, Boulevard Luis Donaldo Colosio, Pachuca - Actopan S\/N-II, Colosio II, 42039 Pachuca de Soto, Hgo.',
+        id_estado: '13',
+        telefonos: '7714731300',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '77',
+        tipo: 'Dependencia',
+        nombre: 'Subsecretaria De Salud Publica Secretaria De Salud De Hidalgo',
+        liga: '',
+        direccion: 'Boulevard Luis Donaldo Colosio, Calabazas, Canutillo, 42182 Santiago Jaltepec, Hgo.',
+        id_estado: '13',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '78',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Desarrollo Humano y Social',
+        liga: 'https:\/\/www.pachuca.gob.mx\/portal\/desarrollo-humano-y-social\/',
+        direccion: 'Parque Hidalgo, Ex Hacienda de Guadalupe, 42050 Pachuca de Soto, Hgo.',
+        id_estado: '13',
+        telefonos: '7717178600',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '79',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Servicios Municipales',
+        liga: '',
+        direccion: 'Lirio 100, Nueva Francisco I Madero, Francisco I. Madero, 42070 Pachuca de Soto, Hgo.',
+        id_estado: '13',
+        telefonos: '7717177930',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '80',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Turismo de Hidalgo',
+        liga: '',
+        direccion: 'Camino Real de La Plata 340, Zona Plateada, 42084 Pachuca de Soto, Hgo.',
+        id_estado: '13',
+        telefonos: '7717184489',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '81',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Obras Públicas y Ordenamiento Territorial (SOPOT)',
+        liga: 'https:\/\/s-obraspublicas.hidalgo.gob.mx\/',
+        direccion: 'Venta Prieta, 42083 Pachuca de Soto, Hgo.',
+        id_estado: '13',
+        telefonos: '7717178000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '82',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Educación del Estado de Jalisco',
+        liga: 'http:\/\/portalsej.jalisco.gob.mx\/',
+        direccion: 'Av. Central Guillermo González Camarena 615, Poniente, 45136 Zapopan, Jal.',
+        id_estado: '14',
+        telefonos: '3330307500',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '83',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Administración',
+        liga: 'https:\/\/administracion.jalisco.gob.mx\/',
+        direccion: 'Av. Fray Antonio Alcalde 1221, Miraflores, 44266 Guadalajara, Jal.',
+        id_estado: '14',
+        telefonos: '3336681804',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '84',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Cultura Jalisco',
+        liga: 'http:\/\/sc.jalisco.gob.mx\/',
+        direccion: 'C. Ignacio Zaragoza 244, Zona Centro, 44100 Guadalajara, Jal.',
+        id_estado: '14',
+        telefonos: '3330304500',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '85',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría General de Gobierno. ',
+        liga: '',
+        direccion: 'Calle Francisco I. Madero 110, Zona Centro, 44100 Guadalajara, Jal.',
+        id_estado: '14',
+        telefonos: '3336681800',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '86',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Planeación y Participación Ciudadana',
+        liga: '',
+        direccion: 'C. Magisterio 1499-1er Piso, Miraflores, 44270 Guadalajara, Jal.',
+        id_estado: '14',
+        telefonos: '3338192374',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '87',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Salud del Estado de Jalisco',
+        liga: 'http:\/\/ssj.jalisco.gob.mx\/',
+        direccion: 'Dr. Baeza Alzaga 107, Zona Centro, 44100 Guadalajara, Jal.',
+        id_estado: '14',
+        telefonos: '3330305000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '88',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Transporte de Jalisco',
+        liga: 'https:\/\/setrans.jalisco.gob.mx\/',
+        direccion: 'Av. Pról.. Alcalde S\/N, Jardines Alcalde, 44290 Guadalajara, Jal.',
+        id_estado: '14',
+        telefonos: '3338192400',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '89',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Turismo del Estado de Jalisco',
+        liga: '',
+        direccion: 'C. José María Morelos 102, Zona Centro, 44100 Guadalajara, Jal.',
+        id_estado: '14',
+        telefonos: '3336888155',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '90',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobierno',
+        liga: 'http:\/\/www.michoacan.gob.mx\/',
+        direccion: 'Avenida Madero Poniente 63, Centro histórico de Morelia, 58000 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '4433130175',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '91',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Enlace Legislativo',
+        liga: 'https:\/\/segob.michoacan.gob.mx\/',
+        direccion: 'C. Juan José de Lejarza 49, Centro histórico de Morelia, 58000 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '92',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación en el Estado de Michoacán de Ocampo',
+        liga: 'https:\/\/educacion.michoacan.gob.mx\/',
+        direccion: 'Av. Siervo de La Nación 845, Lomas del Valle, 58170 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '4432997741',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '93',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Finanzas y Administración del Gobierno del Estado de Michoacán',
+        liga: 'http:\/\/www.secfinanzas.michoacan.gob.mx\/consulta-y-pago-de-tenencia\/',
+        direccion: 'Calzada Ventura Puente 112, Chapultepec Norte, 58260 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '4433229933',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '94',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Comunicaciones y Obras Públicas del Estado de Michoacán de Ocampo',
+        liga: '',
+        direccion: 'Avenida Universidad 581, Alberto Oviedo Mota, 58060 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '95',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Cultura de Michoacán',
+        liga: 'http:\/\/cultura.michoacan.gob.mx\/',
+        direccion: 'C. Isidro Huarte 545, Cuauhtémoc, 58020 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '4433228900',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '96',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Turismo del Estado de Michoacán',
+        liga: 'http:\/\/michoacan.gob.mx\/',
+        direccion: 'Av. Tata Vasco 80, Vasco de Quiroga, 58230 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '4433178032',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '97',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Desarrollo Urbano y Movilidad',
+        liga: 'https:\/\/sedum.michoacan.gob.mx\/',
+        direccion: 'Escarcha 272, Prados del Campestre, 58297 Morelia, Mich.',
+        id_estado: '16',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '98',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria De Hacienda Morelos',
+        liga: '',
+        direccion: 'Miguel Hidalgo, 62040 Cuernavaca, Mor.',
+        id_estado: '17',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '99',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Morelos Secretaría del Trabajo',
+        liga: 'http:\/\/morelos.gob.mx\/',
+        direccion: 'Boulevard. Lic. Benito Juárez 73, Cuernavaca Centro, Centro, 62050 Cuernavaca, Mor.',
+        id_estado: '17',
+        telefonos: '7733100985',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '100',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Morelos - Secretaría de Seguridad Pública',
+        liga: '',
+        direccion: 'Autopista México Acapulco Kilometro 102 + 900, Poblado de Acatitla, 62580 Temixco, Mor.',
+        id_estado: '17',
+        telefonos: '7773853667',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '101',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Obras Publicas del Estado de Morelos',
+        liga: 'https:\/\/obraspublicas.morelos.gob.mx\/',
+        direccion: 'Av. Universidad 25, Santa María Ahuacatitlán, 62130 Cuernavaca, Mor.',
+        id_estado: '17',
+        telefonos: '7773137057',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '102',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Movilidad y Transporte',
+        liga: 'http:\/\/www.hacienda.morelos.gob.mx\/',
+        direccion: ' Cuauhtemotzin 1, Club de Golf de Cuernavaca, 62030 Cuernavaca, Mor.',
+        id_estado: '17',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '103',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Desarrollo Social',
+        liga: '',
+        direccion: 'Pino 99-int 1, Teopanzolco, 62350 Cuernavaca, Mor.',
+        id_estado: '17',
+        telefonos: '7773100640',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '104',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Administración y Finanzas',
+        liga: 'http:\/\/www.hacienda-nayarit.gob.mx\/',
+        direccion: 'Av. México Norte s\/n, Centro, 63000 Tepic, Nay.',
+        id_estado: '18',
+        telefonos: '3112152200',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '105',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría General de Gobierno',
+        liga: '',
+        direccion: 'Av. México Norte Av. México y Abasolo S\/N Col. Centro, Centro, 63000 Tepic, Nay.',
+        id_estado: '18',
+        telefonos: '3112152102',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '106',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Cultura de Nayarit',
+        liga: '',
+        direccion: 'Oaxaca Sur 122, Centro, 63000 Tepic, Nay.',
+        id_estado: '18',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '107',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría De Seguridad Pública Nayarit',
+        liga: '',
+        direccion: 'Veracruz Sur 141, Centro, 63000 Tepic, Nay.',
+        id_estado: '18',
+        telefonos: '3112134114',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '108',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Desarrollo Sustentable',
+        liga: 'https:\/\/sds.nayarit.gob.mx\/',
+        direccion: 'Av. Insurgentes, Cd del Valle, 63157 Tepic, Nay.',
+        id_estado: '18',
+        telefonos: '3112119200',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '109',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Turismo del Gobierno del Estado de Nayarit',
+        liga: 'http:\/\/www.visitnayarit.com\/',
+        direccion: 'Avenida México y Calzada del Ejército Nacional sin número, Tepic, Nay.',
+        id_estado: '18',
+        telefonos: '3112148071',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '110',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación',
+        liga: '',
+        direccion: 'Nueva Jersey, Industrial Hab Abraham Lincoln, 64310 Monterrey, N.L.',
+        id_estado: '19',
+        telefonos: '8120205000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '111',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Seguridad de Nuevo León',
+        liga: 'http:\/\/www.nl.gob.mx\/dependencias\/seguridad\/organigrama',
+        direccion: 'Av. Félix U. Gómez 2223, Reforma, 64550 Monterrey, N.L.',
+        id_estado: '19',
+        telefonos: '8120203600',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '112',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Cultura de Nuevo León',
+        liga: 'https:\/\/www.nl.gob.mx\/cultura',
+        direccion: 'C. Washington S\/N, Centro, 64000 Monterrey, N.L.',
+        id_estado: '19',
+        telefonos: '8120330103',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '113',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría General del Estado de Nuevo León',
+        liga: 'https:\/\/www.nl.gob.mx\/generaldegobierno',
+        direccion: 'Severiano Martínez 1, Centro de Dr. Arroyo, Centro 4to Sector, 67900 Dr. Arroyo, N.L.',
+        id_estado: '19',
+        telefonos: '4888880420',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '114',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Desarrollo Social de Nuevo León',
+        liga: '',
+        direccion: 'Michoacán 907, Independencia, 64720 Monterrey, N.L.',
+        id_estado: '19',
+        telefonos: '8181308300',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '115',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Participación Ciudadana',
+        liga: '',
+        direccion: 'Av. Junco de la Vega 143, Roma, 64700 Monterrey, N.L.',
+        id_estado: '19',
+        telefonos: '8120332751',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '116',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Igualdad e Inclusión del Estado de Nuevo León',
+        liga: '',
+        direccion: 'Torre Ciudadana, C. Washington, Obrera, 64018 Monterrey, N.L.',
+        id_estado: '19',
+        telefonos: '8120330086',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '117',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Economía',
+        liga: 'https:\/\/www.gob.mx\/se\/',
+        direccion: 'Priv. Oaxaca 68050, Reforma, 68050 Oaxaca de Juárez, Oax.',
+        id_estado: '20',
+        telefonos: '9515159669',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '118',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Finanzas del Estado',
+        liga: '',
+        direccion: 'República 118, Centro, 68000 Oaxaca de Juárez, Oax.',
+        id_estado: '20',
+        telefonos: '9515025360',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '119',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Hacienda y Crédito Público',
+        liga: '',
+        direccion: 'Gral. Manuel García Vigila (García Vigil) 709, Centro, 68000 Oaxaca de Juárez',
+        id_estado: '20',
+        telefonos: '9515016010',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '120',
+        tipo: 'Dependencia',
+        nombre: ' Secretaria de Seguridad Pública',
+        liga: '',
+        direccion: 'Pinos Sn, Eucaliptos, 68274 Oaxaca de Juárez, Oax.',
+        id_estado: '20',
+        telefonos: '9515152752',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '121',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Oaxaca',
+        liga: '',
+        direccion: 'C. de Carlos María Bustamante 319, OAX_RE_BENITO JUAREZ, Centro, 68000 Oaxaca de Juárez, Oax.',
+        id_estado: '20',
+        telefonos: '9515144423',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '122',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Servicios a la comunidad',
+        liga: '',
+        direccion: 'Av. Ferol 110, Cinco Señores, 68050 Oaxaca de Juárez, Oax.',
+        id_estado: '20',
+        telefonos: '9511326959',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '123',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Desarrollo Económico',
+        liga: '',
+        direccion: 'Faustino G. Olivera 108, RUTA INDEPENDENCIA, Luis Jiménez Figueroa, 68070 Oaxaca de Juárez, Oax.',
+        id_estado: '20',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '124',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobernación',
+        liga: 'http:\/\/sg.puebla.gob.mx\/',
+        direccion: 'Calle 18 Nte # 406, La Acocota, 72377 Heroica Puebla de Zaragoza, Pue.',
+        id_estado: '21',
+        telefonos: '2222138900',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '125',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Trabajo',
+        liga: 'http:\/\/www.st.puebla.gob.mx\/',
+        direccion: 'Callejón de la 10 Norte, P.º de San Francisco 806, Barrio del Alto, 72290 Heroica Puebla de Zaragoza, Pue.',
+        id_estado: '21',
+        telefonos: '2222465776',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '126',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno Del Estado De Puebla Secretaria De Cultura',
+        liga: '',
+        direccion: 'Av. 7 Ote 6, Centro histórico de Puebla, 72000 Heroica Puebla de Zaragoza, Pue.',
+        id_estado: '21',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '127',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Igualdad Sustantiva del Gobierno del Estado de Puebla',
+        liga: '',
+        direccion: 'C. 2 Sur 902, Centro histórico de Puebla, 72000 Heroica Puebla de Zaragoza, Pue.',
+        id_estado: '21',
+        telefonos: '2224635875',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '128',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gestión y Desarrollo Urbano',
+        liga: '',
+        direccion: 'Calle 3 Sur 1508, Centro histórico de Puebla, 72530 Heroica Puebla de Zaragoza, Pue.',
+        id_estado: '21',
+        telefonos: '2223094600',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '129',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria General De Gobierno. ',
+        liga: '',
+        direccion: 'Av. 29 Ote. 620, Ladrillera de Benítez, 72530 Heroica Puebla de Zaragoza, Pue.',
+        id_estado: '21',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '130',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Salud del Estado de Puebla',
+        liga: 'http:\/\/ss.pue.gob.mx\/',
+        direccion: 'C. 6 Nte 603, Centro histórico de Puebla, 72000 Heroica Puebla de Zaragoza, Pue.',
+        id_estado: '21',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '131',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobierno del Estado de Querétaro',
+        liga: 'http:\/\/www.queretaro.gob.mx\/',
+        direccion: 'C. 5 de Mayo 45, Centro, 76000 Santiago de Querétaro, Qro.',
+        id_estado: '22',
+        telefonos: '4422385000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '132',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría del Trabajo del Estado de Querétaro',
+        liga: 'http:\/\/www.queretaro.gob.mx\/transparencia\/contenidodependencia.aspx?q=Q1SajNL\/6MDbgggA5OpHaQ==',
+        direccion: '76000, Centro, 76000 Santiago de Querétaro, Qro.',
+        id_estado: '22',
+        telefonos: '4422271806',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '133',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación',
+        liga: '',
+        direccion: 'Av. Pról.. Luis Pasteur 23, Centro, 76000 Santiago de Querétaro, Qro.',
+        id_estado: '22',
+        telefonos: '4422385086',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '134',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Planeación y Participación Ciudadana del Poder Ejecutivo del Estado de Querétaro',
+        liga: '',
+        direccion: 'Pasteur #45 norte esquina, C\/ 15 de Mayo, Centro Histórico, 76000 Santiago de Querétaro, Qro.',
+        id_estado: '22',
+        telefonos: '4422441617',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '135',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria De Obras Publicas Del Estado',
+        liga: '',
+        direccion: 'C. Francisco I. Madero 78A, Centro, 76000 Santiago de Querétaro, Qro.',
+        id_estado: '22',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '136',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Educación de Quintana Roo',
+        liga: 'https:\/\/qroo.gob.mx\/seq\/',
+        direccion: 'Bonampak 31, Supermanzana 2a, 77500 Cancún, Q.R.',
+        id_estado: '23',
+        telefonos: '9984932681',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '137',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Desarrollo Económico Quintana Roo',
+        liga: '',
+        direccion: 'Centro Comercial Las Palmas, altos, local A28 Ave. Xcaret, sm. 36, mz 2 lote 2, 77520 Cancun,Benito Juárez, Q.R.',
+        id_estado: '23',
+        telefonos: '9988840560',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '138',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobierno',
+        liga: '',
+        direccion: 'C. 22 de Enero 1, Centro, 77000 Chetumal, Q.R.',
+        id_estado: '23',
+        telefonos: '9838350550',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '139',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Seguridad Ciudadana del Estado de Quintana Roo',
+        liga: '',
+        direccion: 'Km 12.5 Carreteártela Chetumal-Bacalar Col, Industrial, 77049 Chetumal, Q.R.',
+        id_estado: '23',
+        telefonos: '9838350904',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '140',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobierno',
+        liga: '',
+        direccion: 'Av. Ignacio Zaragoza 233, Centro, 77000 Chetumal, Q.R.',
+        id_estado: '23',
+        telefonos: '9838320913',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '141',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Turismo de Quintana Roo',
+        liga: '',
+        direccion: 'Centro de Convenciones Anexo A, Boulevard Bahía, Ignacio Comonfort esquina, Colonia 5 de Abril, 77018 Chetumal, Q.R.',
+        id_estado: '23',
+        telefonos: '9838350860',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '142',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de finanzas de San Luis Potosí, Comercio Exterior',
+        liga: '',
+        direccion: 'Eje 118 220, Industrial San Luis, 78395 San Luis Potosí, S.L.P.',
+        id_estado: '24',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '143',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria De Desarrollo Urbano Y Obras Publicas',
+        liga: '',
+        direccion: 'Pascual M. Hernández 380, Centro Histórico, 78000 San Luis Potosí, S.L.P.',
+        id_estado: '24',
+        telefonos: '4448145382',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '144',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Seguridad Pública San Luis Potosí',
+        liga: '',
+        direccion: '78384 San Luis Potosí, S.L.P.',
+        id_estado: '24',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '145',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobernación',
+        liga: '',
+        direccion: 'Av. Venustiano Carretera Anzá 707, De Tequisquiapan, 78000 San Luis Potosí, S.L.P.',
+        id_estado: '24',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '146',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Cultura',
+        liga: '',
+        direccion: '78000 CENTRO, 78000 San Luis Potosí, S.L.P.',
+        id_estado: '24',
+        telefonos: '4448129014',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '147',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación de General de San Luis Potosí',
+        liga: '',
+        direccion: 'Calle Av. Mariano Jiménez 1240, Estadio, 78280 San Luis Potosí, S.L.P.',
+        id_estado: '24',
+        telefonos: '4448208121',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '148',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Sinaloa Poder Ejecutivo Secretaría de Administración',
+        liga: '',
+        direccion: 'Calle Gral. Juan José Ríos 1017, Jorge Almada, 80200 Culiacán Rosales, Sin.',
+        id_estado: '25',
+        telefonos: '6677160679',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '149',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Bienestar y Desarrollo Sustentable',
+        liga: '',
+        direccion: 'Av. Insurgentes S\/N Tercer Piso, Centro Sinaloa, 80020 Culiacán Rosales, Sin.',
+        id_estado: '25',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '150',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Sinaloa Comunicaciones y Obras Públicas',
+        liga: '',
+        direccion: 'De Los Insurgentes 1, Centro Sinaloa, 80129 Culiacán Rosales, Sin.',
+        id_estado: '25',
+        telefonos: '6677143312',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '151',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Turismo del Estado de Sinaloa',
+        liga: 'https:\/\/sinaloa.travel\/',
+        direccion: 'Boulevard Alfonso Zaragoza Maytorena 2204, Fracc. Bonanza, 80020 Culiacán Rosales, Sin.',
+        id_estado: '25',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '152',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Desarrollo Sustentable del Estado de Sinaloa (SEDESU)',
+        liga: '',
+        direccion: 'Centro Sinaloa, 80000 Culiacán Rosales, Sin.',
+        id_estado: '25',
+        telefonos: '6677587296',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '153',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Sonora Secretaría de Hacienda',
+        liga: 'https:\/\/hacienda.sonora.gob.mx\/',
+        direccion: 'Xavi Cultura SN, Villa de Seris, 83078 Hermosillo, Son.',
+        id_estado: '26',
+        telefonos: '6621084090',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '154',
+        tipo: 'Dependencia',
+        nombre: 'Gobierno del Estado de Sonora Secretaría de Desarrollo',
+        liga: 'https:\/\/www.sonora.gob.mx\/',
+        direccion: 'C. Hidalgo 35, Centenario, 83260 Hermosillo, Son.',
+        id_estado: '26',
+        telefonos: '6622121790',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '155',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Hacienda',
+        liga: '',
+        direccion: 'C. Comonfort 36, Proyecto Rio Sonora Hermosillo XXI, 83000 Hermosillo, Son.',
+        id_estado: '26',
+        telefonos: '6622120004',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '156',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de la Contraloría General del Gobierno del Estado de Sonora',
+        liga: 'https:\/\/contraloria.sonora.gob.mx\/',
+        direccion: 'Avenida Comonfort SN, Villa de Seris, 83280 Hermosillo, Son.',
+        id_estado: '26',
+        telefonos: '8004663786',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '157',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de la Contraloría',
+        liga: 'https:\/\/contraloria.sonora.gob.mx\/',
+        direccion: 'California 159, Proyecto Rio Sonora Hermosillo XXI, 83270 Hermosillo, Son.',
+        id_estado: '26',
+        telefonos: '6622120696',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '158',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobierno',
+        liga: 'http:\/\/segob.tabasco.gob.mx\/',
+        direccion: 'Av. Gregorio Méndez Magaña s\/n, Centro Delegación Cuatro, 86077 Villahermosa, Tab.',
+        id_estado: '27',
+        telefonos: '9933383000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '159',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Educación de Tabasco',
+        liga: 'https:\/\/tabasco.gob.mx\/educacion',
+        direccion: 'Av. Gregorio Méndez Magaña s\/n, Gil y Sáenz, 86080 Villahermosa, Tab.',
+        id_estado: '27',
+        telefonos: '9934270161',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '160',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Asentamiento y Obras Públicas',
+        liga: '',
+        direccion: 'Macayo SN, El Recreo, 86020 Villahermosa, Tab.',
+        id_estado: '27',
+        telefonos: '9933574911',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '161',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría para el Desarrollo Económico y la Competitividad del Estado de Tabasco',
+        liga: 'https:\/\/tabasco.gob.mx\/sedec',
+        direccion: 'Avenida Paseo Tabasco 1504 Piso 2 Desarrollo Urbano Tabasco 2000, 86035 Villahermosa, Tab.',
+        id_estado: '27',
+        telefonos: '9933109760',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '162',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Movilidad del Estado de Tabasco',
+        liga: 'https:\/\/tabasco.gob.mx\/movilidad',
+        direccion: 'Periférico Carlos Pellicer Cámara 3020, Pages Llergo, 86125 Villahermosa, Tab.',
+        id_estado: '27',
+        telefonos: '9933503999',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '163',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría del Trabajo',
+        liga: 'http:\/\/www.tabasco.gob.mx\/',
+        direccion: 'Av. 27 de Febrero, Centro Delegación Uno, 86077 Villahermosa, Tab.',
+        id_estado: '27',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '164',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Salud',
+        liga: 'https:\/\/www.gob.mx\/',
+        direccion: 'Belisario Domínguez Sn, Del Pueblo, 89190 Tampico, Tamps.',
+        id_estado: '28',
+        telefonos: '8332192841',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '165',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Cultura',
+        liga: '',
+        direccion: 'Av. Miguel Hidalgo 306, Campbell, 89270 Tampico, Tamps.',
+        id_estado: '28',
+        telefonos: '8333052860',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '166',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Finanzas',
+        liga: '',
+        direccion: 'Miguel Hidalgo 1302, Petrolera, 89250 Tampico, Tamps.',
+        id_estado: '28',
+        telefonos: '8332147394',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '167',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Agricultura y Ganadería',
+        liga: '',
+        direccion: 'Calle Heriberto Jara 1064, Morelos, 89290 Tampico, Tamps.',
+        id_estado: '28',
+        telefonos: '8332125852',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '168',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Marina',
+        liga: '',
+        direccion: 'Héroes del Cañonero Sn, Cascajal, 89000 Tampico, Tamps.',
+        id_estado: '28',
+        telefonos: '8332123079',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '169',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Trabajo y Competitividad',
+        liga: 'http:\/\/trabajoycompetitividad.gob.mx\/',
+        direccion: 'C. 27 220, La Loma Xicohtencatl, Xicohténcatl, 90070 Tlaxcala de Xicohténcatl, Tlax.',
+        id_estado: '29',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '170',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Turismo del Estado de Tlaxcala',
+        liga: 'http:\/\/www.visitatlaxcala.com.mx\/',
+        direccion: 'Av. Juarez esq, Av. Miguel de Lardizábal y Uribe NÚM. 18, Centro, 90000 Tlaxcala de Xicohténcatl, Tlax.',
+        id_estado: '29',
+        telefonos: '8005096557',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '171',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Salud Tlaxcala',
+        liga: '',
+        direccion: 'Vía Corta Puebla-Santa Ana 204, Apetatitlán Centro, 90605 Apetatitlán, Tlax.',
+        id_estado: '29',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '172',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Bienestar Tlaxcala',
+        liga: '',
+        direccion: 'C. Miguel Hidalgo y Costilla 36, Centro, 90000 Tlaxcala de Xicohténcatl, Tlax.',
+        id_estado: '29',
+        telefonos: '2464661740',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '173',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Economía',
+        liga: '',
+        direccion: 'Porfirio Díaz 20, Centro, 90000 Tlaxcala de Xicohténcatl, Tlax.',
+        id_estado: '29',
+        telefonos: '2464621065',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '174',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de la Función Pública del Estado de Tlaxcala',
+        liga: '',
+        direccion: '90600 Apetatitlán, Tlax.',
+        id_estado: '29',
+        telefonos: '528332147394',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '175',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Educación Publica',
+        liga: '',
+        direccion: 'Bv. Adolfo Ruíz Cortines 1270, Costa de Oro, 91700 Veracruz, Ver.',
+        id_estado: '30',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '176',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Marina',
+        liga: 'https:\/\/www.gob.mx\/semar',
+        direccion: 'Carretera Veracruz-Xalapa Kilómetro 13.5, Las Bajadas, 91698 Veracruz, Ver.',
+        id_estado: '30',
+        telefonos: '2299252670',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '177',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Seguridad Pública',
+        liga: '',
+        direccion: 'Bv. Adolfo Ruíz Cortines, Costa Verde, 94294 Veracruz, Ver.',
+        id_estado: '30',
+        telefonos: '2299224148',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '178',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Comunicaciones y Transportes',
+        liga: 'https:\/\/www.gob.mx\/',
+        direccion: 'Adolfo López Mateos 3210, Centro, 72000 Veracruz, Ver.',
+        id_estado: '30',
+        telefonos: '2383922933',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '179',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de desarrollo social',
+        liga: '',
+        direccion: 'Vía Muerta, Playa de Oro, 94293 Veracruz, Ver.',
+        id_estado: '30',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '180',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría General',
+        liga: '',
+        direccion: 'Benito Juárez 56, Centro, 91700 Veracruz, Ver.',
+        id_estado: '30',
+        telefonos: '9232750096',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '181',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación del Gobierno del Estado de Yucatán',
+        liga: 'http:\/\/www.educacion.yucatan.gob.mx\/',
+        direccion: '101-A, Calle 25, Calle 34, García Ginerés, 97070 Mérida, Yuc.',
+        id_estado: '31',
+        telefonos: '9999303950',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '182',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de la Contraloría General del Estado de Yucatán',
+        liga: 'http:\/\/www.contraloria.yucatan.gob.mx\/',
+        direccion: 'Calle 20 -A No 284- B, Xcumpich, 97204 Mérida, Yuc.',
+        id_estado: '31',
+        telefonos: '9999303800',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '183',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Gobierno',
+        liga: 'https:\/\/www.secgob.cdmx.gob.mx\/',
+        direccion: 'Calle 61 497, Centro, 97000 Mérida, Yuc.',
+        id_estado: '31',
+        telefonos: '9999242395',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '184',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Administración y Finanzas',
+        liga: 'http:\/\/www.yucatan.gob.mx\/gobierno\/ver_dependencia.php?id=3',
+        direccion: 'Calle 59 poniente x, Av. Itzáes, Centro, 97000 Mérida, Yuc.',
+        id_estado: '31',
+        telefonos: '9999303340',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '185',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Salud del Estado de Yucatán',
+        liga: 'http:\/\/salud.yucatan.gob.mx\/',
+        direccion: 'C. 72 Nº463, Barrio de Santiago, Centro, 97000 Mérida, Yuc.',
+        id_estado: '31',
+        telefonos: '9999303050',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '186',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría General de Gobierno',
+        liga: 'http:\/\/www.zacatecas.gob.mx\/',
+        direccion: 'Av. Hidalgo 602, Zacatecas Centro, 98000 Zacatecas, Zac.',
+        id_estado: '32',
+        telefonos: '4929239576',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '187',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Economía ',
+        liga: '',
+        direccion: 'C. Pachuca 189, Colonia Condesa, Cuauhtémoc, 06140 Ciudad de México, CDMX',
+        id_estado: '32',
+        telefonos: '5557299100',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '188',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría del Trabajo y Previsión Social Delegación Zacatecas',
+        liga: '',
+        direccion: 'Calzada Revolución Mexicana 303, Fraccionamiento de las Dependencias Federales, 98618 Guadalupe, Zac.',
+        id_estado: '32',
+        telefonos: '4929231838',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '189',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Educación de Zacatecas',
+        liga: 'http:\/\/www.seduzac.gob.mx\/',
+        direccion: 'José López Portillo, Fraccionamiento de las Dependencias Federales, 98618 Guadalupe, Zac.',
+        id_estado: '32',
+        telefonos: '4929239600',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '190',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Finanzas del Estado de Zacatecas',
+        liga: 'http:\/\/finanzas.gob.mx\/',
+        direccion: 'Calzada Héroes de Chapultepec No. 1902, Ciudad Administrativa, 98160 Zacatecas, Zac.',
+        id_estado: '32',
+        telefonos: '4929256220',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '191',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Educación Publica',
+        liga: 'http:\/\/www.sep.gob.mx\/',
+        direccion: 'Edificio Público, Fray Servando Teresa de Mier 81, Centro, Cuauhtémoc, 06000 Ciudad de México, CDMX',
+        id_estado: '9',
+        telefonos: '5536011000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '192',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Seguridad Ciudadana de la Ciudad de México',
+        liga: '',
+        direccion: 'Liverpool 136, Juárez, Cuauhtémoc, 06600 Ciudad de México, CDMX',
+        id_estado: '9',
+        telefonos: '5552425000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '193',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria de Obras y Servicios',
+        liga: 'https:\/\/www.obras.cdmx.gob.mx\/',
+        direccion: 'P.za de la Constitución 1, Centro Histórico de la Cdad. de México, Centro, Cuauhtémoc, 06000 Ciudad de México, CDMX',
+        id_estado: '9',
+        telefonos: '5553458000',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '194',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria De Gobernación',
+        liga: '',
+        direccion: 'Abraham González 48, Juárez, Cuauhtémoc, 06600 Ciudad de México, CDMX',
+        id_estado: '9',
+        telefonos: '5552098800',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '195',
+        tipo: 'Dependencia',
+        nombre: 'Secretaría de Economía',
+        liga: 'http:\/\/www.gob.mx\/se\/',
+        direccion: 'C. Pachuca 189, Colonia Condesa, Cuauhtémoc, 06140 Ciudad de México, CDMX',
+        id_estado: '9',
+        telefonos: '5557299100',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '196',
+        tipo: 'Dependencia',
+        nombre: 'Subsecretaria de Coordinación Metropolitana y Enlace Gubernamental',
+        liga: 'https:\/\/metropolitanos.cdmx.gob.mx\/',
+        direccion: 'Fernando de Alva Ixtlilxóchitl 185, Tránsito, Cuauhtémoc, 06820 Ciudad de México, CDMX',
+        id_estado: '9',
+        telefonos: '',
+        estatus: 'activa'
+      },
+      {
+        id_dependencia: '197',
+        tipo: 'Dependencia',
+        nombre: 'Secretaria De Comunicación Y Obras Publicas',
+        liga: '',
+        direccion: 'C. de Tacuba 17, Centro Histórico de la Cdad. de México, Centro, Cuauhtémoc, 06000 Ciudad de México, CDMX',
+        id_estado: '9',
+        telefonos: '',
+        estatus: 'activa'
+      }
+    ];
+
+    const dependenciasEstados = dependencias.map((dependencia) => {
+      return {
+        nombre: dependencia.nombre,
+        direccion: dependencia.direccion,
+        liga: dependencia.liga.replace(/\r\n/g, ''),
+        estado: encontrarEstado(dependencia, estados),
+        estatus: 'Activo',
+        telefonos: dependencia.telefonos.split(',').filter((telefono) => telefono !== '')
+      };
+    });
+
+    // console.log(dependenciasEstados);
+    await DependenciaSchema.insertMany(dependenciasEstados);
+  } catch (error) {
+    console.error(error);
+  }
+};
 (async () => {
   await generateModules();
   await generateTipoUsuarios();
@@ -3375,4 +5946,7 @@ const generateBancos = async () => {
   await generateRecursosIncidencias();
   await generateRegimen();
   await generateBancos();
+  await generateDocumentacion();
+  await generateFiscalias();
+  await createDependencias();
 })();

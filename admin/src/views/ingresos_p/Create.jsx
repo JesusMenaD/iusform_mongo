@@ -42,7 +42,6 @@ const CreateIngreso = ({ usuarioC = null }) => {
       if (tipo === 'Otro') {
         referenciaObj.titulo = referencia
         referenciaObj.tipo = 'Ninguno'
-        
       }
 
       const data = {
@@ -251,7 +250,7 @@ const CreateIngreso = ({ usuarioC = null }) => {
           <Alert severity='info' sx={{
             mb: 2
           }}>
-            Si no selecciona una cuenta, el movimiento se guardará sin ligar a una cuenta
+            Seleccione una cuenta si quiere hacer un registro en bancos
           </Alert>
 
           {

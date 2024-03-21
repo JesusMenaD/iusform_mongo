@@ -72,6 +72,12 @@ const UsuariosSchema = new Schema({
     required: false,
     index: true
   },
+  conekta: {
+    id: {
+      type: String,
+      required: false
+    }
+  },
   estatus: {
     type: String,
     enum: ['Activo', 'Inactivo'],

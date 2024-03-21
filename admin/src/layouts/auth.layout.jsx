@@ -43,7 +43,12 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  Grid
+  Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  LinearProgress
 } from '@mui/material'
 import MuiAppBar from '@mui/material/AppBar'
 import { UsuarioContext } from '../context/UsuarioContext'
@@ -51,6 +56,7 @@ import { useToggle } from '../hooks/useToggle'
 import { apiAuth } from '../api'
 import { ModulosContext } from '../context/ModulosContext'
 import TableIUS from '../components/TableIUS'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 const drawerWidth = 260
 // import { apiAuth } from '../api'
@@ -176,10 +182,43 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' 
 }))
 
 const NavbarContent = ({
-  setDialogLegislaciones
+  setDialogLegislaciones,
+  setDialogDirectorio
 }) => {
   const navigate = useNavigate()
   const [userContext, setUsuarioContext] = useContext(UsuarioContext)
+  const [, setUsuarioLS] = useLocalStorage('usuario', userContext)
+
+  useEffect(() => {
+    if (!userContext) {
+      navigate('/login')
+    }
+
+    const getUsuario = async () => {
+      try {
+        const url = '/usuario/carga/' + userContext._id
+        console.log(url)
+        const { data } = await apiAuth().get(url)
+
+        if (data) {
+          const usuario = data.data
+          setUsuarioContext(usuario)
+          setUsuarioLS(usuario)
+        } else {
+          navigate('/login')
+          setUsuarioContext(null)
+          setUsuarioLS(null)
+          localStorage.removeItem('usuario')
+        }
+      } catch (error) {
+        navigate('/login')
+        setUsuarioContext(null)
+        setUsuarioLS(null)
+        localStorage.removeItem('usuario')
+      }
+    }
+    getUsuario()
+  }, [])
   const [, setCModulos] = useContext(ModulosContext)
   const logout = () => {
     setUsuarioContext(null)
@@ -230,7 +269,7 @@ const NavbarContent = ({
         }}>
           <Tooltip title="Directorio">
             <ListItemButton
-              onClick={() => { }}>
+              onClick={() => setDialogDirectorio(true)}>
               <SearchIcon color='#c89211' size={20} />
 
             </ListItemButton>
@@ -401,6 +440,7 @@ const DrawerContent = () => {
   const [modulosC, setCModulos] = useContext(ModulosContext)
 
   const fetchModulos = async () => {
+    console.log(_id, 'id')
     const { data } = await apiAuth().get(`modulos/${_id}`)
     return data.data
   }
@@ -412,10 +452,12 @@ const DrawerContent = () => {
     }
   }, [])
 
+  const [planActual, setPlanActual] = useState(null)
+
   return (
     <nav>
       <List>
-        <ListItemLink name='Panel' to="/" Icon={<BoxIcon />} tipo='ico' />
+        {/* <ListItemLink name='Panel' to="/" Icon={<BoxIcon />} tipo='ico' /> */}
 
         {modulosC.map((modulo, index) => {
           if (modulo.child.length > 0) {
@@ -427,28 +469,30 @@ const DrawerContent = () => {
             <ListItemLink key={index} name={modulo.nombre} to={modulo.enlace} Icon={modulo.imagen} />
           )
         })}
-        <Card
-          sx={{
-            mx: 1,
-            p: 2,
-            mt: 3,
-            color: 'grey.600',
-            backgroundColor: 'grey.100',
-            borderRadius: 2,
-            boxShadow: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1.5
-          }}
-        >
-          <Typography level="title-sm">Plan actual</Typography>
-          <Typography level="body-xs">
-            30 días de prueba
-          </Typography>
-          <Button size="sm" variant="outlined">
-            Actualizar plan
-          </Button>
-        </Card>
+        {planActual && (
+          <Card
+            sx={{
+              mx: 1,
+              p: 2,
+              mt: 3,
+              color: 'grey.600',
+              backgroundColor: 'grey.100',
+              borderRadius: 2,
+              boxShadow: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1.5
+            }}
+          >
+            <Typography level="title-sm">Plan actual</Typography>
+            <Typography level="body-xs">
+              30 días de prueba
+            </Typography>
+            <Button size="sm" variant="outlined">
+              Actualizar plan
+            </Button>
+          </Card>
+        )}
       </List>
     </nav>
 
@@ -457,6 +501,7 @@ const DrawerContent = () => {
 
 const AuthLayout = ({ titleDespacho = '', logo = '' }) => {
   const [dialogLegislaciones, setDialogLegislaciones] = useState(false)
+  const [dialogDirectorio, setDialogDirectorio] = useState(false)
 
   const [open, setOpen] = useState(() => window.innerWidth > 960)
   const handleDrawerOpen = () => {
@@ -496,7 +541,7 @@ const AuthLayout = ({ titleDespacho = '', logo = '' }) => {
                 </>}
               <span>{titleDespacho}</span>
             </div>
-            <NavbarContent setDialogLegislaciones={setDialogLegislaciones} />
+            <NavbarContent setDialogLegislaciones={setDialogLegislaciones} setDialogDirectorio={setDialogDirectorio} />
           </Toolbar>
         </AppBar>
         <Drawer
@@ -529,119 +574,106 @@ const AuthLayout = ({ titleDespacho = '', logo = '' }) => {
         </Main>
       </Box >
       <DialogLegislaciones open={dialogLegislaciones} handleClose={() => setDialogLegislaciones(false)} />
+      <DialogDirectorio open={dialogDirectorio} handleClose={() => setDialogDirectorio(false)} />
     </>
   )
 }
 
 export default AuthLayout
 
-export const DialogLegislaciones = ({ open, handleClose }) => {
-  const colums = [
+const DialogLegislaciones = ({ open, handleClose }) => {
+  const [usuarioC] = useContext(UsuarioContext)
+  const [estados, setEstados] = useState([])
+  const [estado, setEstado] = useState('')
+  const [legislaciones, setLegislaciones] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalDocs, setTotalDocs] = useState(1)
+  const [limit, setTotal] = useState(10)
+  const [isLoading, setIsLoading] = useState(false)
+  const [searchTimeout, setSearchTimeout] = useState(null)
+
+  useEffect(() => {
+    const getEstados = async () => {
+      const url = '/estados'
+      const { data } = await apiAuth().get(url)
+      setEstados(data)
+    }
+    getEstados()
+  }, [])
+
+  const columns = [
+
     {
       id: 'nombre',
       label: 'Nombre'
+    },
+    {
+      id: 'enlace',
+      label: 'Enlace',
+      render: (row) => (<a href={
+        row?.enlace.startsWith('http') ? row.enlace : `http://${row.enlace}`
+      } target='_blank' rel='noreferrer'>{row.enlace}</a>)
+    },
+    {
+      id: 'estado.nombre',
+      label: 'Estado',
+      render: (row) => row.estado.nombre
     }
   ]
 
-  const [rows, setRows] = useState([
-    {
-      nombre: 'Ley Que Crea La Universidad Tecnológica De Puebla '
-    },
-    {
-      nombre: '— De Conformidad Con El Artículo Tercero Transitorio Del Decreto Número 85 Expedido Por La XV Legislatura Del Estado, Los Títulos Tercero Y Cuarto Quedarán Derogados Progresivamente Hasta La Conclusión Del Último Procedimiento Regido Por Lo Establecido En Las Disposiciones Contenidas En Dichos Títulos. '
-    },
-    {
-      nombre: 'Código Penal'
-    },
-    {
-      nombre: 'Ley de Amparo'
-    },
-    {
-      nombre: 'Código Civil'
-    },
-    {
-      nombre: 'Código Penal'
-    },
-    {
-      nombre: 'Ley de Amparo'
-    },
-    {
-      nombre: 'Código Civil'
-    },
-    {
-      nombre: 'Código Penal'
-    },
-    {
-      nombre: 'Ley de Amparo'
-    },
-    {
-      nombre: 'Código Civil'
-    },
-    {
-      nombre: 'Código Penal'
-    },
-    {
-      nombre: 'Ley de Amparo'
-    },
-    {
-      nombre: '— De Conformidad Con El Artículo Tercero Transitorio Del Decreto Número 85 Expedido Por La XV Legislatura Del Estado, Los Títulos Tercero Y Cuarto Quedarán Derogados Progresivamente Hasta La Conclusión Del Último Procedimiento Regido Por Lo Establecido En Las Disposiciones Contenidas En Dichos Títulos. '
-    },
-    {
-      nombre: 'Código Penal'
-    },
-    {
-      nombre: 'Ley de Amparo'
-    },
-    {
-      nombre: 'Código Civil'
-    },
-    {
-      nombre: 'Código Penal'
-    },
-    {
-      nombre: 'Ley de Amparo'
-    },
-    {
-      nombre: 'Código Civil'
-    },
-    {
-      nombre: 'Código Penal'
-    },
-    {
-      nombre: 'Ley de Amparo'
-    },
-    {
-      nombre: 'Código Civil'
-    },
-    {
-      nombre: 'Código Penal'
-    },
-    {
-      nombre: 'Ley de Amparo'
-    },
-    {
-      nombre: 'Código Civil'
-    },
-    {
-      nombre: 'Código Penal'
+  useEffect(() => {
+    if (usuarioC) {
+      setEstado(usuarioC?.despacho?.estado)
     }
-  ])
+  }, [usuarioC])
 
   const [search, setSearch] = useState('')
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage)
+  }
+
   const handleFilter = (e) => {
     e.preventDefault()
-    console.log(search)
-    setRows(rows.filter(row => row.nombre.toLowerCase().includes(search.toLowerCase())))
+    setIsLoading(true)
+    setCurrentPage(0)
+    // Cancela el timeout anterior para evitar múltiples búsquedas rápidas
+    clearTimeout(searchTimeout)
+    // Configura un nuevo timeout para realizar la búsqueda después de 500ms
+    setSearchTimeout(setTimeout(fetchData, 500))
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [currentPage, estado])
+
+  useEffect(() => {
+    // Limpia el timeout cuando el componente se desmonta o cuando search/status cambian
+    return () => {
+      clearTimeout(searchTimeout)
+    }
+  }, [search, estado])
+
+  const fetchData = async () => {
+    setIsLoading(true)
+    try {
+      const result = await getDataLegilaciones(search, estado, currentPage)
+      setLegislaciones(result.docs)
+      setTotalDocs(result.totalDocs)
+      setTotal(result.limit)
+      setIsLoading(false)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      setIsLoading(false)
+    }
   }
 
   return (
     <Dialog
       fullWidth={true}
-      maxWidth="md"
+      maxWidth="lg"
       open={open}
       onClose={handleClose}
-    // no cerrar con esc o click fuera del dialog
-    // disableEscapeKeyDown
     >
       <DialogTitle>
         Legislaciones y reglamentos
@@ -660,7 +692,6 @@ export const DialogLegislaciones = ({ open, handleClose }) => {
       </IconButton>
       <DialogContent sx={{
         backgroundColor: 'grey.100',
-        // quiero que el pading solo zero cuando es mobile y cuando es desktop sea 8
         padding: 0,
         '@media (min-width: 600px)': {
           padding: 2
@@ -673,10 +704,30 @@ export const DialogLegislaciones = ({ open, handleClose }) => {
           </Typography>
           <Box onSubmit={handleFilter} as='form' component='form'>
             <Grid container spacing={2} alignItems='center'>
-              <Grid item xs={12} sm={6} md={9}>
+              <Grid item xs={12} sm={6} md={8}>
                 <TextField fullWidth label='Buscar' id='Buscar' value={search} onChange={(e) => setSearch(e.target.value)} />
+
               </Grid>
-              <Grid item xs={12} sm={6} md={2} display='flex' justifyContent='space-around'>
+              <Grid item xs={12} sm={6} md={4}>
+                <FormControl fullWidth >
+                  <InputLabel id="estados">Estados</InputLabel>
+                  <Select
+                    labelId="estados"
+                    value={estado}
+                    label="Estados"
+                    onChange={(e) => setEstado(e.target.value)}
+                  >
+                    {/* <MenuItem value=''>Selecciona un Estado</MenuItem> */}
+                    {estados.map((item) => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={2} >
                 <Button
                   variant='contained'
                   title='Buscar'
@@ -693,12 +744,16 @@ export const DialogLegislaciones = ({ open, handleClose }) => {
           </Box>
         </Paper>
 
-        <TableIUS
-          columns={colums}
-          rows={rows}
-          height={400}
-          isHandling={false}
+        {isLoading && <LinearProgress />}
 
+        <TableIUS
+          columns={columns}
+          rows={legislaciones}
+          onPageChange={handlePageChange}
+          currentPage={currentPage}
+          totalRows={totalDocs}
+          limit={limit}
+          isHandling={false}
         />
         <Box
           noValidate
@@ -716,4 +771,264 @@ export const DialogLegislaciones = ({ open, handleClose }) => {
     </Dialog>
 
   )
+}
+
+const DialogDirectorio = ({ open, handleClose }) => {
+  const [usuarioC] = useContext(UsuarioContext)
+  const [estados, setEstados] = useState([])
+  const [estado, setEstado] = useState('')
+  const [directorios, setDirectorios] = useState([])
+  const [tipo, setTipo] = useState('fiscalias')
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalDocs, setTotalDocs] = useState(1)
+  const [limit, setTotal] = useState(10)
+  const [isLoading, setIsLoading] = useState(false)
+  const [searchTimeout, setSearchTimeout] = useState(null)
+
+  useEffect(() => {
+    const getEstados = async () => {
+      const url = '/estados'
+      const { data } = await apiAuth().get(url)
+      setEstados(data)
+    }
+    getEstados()
+  }, [])
+
+  const columns = [
+
+    {
+      id: 'nombre',
+      label: 'Nombre'
+    },
+    {
+      id: 'enlace',
+      label: 'Enlace',
+      render: (row) => {
+        if (row?.enlace && row?.enlace !== null && row?.enlace !== undefined) { return (<a href={row.enlace.startsWith('http') ? row.enlace : `http://${row.enlace}`} target='_blank' rel='noreferrer'>{row.enlace}</a>) }
+        if (row?.liga && row?.liga !== null && row?.liga !== undefined) { return (<a href={row.liga.startsWith('http') ? row.liga : `http://${row.liga}`} target='_blank' rel='noreferrer'>{row.liga}</a>) }
+        return ('')
+      }
+    },
+    {
+      id: 'telefono',
+      label: 'Teléfono',
+      render: (row) => {
+        if (row?.telefonos === undefined || row?.telefonos === null) return ''
+        if (row?.telefonos.length > 0) {
+          return (
+            <ul>
+              {row.telefonos.map((tel, index) => (
+                <li key={index}>
+                  <a href={`tel:${tel}`}>{tel}</a>
+                </li>
+              ))}
+
+            </ul>
+          )
+        }
+      }
+    },
+    {
+      id: 'direccion',
+      label: 'Dirección',
+      render: (row) => {
+        if (row?.direccion && row?.direccion !== null && row?.direccion !== undefined) { return (<a title="Haz clic para ver en Google Maps" href={`https://www.google.com/maps/search/?api=1&amp;query=${row.direccion}`} target="_blank" rel="noreferrer">{row.direccion}</a>) }
+
+        return ('')
+      }
+    },
+    {
+      id: 'estado.nombre',
+      label: 'Estado',
+      render: (row) => row.estado.nombre
+    }
+  ]
+
+  useEffect(() => {
+    if (usuarioC) {
+      setEstado(usuarioC?.despacho?.estado)
+    }
+  }, [usuarioC])
+
+  const [search, setSearch] = useState('')
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage)
+  }
+
+  const handleFilter = (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setCurrentPage(0)
+    // Cancela el timeout anterior para evitar múltiples búsquedas rápidas
+    clearTimeout(searchTimeout)
+    // Configura un nuevo timeout para realizar la búsqueda después de 500ms
+    setSearchTimeout(setTimeout(fetchData, 500))
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [currentPage])
+
+  useEffect(() => {
+    // Limpia el timeout cuando el componente se desmonta o cuando search/status cambian
+    return () => {
+      clearTimeout(searchTimeout)
+    }
+  }, [search, estado, tipo])
+
+  const fetchData = async () => {
+    setIsLoading(true)
+    try {
+      const result = await getDataDirectorio(search, estado, currentPage, tipo)
+      setDirectorios(result.docs)
+      setTotalDocs(result.totalDocs)
+      setTotal(result.limit)
+      setIsLoading(false)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Dialog
+      fullWidth={true}
+      maxWidth="lg"
+      open={open}
+      onClose={handleClose}
+    >
+      <DialogTitle>
+        Legislaciones y reglamentos
+      </DialogTitle>
+      <IconButton
+        aria-label="close"
+        onClick={handleClose}
+        sx={{
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: (theme) => theme.palette.grey[500]
+        }}
+      >
+        <X />
+      </IconButton>
+      <DialogContent sx={{
+        backgroundColor: 'grey.100',
+        padding: 0,
+        '@media (min-width: 600px)': {
+          padding: 2
+        }
+      }}>
+        {/* //Buscador */}
+        <Paper elevation={0} sx={{ p: 3, py: 5, mb: 3 }}>
+          <Typography variant='subtitle1' mb={2} component='h2'>
+            Selecciona un criterio de búsqueda
+          </Typography>
+          <Box onSubmit={handleFilter} as='form' component='form'>
+            <Grid container spacing={2} alignItems='center'>
+              <Grid item xs={12} sm={6} md={8}>
+                <TextField fullWidth label='Buscar' id='Buscar' value={search} onChange={(e) => setSearch(e.target.value)} />
+
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <FormControl fullWidth >
+                  <InputLabel id="estados">Estados</InputLabel>
+                  <Select
+                    labelId="estados"
+                    value={estado}
+                    label="Estados"
+                    onChange={(e) => setEstado(e.target.value)}
+                  >
+                    {/* <MenuItem value=''>Selecciona un Estado</MenuItem> */}
+                    {estados.map((item) => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <FormControl fullWidth >
+                  <InputLabel id="tipo">Tipo</InputLabel>
+                  <Select
+                    labelId="tipo"
+                    value={tipo}
+                    label="Tipo"
+                    onChange={(e) => setTipo(e.target.value)}
+                  >
+                    <MenuItem value='juzgados'>
+                      Juzgados
+                    </MenuItem>
+                    <MenuItem value='dependencias'>
+                      Dependencias
+                    </MenuItem>
+                    <MenuItem value='fiscalias'>
+                      Fiscalias
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={2} >
+                <Button
+                  variant='contained'
+                  title='Buscar'
+                  sx={{
+                    backgroundColor: '#c89211',
+                    color: 'white'
+                  }}
+                  type='submit'
+                >
+                  <Search />
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+
+        {isLoading && <LinearProgress />}
+
+        <TableIUS
+          columns={columns}
+          rows={directorios}
+          onPageChange={handlePageChange}
+          currentPage={currentPage}
+          totalRows={totalDocs}
+          limit={limit}
+          isHandling={false}
+        />
+        <Box
+          noValidate
+          component="form"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            m: 'auto',
+            width: 'fit-content'
+          }}
+        >
+
+        </Box>
+      </DialogContent>
+    </Dialog>
+
+  )
+}
+
+const getDataLegilaciones = async (search, estado, page) => {
+  page = page + 1
+  const url = `/legislaciones-reglamentos/?page=${page}&search=${search}&estado=${estado}`
+  console.log(url, 'url')
+  const { data } = await apiAuth().get(url)
+  return data.legislaciones
+}
+
+const getDataDirectorio = async (search, estado, page, tipo) => {
+  page = page + 1
+  const url = `/directorios?page=${page}&search=${search}&estado=${estado}&tipo=${tipo}`
+  console.log(url, 'url')
+  const { data } = await apiAuth().get(url)
+  return data.directorios
 }

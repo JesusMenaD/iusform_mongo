@@ -89,10 +89,9 @@ const CreateGasto = ({ usuarioC = null }) => {
       formData.append('cuentaBancaria', cuenta)
       formData.append('fecha', fecha)
       formData.append('comentario', observaciones)
-      // files.forEach((file) => {
-      //   console.log('file', file.file)
-      //   formData.append('documentos', file.file)
-      // })
+      files.forEach((file) => {
+        formData.append('comprobantes', file.file)
+      })
 
       await apiAuth({ 'Content-Type': 'multipart/form-data' }).post(url, formData)
 
@@ -129,10 +128,10 @@ const CreateGasto = ({ usuarioC = null }) => {
   const updateFiles = (newFiles) => {
     setFiles(newFiles)
   }
-
+  const back = `/${usuarioC?.clave}/gastos`
   return (
     <>
-      <ButtonAction child={[{ title: 'Gastos', to: `/${usuarioC?.clave}/gastos` }]} actual="Crear Gasto" />
+      <ButtonAction child={[{ title: 'Gastos', to: `/${usuarioC?.clave}/gastos` }]} actual="Crear Gasto" back={back} />
       <Paper sx={{
         p: { xs: 2, md: 3 },
         m: { xs: -1.2, md: 2 },

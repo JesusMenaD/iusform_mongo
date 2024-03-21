@@ -2,13 +2,13 @@
   "name": "api-obras",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "engines": {
     "node": ">=14.0.0"
   },
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "body-parser": "^1.20.2",
     "buffer": "^6.0.3",
     "colors": "^1.4.0",
+    "conekta": "^4.2.0",
     "connect-history-api-fallback": "^2.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

@@ -10,6 +10,16 @@ const ProductosSchema = new Schema({
     type: String,
     required: true
   },
+  tiempo: { // En días para los paquetes
+    type: Number,
+    required: false,
+    default: 0
+  },
+  pruebaGratis: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
   imagen: {
     type: String,
     required: true
@@ -18,7 +28,7 @@ const ProductosSchema = new Schema({
     type: Number,
     required: true
   },
-  cantidad: {
+  cantidad: { // En caso de ser timbres o expedientes
     type: Number,
     required: false,
     default: 0
@@ -27,7 +37,6 @@ const ProductosSchema = new Schema({
     type: String,
     required: false,
     default: ''
-
   },
   archivo: {
     type: String,

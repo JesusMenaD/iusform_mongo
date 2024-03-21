@@ -30,7 +30,8 @@ const DespachosSchema = new Schema({
     },
     vigencia: {
       type: Date,
-      required: false
+      required: false,
+      default: null
     }
   },
   nombre: {
@@ -51,7 +52,7 @@ const DespachosSchema = new Schema({
   estado: {
     type: Schema.Types.ObjectId,
     ref: 'estados',
-    required: false
+    required: true
   },
   correo: {
     type: String,

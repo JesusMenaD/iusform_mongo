@@ -68,12 +68,10 @@ const CuentasBancarias = () => {
   useEffect(() => {
     modulosC.forEach(modulo => {
       if (modulo.enlace === locationPath) {
-        console.log()
         setPermisos(modulo.permisos)
       }
 
       modulo.child.forEach(submodulo => {
-        console.log('submodulo', submodulo.enlace, locationPath)
         if (submodulo.enlace === locationPath) {
           setPermisos(submodulo.permisos)
         }
