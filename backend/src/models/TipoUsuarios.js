@@ -25,11 +25,11 @@ const TipoUsuarioSchema = new Schema({
       required: true
     },
     permisos: {
-      create: { type: Boolean, default: false },
-      read: { type: Boolean, default: false },
-      update: { type: Boolean, default: false },
-      delete: { type: Boolean, default: false },
-      download: { type: Boolean, default: false }
+      create: { type: Boolean, default: true },
+      read: { type: Boolean, default: true },
+      update: { type: Boolean, default: true },
+      delete: { type: Boolean, default: true },
+      download: { type: Boolean, default: true }
     }
   }]
 }, {

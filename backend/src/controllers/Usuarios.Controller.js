@@ -4,6 +4,8 @@ const DespachoModel = require('../models/Despachos.js');
 const productoModel = require('../models/Productos.js');
 const SuscripcionesModel = require('../models/Suscripciones.js');
 const VentasSchema = require('../models/Ventas.js');
+const ModulosSchema = require('../models/Modulos.js');
+const TipoUsuario = require('../models/TipoUsuarios.js');
 
 const fs = require('fs');
 const path = require('path');
@@ -59,7 +61,9 @@ const register = async (req, res) => {
       email = '',
       tipoUsuario = '',
       producto,
-      formaPago
+      formaPago,
+      clave,
+      estado
     } = req.body;
 
     if (tipoUsuario === 'despacho') {
@@ -76,7 +80,8 @@ const register = async (req, res) => {
       apellidoPaterno,
       apellidoMaterno,
       telefono,
-      email
+      email,
+      clave
     };
 
     if (!nombre || !email || !tipoUsuario) {
@@ -130,7 +135,8 @@ const register = async (req, res) => {
         objDespacho = {
           contadorExp,
           correo: email,
-          telefono
+          telefono,
+          estado
         };
 
         objUser.tipoUsuario = findTipoUsuarioDespacho._id;
@@ -180,6 +186,30 @@ const register = async (req, res) => {
       };
 
       await VentasSchema.create(venta);
+
+      const findModulos = await ModulosSchema.find({ estatus: 'Activo', tipo: 'despacho' });
+
+      const objTipoUsuario = {
+        nombre: 'Administrador',
+        tipo: 'despacho',
+        despacho: despachoCreate._id,
+        modulos: findModulos.map(modulo => {
+          return {
+            modulo: modulo._id,
+            permisos: {
+              create: true,
+              read: true,
+              update: true,
+              delete: true,
+              download: true
+            }
+          };
+        })
+      };
+
+      await TipoUsuario.create(objTipoUsuario);
+
+      // generar modulos para el despacho
 
       res.status(201).json({ message: 'Usuario creado', data: userDespacho, despacho: despachoCreate });
     } else {
