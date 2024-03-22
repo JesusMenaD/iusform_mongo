@@ -83,8 +83,8 @@ const Router = () => {
               <Route path='/pago-exitoso' element={<PagoExitoso usuario={usuario} />} />
               <Route path={'/shop'} element={<Producto usuario={usuario} />} />
               <Route path={'/shop/:_id'} element={<Producto usuario={usuario} />} />
-              <Route path={`/${clave}`} element={<Home />} />
-              <Route path={`/${clave}/dashboard`} element={<Expedientes />} />
+              <Route path={`/${clave}`} element={<Home usuarioC={usuario} />} />
+              <Route path={`/${clave}/dashboard`} element={<Home usuarioC={usuario} />} />
               <Route path={`/${clave}/perfil/editar`} element={<EditarPerfil />} />
               <Route path={`/${clave}/expedientes`} element={<Expedientes />} />
               <Route path={`/${clave}/expedientes/crear`} element={<CreateExpedientes usuarioC={usuario} />} />

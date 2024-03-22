@@ -42,6 +42,7 @@
     "quill-image-resize-module-react": "^3.0.0",
     "react-chartjs-2": "^5.2.0",
     "react-color": "^2.19.3",
+    "react-countup": "^6.5.2",
     "react-dom": "18.2.0",
     "react-drag-drop-files": "^2.3.8",
     "react-feather": "^2.0.10",

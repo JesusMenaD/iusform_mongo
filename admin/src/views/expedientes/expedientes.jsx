@@ -223,7 +223,6 @@ const Expedientes = () => {
               </Grid>
             </>
         }
-
       </Grid >
     </>
   )

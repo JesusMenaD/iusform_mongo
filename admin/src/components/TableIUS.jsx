@@ -53,7 +53,8 @@ const TableIUS = ({
       <TableContainer>
         <Table sx={{
           backgroundColor: '#fff'
-        }}>
+        }}
+        >
           {isHandling &&
             <TableHead>
               <TableRow>
@@ -73,14 +74,14 @@ const TableIUS = ({
             {rows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={columns.length} align="center">
-                  <Typography variant="body1">No hay elementos para mostrar.</Typography>
+                  <Typography align='center' variant="body1">No hay elementos para mostrar.</Typography>
                 </TableCell>
               </TableRow>
             ) : (
               rows.map((row, index) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   {columns.map((column) => (
-                    <TableCell key={column.id} align={column.align} colSpan={column.colSpan || 0} rowSpan={column.rowSpan || 1}>
+                    <TableCell key={column.id} align={column.align} colSpan={column.colSpan || 0} rowSpan={column.rowSpan || 1} width={column.width || 'auto'}>
                       {/* Verifica si hay una función de renderización definida para esta columna */}
                       {column.render ? column.render(row) : row[column.id]}
                     </TableCell>

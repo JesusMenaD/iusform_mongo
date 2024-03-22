@@ -58,7 +58,7 @@ import { ModulosContext } from '../context/ModulosContext'
 import TableIUS from '../components/TableIUS'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
-const drawerWidth = 260
+const drawerWidth = 280
 // import { apiAuth } from '../api'
 const styles = {
   listItemButton: {
@@ -143,7 +143,7 @@ const styles = {
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#F5F4F4',
     boxSizing: 'border-box',
     flexGrow: 1,
     padding: theme.spacing(0), // Ajusta el padding para el contenido principal
@@ -457,7 +457,7 @@ const DrawerContent = () => {
   return (
     <nav>
       <List>
-        {/* <ListItemLink name='Panel' to="/" Icon={<BoxIcon />} tipo='ico' /> */}
+        <ListItemLink name='Panel' to="/" Icon={<BoxIcon />} tipo='ico' />
 
         {modulosC.map((modulo, index) => {
           if (modulo.child.length > 0) {
@@ -899,7 +899,7 @@ const DialogDirectorio = ({ open, handleClose }) => {
       onClose={handleClose}
     >
       <DialogTitle>
-        Legislaciones y reglamentos
+        Directorio
       </DialogTitle>
       <IconButton
         aria-label="close"
