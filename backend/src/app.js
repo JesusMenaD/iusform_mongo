@@ -9,7 +9,7 @@ const router = require('./routes/index'); // Importando rutas con require
 
 const path = require('path');
 
-const history = require('connect-history-api-fallback');
+// const history = require('connect-history-api-fallback');
 
 // import bodyParser from 'body-parser';
 // Inicio de express
@@ -28,7 +28,9 @@ app.use(morgan('dev'));
 // Routes
 app.use('/api', router);
 
-app.use(history());
+// app.use(history());
+
+// zona horaria de México
 
 // const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
