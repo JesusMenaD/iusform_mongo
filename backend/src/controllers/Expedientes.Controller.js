@@ -12,7 +12,16 @@ const { MovimientosExpedienteHTML } = require('../Mail/MovimientosExpedienteHTML
 const { sendMail } = require('../config/mail.js');
 const RecursosIncidenciasExpedienteModel = require('../models/ExpedientesRecursosIncidencias.js');
 const RecursosExpediente = require('../models/RecursosIncidencias.js');
+const ExpedienteAgenda = require('../models/ExpedientesAgenda.js');
+const ExpedienteAgendaUsuarios = require('../models/ExpedientesAgendaUsuarios.js');
+const ExpedientesPartes = require('../models/ExpedientesPartesInvolucradas.js');
+const ExpedientesNotas = require('../models/ExpedientesNotas.js');
+const ExpedientesGastos = require('../models/ExpedientesGastos.js');
+const ExpedientesAdjuntos = require('../models/ExpedientesAdjuntos.js');
+const ExpedientesPautas = require('../models/ExpedientesPautas.js');
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
+const { deleteFile } = require('../config/FuntionGlobal.js');
+const path = require('path');
 
 const createExpediente = async (req, res) => {
   try {
@@ -745,6 +754,86 @@ const updateEtapaProcesal = async (req, res) => {
   }
 };
 
+const deleteExpediente = async (req, res) => {
+  const { despacho, expediente } = req.params;
+
+  try {
+    if (!expediente) {
+      return res.status(400).json({ message: 'El expediente es requerido' });
+    }
+
+    const findExpediente = await ExpedienteModel.findById(expediente);
+
+    if (!findExpediente) {
+      return res.status(404).json({ message: 'El expediente no existe' });
+    }
+
+    const expedientesEliminarArchivo = async ({ expediente, despacho }) => {
+      const eliminarExpedientesAdjuntos = await ExpedientesAdjuntos.find({ expediente, despacho }).select('archivo');
+
+      eliminarExpedientesAdjuntos.forEach(async (adjunto) => {
+        const { archivo } = adjunto;
+        const folderPath = path.join('src/uploads/documentos', archivo);
+        deleteFile(folderPath);
+      });
+
+      return await ExpedientesAdjuntos.deleteMany({ expediente, despacho });
+    };
+
+    const expedientesEliminarGastos = async ({ expediente, despacho }) => {
+      const eliminarExpedientesGastos = await ExpedientesGastos.find({ expediente, despacho }).select('adjunto');
+
+      eliminarExpedientesGastos.forEach(async (gasto) => {
+        const archivo = gasto.adjunto.archivo;
+
+        const folderPath = path.join('src/uploads/expedientes-gastos', archivo);
+        deleteFile(folderPath);
+      });
+
+      return await ExpedientesGastos.deleteMany({ expediente, despacho });
+    };
+
+    const EliminarTodo = Promise.all([
+      // expediente asociados a los usuarios
+      await ExpedientesUsuarioModel.deleteMany({ expediente, despacho }),
+
+      // expediente asociados a los movimientos
+      await ExpedientesMovimientosModel.deleteMany({ expediente, despacho }),
+
+      // expediente asociados a los recursos o incidencias
+      await RecursosIncidenciasExpedienteModel.deleteMany({ expediente, despacho }),
+
+      // expediente asociados a agenda
+
+      await ExpedienteAgenda.deleteMany({ expediente, despacho }),
+
+      // expediente asociados a agenda usuarios
+      await ExpedienteAgendaUsuarios.deleteMany({ expediente, despacho }),
+
+      // expediente asociados a partes involucradas
+      await ExpedientesPartes.deleteMany({ expediente, despacho }),
+
+      // expediente asociados a notas
+      await ExpedientesNotas.deleteMany({ expediente, despacho }),
+
+      // expediente asociados a gastos
+      await expedientesEliminarGastos({ expediente, despacho }),
+
+      // expediente asociados a adjuntos y tambien eliminar los archivos
+      await expedientesEliminarArchivo({ expediente, despacho }),
+
+      // expediente asociados a pautas
+      await ExpedientesPautas.deleteMany({ expediente, despacho })
+    ]);
+
+    await ExpedienteModel.findByIdAndDelete(expediente);
+
+    res.status(200).json({ message: 'El expediente se eliminó correctamente', expediente: findExpediente, EliminarTodo });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createExpediente,
   getExpedientesByUsuario,
@@ -753,5 +842,6 @@ module.exports = {
   updateTitulo,
   updateNumeroExpediente,
   updateJuicio,
-  updateEtapaProcesal
+  updateEtapaProcesal,
+  deleteExpediente
 };

@@ -7,7 +7,8 @@ const {
   updateTitulo,
   updateNumeroExpediente,
   updateJuicio,
-  updateEtapaProcesal
+  updateEtapaProcesal,
+  deleteExpediente
 } = require('../controllers/Expedientes.Controller.js');
 const router = Router();
 
@@ -23,5 +24,6 @@ router.patch('/:despacho/:usuario/:expediente/titulo', updateTitulo);
 router.patch('/:despacho/:usuario/:expediente/numero', updateNumeroExpediente);
 router.patch('/:despacho/:usuario/:expediente/juicio', updateJuicio);
 router.patch('/:despacho/:usuario/:expediente/etapa', updateEtapaProcesal);
+router.delete('/:despacho/:expediente', deleteExpediente);
 
 module.exports = router;
