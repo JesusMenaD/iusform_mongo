@@ -1,15 +1,17 @@
 /* eslint-disable react/prop-types */
 import { Avatar, Box, Card, CardContent, Grid, Typography, LinearProgress, Chip } from '@mui/material'
 import { BarChart } from '@mui/x-charts/BarChart'
-import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart'
+// import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart'
 import TableIUS from '../../components/TableIUS'
 import CountUp from 'react-countup'
 import { useEffect, useState } from 'react'
 import { apiAuth } from '../../api'
 import { TrendingUp, TrendingDown, DollarSign, XCircle, Clock } from 'react-feather'
+import { Link } from 'react-router-dom'
 const Budget = ({ title = '', subTitle = '', icon, child }) => (
   <Card
     sx={{ height: '155px', borderRadius: '16px' }}
+    elevation={0}
   // border radius
   >
     <CardContent>
@@ -57,18 +59,21 @@ const Budget = ({ title = '', subTitle = '', icon, child }) => (
 )
 
 export const DashboardLayout = ({ usuarioC }) => {
+  const [verMas, setVerMas] = useState(false)
   return (
     <>
       <Grid
-
         container
         spacing={2}
-        rowSpacing={5}
+        rowSpacing={4}
         p={{
           xs: 0,
           sm: 2
         }}
         justifyContent={'center'}
+        sx={{
+          backgroundColor: '#F4F5F7'
+        }}
       >
         <Grid item lg={4} sm={9} xl={3} xs={12}>
           <Abono despacho={usuarioC?.despacho?._id} />
@@ -80,31 +85,98 @@ export const DashboardLayout = ({ usuarioC }) => {
           <Cargo despacho={usuarioC?.despacho?._id} />
         </Grid>
 
-        <Grid item lg={4} sm={9} xl={3} xs={12}>
-          <Cancelados despacho={usuarioC?.despacho?._id} />
+        {
+          !verMas && (
+            <>
+              {/* // button para ver mas */}
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    mt: 2
+                  }}
+                >
+                  <Link
+                    to="#"
+                    onClick={() => setVerMas(true)}
+                  >
+                    Ver más
+                  </Link>
+                </Box>
+              </Grid>
+            </>
+          )
+        }
+
+        {
+          verMas && (
+            <>
+              <Grid item lg={4} sm={9} xl={3} xs={12}>
+                <Cancelados despacho={usuarioC?.despacho?._id} />
+              </Grid>
+
+              <Grid item lg={4} sm={9} xl={3} xs={12}>
+                <Pendientes despacho={usuarioC?.despacho?._id} />
+              </Grid>
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    mt: 2
+                  }}
+                >
+                  <Link
+                    to="#"
+                    onClick={() => setVerMas(false)}
+                  >
+                    Ver menos
+                  </Link>
+                </Box>
+              </Grid>
+            </>
+          )
+        }
+
+        <Grid item lg={12} md={12} xl={12} xs={12}>
+
+          <Card
+            sx={{ height: '100%', borderRadius: '16px' }}
+            elevation={0}
+          >
+            <MateriasExpedientes despacho={usuarioC?.despacho?._id} />
+          </Card>
         </Grid>
 
-        <Grid item lg={4} sm={9} xl={3} xs={12}>
-          <Pendientes despacho={usuarioC?.despacho?._id} />
+        <Grid item lg={12} md={12} xl={12} xs={12}>
+          <Card sx={{ height: '100%', borderRadius: '16px' }} elevation={0} >
+            <BarExpedientesEstatus despacho={usuarioC?.despacho?._id} />
+          </Card>
         </Grid>
 
         <Grid item lg={12} md={12} xl={12} xs={12}>
           {/* <Grid item lg={8} md={9} xl={9} xs={12}> */}
-
           <Card
             sx={{ height: '100%', borderRadius: '16px' }}
+            elevation={0}
           >
-
-            {/* <BarChart
-              title='Bar Chart'
-              xAxis={[{ scaleType: 'band', data: ['group A', 'group B', 'group C', 'group D', 'group E', 'group F', 'group G', 'group H', 'group I  '] }]}
-              series={[{
-                data: [4, 3, 5, 4, 3, 5, 4, 3, 5],
-                color: '#635bff'
-              }]}
-              height={400}
-            /> */}
             <BarExpedientesAsignados despacho={usuarioC?.despacho?._id} />
+          </Card>
+        </Grid>
+
+        <Grid item lg={12} md={12} xl={12} xs={12}>
+          <Card sx={{ height: '100%', borderRadius: '16px' }}
+            elevation={0}
+          >
+            <BarExpedientesSinMovimientos30Dias despacho={usuarioC?.despacho?._id} />
+          </Card>
+        </Grid>
+        <Grid item lg={12} md={12} xl={12} xs={12}>
+          <Card sx={{ height: '100%', borderRadius: '16px' }}
+            elevation={0}
+          >
+            <BarExpedientesMovimientos despacho={usuarioC?.despacho?._id} />
           </Card>
         </Grid>
 
@@ -162,6 +234,7 @@ export const DashboardLayout = ({ usuarioC }) => {
               height: '100%',
               borderRadius: '16px'
             }}
+            elevation={0}
           >
             <CardContent>
               <Typography
@@ -215,13 +288,14 @@ const BarExpedientesAsignados = ({ despacho }) => {
         ? <LinearProgress />
         : <BarChart
           title="Expedientes Asignados"
+
           xAxis={[{
             scaleType: 'band',
             data: nombres
           }]}
           series={[{
             data: expedientesAsignados,
-            color: '#635bff'
+            color: '#17A2B8'
           }]}
           height={400}
         />
@@ -281,12 +355,13 @@ const TableData = ({ despacho }) => {
       }
     }
     // {
+
     //   label: 'Responsable',
     //   render: (row) => `${row.creadoPor.nombre} ${row.creadoPor.apellidoPaterno} ${row.creadoPor.apellidoMaterno}`
     // }
   ]
 
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(0)
   const [totalDocs, setTotalDocs] = useState(0)
   const [limit, setLimit] = useState(10)
   const [rows, setRows] = useState([])
@@ -296,7 +371,8 @@ const TableData = ({ despacho }) => {
     const getMovimientos = async () => {
       try {
         setLoading(true)
-        const url = `/dashboard/movimientos?page=${currentPage}&despacho=${despacho}`
+
+        const url = `/dashboard/movimientos?page=${currentPage + 1}&despacho=${despacho}`
         const { data } = await apiAuth().get(url)
         setRows(data.docs)
         setTotalDocs(data.totalDocs)
@@ -328,12 +404,14 @@ const TableData = ({ despacho }) => {
 
 const Abono = ({ despacho }) => {
   const [total, setTotal] = useState(0)
+  const [mes, setMes] = useState('')
 
   useEffect(() => {
     const getAbono = async () => {
       try {
         const { data } = await apiAuth().get(`/dashboard/abono?despacho=${despacho}`)
         setTotal(data.totalImporte)
+        setMes(data.mes)
       } catch (error) {
         console.error(error)
       }
@@ -344,10 +422,19 @@ const Abono = ({ despacho }) => {
 
   return (
     <Budget
-
       title='Abono' subTitle={<CountUp end={total} decimals={2} duration={1} />}
-      icon={<>
+      child={
+        <>
+          <Typography
+            color="textSecondary"
+            variant="body2"
+          >
+            Desde el 1 de {mes} hasta hoy
+          </Typography>
 
+        </>
+      }
+      icon={<>
         <Avatar
           sx={{
             backgroundColor: 'info.main',
@@ -366,12 +453,14 @@ const Abono = ({ despacho }) => {
 
 const Cargo = ({ despacho }) => {
   const [total, setTotal] = useState(0)
+  const [mes, setMes] = useState('')
 
   useEffect(() => {
     const getAbono = async () => {
       try {
         const { data } = await apiAuth().get(`/dashboard/cargo?despacho=${despacho}`)
         setTotal(data.totalImporte)
+        setMes(data.mes)
       } catch (error) {
         console.error(error)
       }
@@ -383,7 +472,16 @@ const Cargo = ({ despacho }) => {
   return (
     <Budget
       title='Cargo' subTitle={<CountUp end={total} decimals={2} duration={1} />}
-
+      child={
+        <>
+          <Typography
+            color="textSecondary"
+            variant="body2"
+          >
+            Desde el 1 de {mes} hasta hoy
+          </Typography>
+        </>
+      }
       icon={<>
 
         <Avatar
@@ -404,12 +502,14 @@ const Cargo = ({ despacho }) => {
 
 const Balance = ({ despacho }) => {
   const [total, setTotal] = useState(0)
+  const [mes, setMes] = useState('')
 
   useEffect(() => {
     const getAbono = async () => {
       try {
         const { data } = await apiAuth().get(`/dashboard/balance?despacho=${despacho}`)
         setTotal(data.balance)
+        setMes(data.mes)
       } catch (error) {
         console.error(error)
       }
@@ -422,6 +522,16 @@ const Balance = ({ despacho }) => {
     <Budget
 
       title='Balance' subTitle={<CountUp end={total} decimals={2} duration={1} />}
+      child={
+        <>
+          <Typography
+            color="textSecondary"
+            variant="body2"
+          >
+            Desde el 1 de {mes} hasta hoy
+          </Typography>
+        </>
+      }
       icon={<>
 
         <Avatar
@@ -442,12 +552,13 @@ const Balance = ({ despacho }) => {
 
 const Cancelados = ({ despacho }) => {
   const [total, setTotal] = useState(0)
-
+  const [mes, setMes] = useState('')
   useEffect(() => {
     const getAbono = async () => {
       try {
         const { data } = await apiAuth().get(`/dashboard/cancelados?despacho=${despacho}`)
         setTotal(data.totalImporte)
+        setMes(data.mes)
       } catch (error) {
         console.error(error)
       }
@@ -460,8 +571,17 @@ const Cancelados = ({ despacho }) => {
     <Budget
 
       title='Cancelados' subTitle={<CountUp end={total} decimals={2} duration={1} />}
+      child={
+        <>
+          <Typography
+            color="textSecondary"
+            variant="body2"
+          >
+            Desde el 1 de {mes} hasta hoy
+          </Typography>
+        </>
+      }
       icon={<>
-
         <Avatar
           sx={{
             backgroundColor: 'error.main',
@@ -480,12 +600,14 @@ const Cancelados = ({ despacho }) => {
 
 const Pendientes = ({ despacho }) => {
   const [total, setTotal] = useState(0)
+  const [mes, setMes] = useState('')
 
   useEffect(() => {
     const getAbono = async () => {
       try {
         const { data } = await apiAuth().get(`/dashboard/pendientes?despacho=${despacho}`)
         setTotal(data.totalImporte)
+        setMes(data.mes)
       } catch (error) {
         console.error(error)
       }
@@ -496,8 +618,17 @@ const Pendientes = ({ despacho }) => {
 
   return (
     <Budget
-
       title='Pendientes' subTitle={<CountUp end={total} decimals={2} duration={1} />}
+      child={
+        <>
+          <Typography
+            color="textSecondary"
+            variant="body2"
+          >
+            Desde el 1 de {mes} hasta hoy
+          </Typography>
+        </>
+      }
       icon={<>
 
         <Avatar
@@ -513,6 +644,209 @@ const Pendientes = ({ despacho }) => {
       }
 
     />
+  )
+}
+
+const MateriasExpedientes = ({ despacho }) => {
+  // bar chart
+  const [datos, setDatos] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    const getMateriasExpedientes = async () => {
+      try {
+        const { data } = await apiAuth().get(`/dashboard/materias-expedientes?despacho=${despacho}`)
+        setDatos(data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    getMateriasExpedientes()
+  }, [despacho])
+
+  // Preparar datos para el gráfico
+
+  const nombres = datos.length > 0 ? datos.map((materia) => materia.nombre) : ['No hay datos']
+
+  const expedientes = datos.length > 0 ? datos.map((materia) => materia.expedientes) : [0]
+
+  return (
+    <>
+      <CardContent>
+        <Typography align="center" color="text.secondary" gutterBottom>
+          Materias de expedientes
+        </Typography>
+      </CardContent>
+      {loading
+        ? <LinearProgress />
+        : <BarChart
+          title="Materias de expedientes"
+          xAxis={[{
+            scaleType: 'band',
+            data: nombres
+          }]}
+          series={[{
+            data: expedientes,
+            color: '#6571ff'
+          }]}
+          height={400}
+        />
+      }
+    </>
+  )
+}
+
+const BarExpedientesEstatus = ({ despacho }) => {
+  const [datos, setDatos] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    const getExpedientesEstatus = async () => {
+      try {
+        const { data } = await apiAuth().get(`/dashboard/expedientes-estatus?despacho=${despacho}`)
+        setDatos(data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    getExpedientesEstatus()
+  }, [despacho])
+
+  // Preparar datos para el gráfico
+  const nombres = datos.length > 0 ? datos.map((estatus) => estatus.estatus) : ['No hay datos']
+  const expedientes = datos.length > 0 ? datos.map((estatus) => estatus.total) : [0]
+
+  return (
+    <>
+      <CardContent>
+        <Typography align="center" color="text.secondary" gutterBottom>
+          Estatus de expedientes
+        </Typography>
+      </CardContent>
+      {loading
+        ? <LinearProgress />
+        : <BarChart
+          title="Estatus de expedientes"
+          xAxis={[{
+            scaleType: 'band',
+            data: nombres
+          }]}
+          series={[{
+            data: expedientes,
+            color: '#c89211'
+          }]}
+          height={400}
+        />
+      }
+    </>
+  )
+}
+
+const BarExpedientesSinMovimientos30Dias = ({ despacho }) => {
+  const [datos, setDatos] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    const getExpedientesSinMovimientos30Dias = async () => {
+      try {
+        const { data } = await apiAuth().get(`/dashboard/expedientes-activos-sin-movimientos?despacho=${despacho}`)
+        setDatos(data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    getExpedientesSinMovimientos30Dias()
+  }, [despacho])
+
+  // Preparar datos para el gráfico
+  const nombres = datos.length > 0 ? datos.map((expediente) => expediente.titulo) : ['No hay datos']
+  const dias = datos.length > 0 ? datos.map((expediente) => expediente.dias) : [0]
+
+  return (
+    <>
+      <CardContent>
+        <Typography align="center" color="text.secondary" gutterBottom>
+          Expedientes sin movimientos en 30 días
+        </Typography>
+      </CardContent>
+      {loading
+        ? <LinearProgress />
+        : <BarChart
+          title="Expedientes activos sin movimientos en 30 días"
+          xAxis={[{
+            scaleType: 'band',
+            data: nombres
+          }]}
+          series={[{
+            data: dias,
+            color: '#ed6c02'
+          }]}
+          height={400}
+        />
+      }
+    </>
+  )
+}
+
+const BarExpedientesMovimientos = ({ despacho }) => {
+  const [datos, setDatos] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    const getExpedientesMovimientos = async () => {
+      try {
+        const { data } = await apiAuth().get(`/dashboard/expedientes-movimientos?despacho=${despacho}`)
+        setDatos(data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    getExpedientesMovimientos()
+  }, [despacho])
+
+  // Preparar datos para el gráfico
+  const nombres = datos.length > 0 ? datos.map((expediente) => expediente.titulo) : ['No hay datos']
+  const movimientos = datos.length > 0 ? datos.map((expediente) => expediente.total) : [0]
+
+  return (
+    <>
+      <CardContent>
+        <Typography align="center" color="text.secondary" gutterBottom>
+          Movimientos de expedientes
+        </Typography>
+      </CardContent>
+      {loading
+        ? <LinearProgress />
+        : <BarChart
+          title="Movimientos de expedientes"
+          xAxis={[{
+            scaleType: 'band',
+            data: nombres
+          }]}
+          series={[{
+            data: movimientos,
+            color: '#ff6f61'
+          }]}
+          height={400}
+        />
+      }
+    </>
   )
 }
 

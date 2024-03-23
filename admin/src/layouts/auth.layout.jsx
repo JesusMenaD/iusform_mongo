@@ -381,21 +381,20 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }))
 
 // eslint-disable-next-line react/prop-types
-const ListItemLink = ({ name, to, Icon, chil = [], tipo = 'url' }) => (
-  <ListItem disablePadding>
-    <ListItemButton component={NavLink} to={to} sx={styles.listItemButton} LinkComponent={Link}>
-      <ListItemIcon>
-
-        {
-          tipo === 'url' ? <Image src={Icon} alt={name} width={18} height={18} /> : <BoxIcon color='white' size={20} />
-        }
-
-        {/* < Image src={Icon} alt={name} width={18} height={18} /> */}
-      </ListItemIcon>
-      <ListItemText primary={name} sx={styles.listItemText} />
-    </ListItemButton>
-  </ListItem>
-)
+const ListItemLink = ({ name, to, Icon, chil = [], tipo = 'url' }) => {
+  return (
+    <ListItem disablePadding>
+      <ListItemButton component={NavLink} to={to} sx={{
+        ...styles.listItemButton
+      }} LinkComponent={Link}>
+        <ListItemIcon>
+          {tipo === 'url' ? <Image src={Icon} alt={name} width={18} height={18} /> : <BoxIcon color='white' size={20} />}
+        </ListItemIcon>
+        <ListItemText primary={name} sx={styles.listItemText} />
+      </ListItemButton>
+    </ListItem>
+  )
+}
 
 // eslint-disable-next-line react/prop-types
 const ListItemCollapse = ({ name, Icon, tos = [], active = false }) => {
@@ -406,7 +405,10 @@ const ListItemCollapse = ({ name, Icon, tos = [], active = false }) => {
   }
   return (
     <>
-      <ListItemButton onClick={handleClick} sx={styles.listItemButton}>
+      <ListItemButton onClick={handleClick} sx={{
+        ...styles.listItemButton
+        // backgroundColor: open ? 'grey.900' : 'transparent'
+      }}>
         <ListItemIcon>
           <Image src={Icon} alt={name} width={18} height={18} />
         </ListItemIcon>
@@ -418,7 +420,10 @@ const ListItemCollapse = ({ name, Icon, tos = [], active = false }) => {
           {
             tos.map((to, index) => {
               return (
-                <ListItemButton key={index} sx={{ ...styles.listItemButton, pl: 4 }} component={NavLink} to={to.enlace}>
+                <ListItemButton key={index} sx={{
+                  ...styles.listItemButton,
+                  ml: 3
+                }} component={NavLink} to={to.enlace}>
                   <ListItemIcon>
                     <Image src={to.imagen} alt={to.nombre} width={18} height={18} />
                   </ListItemIcon>

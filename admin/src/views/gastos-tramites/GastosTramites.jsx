@@ -224,7 +224,7 @@ const GastosTramites = () => {
               <Grid item xs={12}>
                 <Box p={{
                   xs: 0,
-                  sm: 3
+                  sm: 2
                 }}>
                   {isLoading
                     ? <LinearProgress />
