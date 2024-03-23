@@ -216,6 +216,12 @@ const Expedientes = () => {
                         totalRows={totalDocs}
                         limit={limit}
                         permisos={permisos}
+                        handleDelete={async (row) => {
+                          const url = `/expedientes/${despacho}/${row._id}`
+                          const { data } = await apiAuth().delete(url)
+                          console.log(data)
+                          fetchData()
+                        }}
                       />
                     }
                   </Paper>
