@@ -12,11 +12,7 @@ const transporter = nodemailer.createTransport({
   auth: {
     user,
     pass
-  },
-  tls: {
-    rejectUnauthorized: false
-  },
-  debug: true
+  }
 });
 
 const sendMail = async (html, subject, correos) => {
