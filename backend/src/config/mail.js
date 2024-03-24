@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
 const sendMail = async (html, subject, correos) => {
   try {
     const info = await transporter.sendMail({
-      from: '<envia@iusform.com> "IUSFORM" ', // sender address
+      from: '<zeivornet@iusform.zeivor.net> "IUSFORM" ', // sender address
       to: correos,
       subject,
       html
